@@ -6,7 +6,7 @@ resource "aws_kms_key" "default" {
   deletion_window_in_days = var.kms_key_deletion_window
   enable_key_rotation     = true
   policy                  = data.aws_iam_policy_document.kms_access.json
-  tags                    = local.tags
+  tags                    = var.tags
   multi_region            = true
 }
 
@@ -75,7 +75,7 @@ resource "aws_s3_bucket" "access_log_bucket" {
   # checkov:skip=CKV_AWS_18: "Ensure the S3 bucket has access logging enabled" -- This is the access logging bucket. Logging to the logging bucket would cause an infinite loop.
   bucket_prefix = local.access_logging_name_prefix
   force_destroy = true
-  tags          = local.tags
+  tags          = var.tags
 
   lifecycle {
     precondition {
