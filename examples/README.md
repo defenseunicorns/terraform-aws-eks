@@ -1,4 +1,5 @@
-<!-- END_TF_DOCS --># Examples
+
+# Examples
 
 This directory contains examples of how to use the various modules in this repository.
 
@@ -38,28 +39,3 @@ export SKIP_TEST=1
 make <TheTargetYouWantToRun>
 ```
 > Since we're tearing down this time, we don't want `SKIP_TEARDOWN` to be set. Instead, we are setting `SKIP_SETUP` and `SKIP_TEST` to skip the setup and test stages.
-
-<!-- BEGIN_TF_DOCS -->
-## Requirements
-
-No requirements.
-
-## Providers
-
-No providers.
-
-## Modules
-
-No modules.
-
-## Resources
-
-No resources.
-
-## Inputs
-
-No inputs.
-
-## Outputs
-
-No outputs.
