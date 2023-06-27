@@ -1,4 +1,4 @@
-<!-- END_TF_DOCS -->
+
 # Examples
 
 This directory contains examples of how to use the various modules in this repository.
