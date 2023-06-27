@@ -276,3 +276,9 @@ variable "calico_helm_config" {
   type        = any
   default     = {}
 }
+
+variable "eks_use_mfa" {
+  description = "Use MFA for auth_eks_role"
+  type = bool
+  default = true
+} 

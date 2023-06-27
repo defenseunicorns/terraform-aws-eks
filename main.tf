@@ -70,45 +70,9 @@ resource "aws_iam_role" "auth_eks_role" {
   name                 = "${var.name}-auth-eks-role"
   description          = "EKS AuthConfig Role"
   permissions_boundary = var.iam_role_permissions_boundary
-  assume_role_policy   = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Action": "sts:AssumeRole",
-            "Principal": {
-              "AWS": ${length(local.admin_arns) == 0 ? "[]" : jsonencode(local.admin_arns)}
-            },
-            "Effect": "Allow",
-            "Sid": ""
-        }
-    ]
-}
-EOF
-
+  assume_role_policy   = locals.auth_eks_role_policy
 }
 
-# Role with MFA
-resource "aws_iam_role" "auth_eks_role_mfa" {
-  name                 = "${var.name}-auth-eks-role-mfa"
-  description          = "EKS AuthConfig Role with MFA"
-  permissions_boundary = var.iam_role_permissions_boundary
-  assume_role_policy   = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Action": "sts:AssumeRole",
-            "Principal": {
-              "AWS": ${length(local.admin_arns) == 0 ? "[]" : jsonencode(local.admin_arns)}
-            },
-            "Effect": "Allow"
-        }
-    ]
-}
-EOF
-
-}
 #---------------------------------------------------------------
 # EFS Configurations
 #---------------------------------------------------------------

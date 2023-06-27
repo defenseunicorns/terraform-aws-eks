@@ -14,4 +14,40 @@ locals {
     username = admin_user
     groups   = ["system:masters"]
   }]
+ 
+
+  auth_eks_role_policy = var.eks_use_mfa ? 
+<<EOF
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": "sts:AssumeRole",
+            "Principal": {
+              "AWS": ${length(local.admin_arns) == 0 ? "[]" : jsonencode(local.admin_arns)}
+            },
+            "Effect": "Allow",
+            "Condition": {"Bool": {"aws:MultiFactorAuthPresent": "true"}}
+        }
+    ]
 }
+EOF 
+: 
+<<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": "sts:AssumeRole",
+            "Principal": {
+              "AWS": ${length(local.admin_arns) == 0 ? "[]" : jsonencode(local.admin_arns)}
+            },
+            "Effect": "Allow"
+        }
+    ]
+}
+EOF
+
+}
+
+
