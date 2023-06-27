@@ -15,6 +15,8 @@ locals {
     groups   = ["system:masters"]
   }]
 
+  
+  eks_admin_arns = length(local.admin_arns) == 0 ? "[]" : jsonencode(local.admin_arns)
 
   auth_eks_role_policy = var.eks_use_mfa ? jsonencodes({
     Version = "2012-10-17",
@@ -22,7 +24,7 @@ locals {
       {
         Action = "sts:AssumeRole"
         Principal = {
-          AWS = "${length(local.admin_arns) == 0 ? "[]" : jsonencode(local.admin_arns)}"
+          AWS = local.eks_admin_arns 
         },
         Effect = "Allow"
         Condition = {
@@ -38,7 +40,7 @@ locals {
       {
         Action = "sts:AssumeRole"
         Principal = {
-          AWS = "${length(local.admin_arns) == 0 ? "[]" : jsonencode(local.admin_arns)}"
+          AWS = local.eks_admin_arns 
         },
         Effect = "Allow"
       }
