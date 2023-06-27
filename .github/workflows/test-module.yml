@@ -31,13 +31,6 @@ jobs:
     # Only run when the pull request is not in draft status
     if: github.event.pull_request.draft == false
     steps:
-
-      - name: Checkout the code
-        uses: actions/checkout@v3
-
-      - name: Initialize Pipeline
-        uses: ./.github/actions/init-pipeline
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -45,8 +38,11 @@ jobs:
           role-session-name: ${{ github.event.client_payload.pull_request.head.sha || github.sha }}
           aws-region: us-east-1
           # 21600 seconds == 6 hours
+          # 1800 seconds == 30 minutes
           role-duration-seconds: 21600
 
-      - name: Run live infra tests
-        run: |
-          make test
+      - name: Run Shared Test workfow
+        uses: defenseunicorns/uds-common-workflows/.github/actions/terraform-test@main
+        with:
+          test_retry: 1
+          test_timeout: 2h
