@@ -1,4 +1,4 @@
-locals {
+<!-- END_TF_DOCS -->locals {
   availability_zone_name = slice(data.aws_availability_zones.available.names, 0, 3)
   azs                    = slice(data.aws_availability_zones.available.names, 0, 3)
 
@@ -15,7 +15,7 @@ locals {
     groups   = ["system:masters"]
   }]
 
-  
+
   eks_admin_arns = length(local.admin_arns) == 0 ? "[]" : jsonencode(local.admin_arns)
 
   auth_eks_role_policy = var.eks_use_mfa ? jsonencodes({
@@ -24,7 +24,7 @@ locals {
       {
         Action = "sts:AssumeRole"
         Principal = {
-          AWS = local.eks_admin_arns 
+          AWS = local.eks_admin_arns
         },
         Effect = "Allow"
         Condition = {
@@ -40,7 +40,7 @@ locals {
       {
         Action = "sts:AssumeRole"
         Principal = {
-          AWS = local.eks_admin_arns 
+          AWS = local.eks_admin_arns
         },
         Effect = "Allow"
       }
