@@ -6,7 +6,7 @@ This repository contains Terraform configuration files that create an Amazon Ela
 
 To view examples for how you can leverage this EKS Module, please see the [examples](https://github.com/defenseunicorns/terraform-aws-uds-eks/tree/main/examples) directory.
 
-
+![squirrel](squirrel.jpg)
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
@@ -107,3 +107,6 @@ To view examples for how you can leverage this EKS Module, please see the [examp
 | <a name="output_oidc_provider"></a> [oidc\_provider](#output\_oidc\_provider) | The OpenID Connect identity provider (issuer URL without leading `https://`) |
 | <a name="output_oidc_provider_arn"></a> [oidc\_provider\_arn](#output\_oidc\_provider\_arn) | EKS OIDC provider ARN |
 | <a name="output_region"></a> [region](#output\_region) | AWS region |
+
+<!-- END_TF_DOCS -->
+
