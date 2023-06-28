@@ -19,7 +19,7 @@ locals {
   eks_admin_arns = length(local.admin_arns) == 0 ? "[]" : jsonencode(local.admin_arns)
 
   # Used to resolve non-MFA policy. See https://docs.fugue.co/FG_R00255.html
-  auth_eks_role_policy = var.eks_use_mfa ? jsonencodes({
+  auth_eks_role_policy = var.eks_use_mfa ? jsonencode({
     Version = "2012-10-17",
     Statement = [
       {
@@ -35,7 +35,7 @@ locals {
         }
       }
     ]
-    }) : jsonencodes({
+    }) : jsonencode({
     Version = "2012-10-17",
     Statement = [
       {
