@@ -1,4 +1,5 @@
-<!-- END_TF_DOCS --># tflint-ignore: terraform_unused_declarations
+
+# tflint-ignore: terraform_unused_declarations
 variable "cluster_name" {
   description = "Name of cluster - used by Terratest for e2e test automation"
   type        = string
@@ -46,7 +47,7 @@ variable "name" {
 variable "eks_use_mfa" {
   description = "Use MFA for auth_eks_role"
   type        = bool
-  default     = true
+  default     = false 
 }
 
 variable "iam_role_permissions_boundary" {
