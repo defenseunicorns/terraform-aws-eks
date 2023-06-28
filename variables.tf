@@ -47,7 +47,7 @@ variable "name" {
 variable "eks_use_mfa" {
   description = "Use MFA for auth_eks_role"
   type        = bool
-  default     = true
+  default     = false 
 }
 
 variable "iam_role_permissions_boundary" {
