@@ -5,7 +5,7 @@ on:
 
 jobs:
   scan-terraform:
-    uses: defenseunicorns/uds-common-workflows/.github/workflows/terraform-scan.yaml@54-regula-severity
+    uses: defenseunicorns/uds-common-workflows/.github/workflows/terraform-scan.yaml@main
     with:
       regula-severity: high 
       soft-fail: true 
