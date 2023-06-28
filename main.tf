@@ -65,7 +65,7 @@ module "aws_eks" {
 }
 
 
-# Non MFA. See https://docs.fugue.co/FG_R00255.html
+
 resource "aws_iam_role" "auth_eks_role" {
   name                 = "${var.name}-auth-eks-role"
   description          = "EKS AuthConfig Role"
