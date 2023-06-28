@@ -43,6 +43,12 @@ variable "name" {
   default = ""
 }
 
+variable "eks_use_mfa" {
+  description = "Use MFA for auth_eks_role"
+  type        = bool
+  default     = false
+}
+
 variable "iam_role_permissions_boundary" {
   description = "ARN of the policy that is used to set the permissions boundary for the IAM role"
   type        = string
