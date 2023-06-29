@@ -32,7 +32,7 @@ jobs:
     if: github.event.pull_request.draft == false
     steps:
       - name: Install sshuttle
-        run: sudo apt-get install -y sshuttle
+        run: sudo apt-get install -y sshuttle sshpass iptables 
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
