@@ -2,257 +2,275 @@ component-definition:
   uuid: 1397a389-69b7-4d46-82c4-4ef488ba4356
   metadata:
     title: Terraform EKS Module
-    last-modified: '2023-06-27T13:30:55Z'
+    last-modified: "2023-06-27T13:30:55Z"
     version: "20230627"
     oscal-version: 1.0.0
     parties:
-    - uuid: f3cf70f8-ba44-4e55-9ea3-389ef24847d3
-      type: organization
-      name: Defense Unicorns
-      links:
-      - href: https://defenseunicorns.com
-        rel: website
+      - uuid: f3cf70f8-ba44-4e55-9ea3-389ef24847d3
+        type: organization
+        name: Defense Unicorns
+        links:
+          - href: https://defenseunicorns.com
+            rel: website
   components:
-  - uuid: 2cc0118b-d32a-4c6e-944e-54c0db78e729
-    type: software
-    title: Terraform AWS EKS UDS
-    description: |
-      Deployment of AWS EKS using Terraform
-    purpose: Provides secure EKS infrastructure
-    responsible-roles:
-    - role-id: provider
-      party-uuids:
-      - f3cf70f8-ba44-4e55-9ea3-389ef24847d3
-    control-implementations:
-    - uuid: 0d013cec-c0f4-4d4f-994f-24ccb5a47eb2
-      source: https://raw.githubusercontent.com/usnistgov/oscal-content/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json
-      description:
-        NIST 800-53 Controls implemented.
-      implemented-requirements:
-      - uuid: b0c35388-ff20-4e09-a46e-b4fe52adb220
-        control-id: ac-3
-        description: >-
-          # Control Summary
-          Enforce approved authorizations for logical access to information and system resources
-          in accordance with applicable access control policies.
+    - uuid: 2cc0118b-d32a-4c6e-944e-54c0db78e729
+      type: software
+      title: Terraform AWS EKS UDS
+      description: |
+        Deployment of AWS EKS using Terraform
+      purpose: Provides secure EKS infrastructure
+      responsible-roles:
+        - role-id: provider
+          party-uuids:
+            - f3cf70f8-ba44-4e55-9ea3-389ef24847d3
+      control-implementations:
+        - uuid: 0d013cec-c0f4-4d4f-994f-24ccb5a47eb2
+          source: https://raw.githubusercontent.com/usnistgov/oscal-content/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json
+          description: NIST 800-53 Controls implemented.
+          implemented-requirements:
+            - uuid: b0c35388-ff20-4e09-a46e-b4fe52adb220
+              control-id: ac-3
+              description: >-
+                # Control Summary
+                Enforce approved authorizations for logical access to information and system resources
+                in accordance with applicable access control policies.
 
-          # Control Implementation
-          Access to EKS cluster is controlled by RBAC AWS IAM Roles. https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
-          The Access policy is defined in this module. The role and user assignment is handled in this module.
+                # Control Implementation
+                Access to EKS cluster is controlled by RBAC AWS IAM Roles. https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
+                The Access policy is defined in this module. The role and user assignment is handled in this module.
 
-          See IaC resource aws_iam_role auth_eks_role
-          https://github.com/defenseunicorns/terraform-aws-uds-eks
-      - uuid: c0d3dfcd-6501-4c15-bd1c-120648ee7834
-        control-id: ac-3.7
-        description: >-
-          # Control Summary
-          Enforce a role-based access control policy over defined subjects and objects and control
-          access based upon [Assignment: organization-defined roles and users authorized to
-          assume such roles].
+                See IaC resource aws_iam_role auth_eks_role
+                https://github.com/defenseunicorns/terraform-aws-uds-eks
+            - uuid: c0d3dfcd-6501-4c15-bd1c-120648ee7834
+              control-id: ac-3.7
+              description: >-
+                # Control Summary
+                Enforce a role-based access control policy over defined subjects and objects and control
+                access based upon [Assignment: organization-defined roles and users authorized to
+                assume such roles].
 
-          # Control Implementation
-          Access to EKS cluster is controlled by RBAC AWS IAM Roles. https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
-          The Access policy is defined in this module. The role and user assignment is handled in this module.
+                # Control Implementation
+                Access to EKS cluster is controlled by RBAC AWS IAM Roles. https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
+                The Access policy is defined in this module. The role and user assignment is handled in this module.
 
-          See IaC resource aws_iam_role auth_eks_role and module aws_eks
-          https://github.com/defenseunicorns/terraform-aws-uds-eks
-      - uuid: e9f76acb-5e64-451e-99ae-4c5a7929dab1
-        control-id: ac-3.8
-        description: >-
-          # Control Summary
-          Enforce the revocation of access authorizations resulting from changes to the security
-          attributes of subjects and objects based on [Assignment: organization-defined rules
-          governing the timing of revocations of access authorizations].
+                See IaC resource aws_iam_role auth_eks_role and module aws_eks
+                https://github.com/defenseunicorns/terraform-aws-uds-eks
+            - uuid: e9f76acb-5e64-451e-99ae-4c5a7929dab1
+              control-id: ac-3.8
+              description: >-
+                # Control Summary
+                Enforce the revocation of access authorizations resulting from changes to the security
+                attributes of subjects and objects based on [Assignment: organization-defined rules
+                governing the timing of revocations of access authorizations].
 
-          # Control Implementation
-          Access to EKS cluster is controlled by RBAC AWS IAM Roles. When a user is removed
-          from the RBAC role access is immediately revoked.
-          https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
+                # Control Implementation
+                Access to EKS cluster is controlled by RBAC AWS IAM Roles. When a user is removed
+                from the RBAC role access is immediately revoked.
+                https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
 
-          The Access policy is defined in this module. The role and user assignment is handled in this module.
+                The Access policy is defined in this module. The role and user assignment is handled in this module.
 
-          See IaC resource aws_iam_role auth_eks_role and module aws_eks
-          https://github.com/defenseunicorns/terraform-aws-uds-eks
-      - uuid: 4cbd7515-80c7-49a7-b5a6-452e32cbcbdf
-        control-id: ac-6
-        description: >-
-          # Control Summary
-          Employ the principle of least privilege, allowing only authorized accesses for users (or
-          processes acting on behalf of users) that are necessary to accomplish assigned organizational
-          tasks.
+                See IaC resource aws_iam_role auth_eks_role and module aws_eks
+                https://github.com/defenseunicorns/terraform-aws-uds-eks
+            - uuid: 4cbd7515-80c7-49a7-b5a6-452e32cbcbdf
+              control-id: ac-6
+              description: >-
+                # Control Summary
+                Employ the principle of least privilege, allowing only authorized accesses for users (or
+                processes acting on behalf of users) that are necessary to accomplish assigned organizational
+                tasks.
 
-          # Control Implementation
-          Access to EKS cluster is controlled by RBAC AWS IAM Roles. https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
-          The Access policy is defined in this module. The role and user assignment is handled in this module.
+                # Control Implementation
+                Access to EKS cluster is controlled by RBAC AWS IAM Roles. https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
+                The Access policy is defined in this module. The role and user assignment is handled in this module.
 
-          See IaC resource aws_iam_role auth_eks_role
-          https://github.com/defenseunicorns/terraform-aws-uds-eks          
-      - uuid: b736b702-6378-4027-bc46-57e1c8031a4d
-        control-id: ac-6.1
-        description: >-
-          # Control Summary
-          Authorize access for [Assignment: organization-defined individuals or roles] to:
-          (a) [Assignment: organization-defined security functions (deployed in hardware, software,
-          and firmware)]; and
-          (b) [Assignment: organization-defined security-relevant information].
+                See IaC resource aws_iam_role auth_eks_role
+                https://github.com/defenseunicorns/terraform-aws-uds-eks
+            - uuid: b736b702-6378-4027-bc46-57e1c8031a4d
+              control-id: ac-6.1
+              description: >-
+                # Control Summary
+                Authorize access for [Assignment: organization-defined individuals or roles] to:
+                (a) [Assignment: organization-defined security functions (deployed in hardware, software,
+                and firmware)]; and
+                (b) [Assignment: organization-defined security-relevant information].
 
-          Access to EKS cluster is controlled by RBAC AWS IAM Roles. https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
-          The Access policy is defined in this module. The role and user assignment is handled in this module.
+                Access to EKS cluster is controlled by RBAC AWS IAM Roles. https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
+                The Access policy is defined in this module. The role and user assignment is handled in this module.
 
-          See IaC resource aws_iam_role auth_eks_role
-          https://github.com/defenseunicorns/terraform-aws-uds-eks
-      - uuid: 7d216042-ac59-4563-b0f3-cb88abc1718e
-        control-id: ac-6.6
-        description: >-
-          # Control Summary
-          Prohibit privileged access to the system by non-organizational users.
+                See IaC resource aws_iam_role auth_eks_role
+                https://github.com/defenseunicorns/terraform-aws-uds-eks
+            - uuid: 7d216042-ac59-4563-b0f3-cb88abc1718e
+              control-id: ac-6.6
+              description: >-
+                # Control Summary
+                Prohibit privileged access to the system by non-organizational users.
 
-          Access to EKS cluster is controlled by RBAC AWS IAM Roles. AWS IAM RBAC Roles are implicit deny.
-          https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
-          The Access policy is defined in this module. The role and user assignment is handled in this module.
+                Access to EKS cluster is controlled by RBAC AWS IAM Roles. AWS IAM RBAC Roles are implicit deny.
+                https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
+                The Access policy is defined in this module. The role and user assignment is handled in this module.
 
-          See IaC resource aws_iam_role auth_eks_role
-          https://github.com/defenseunicorns/terraform-aws-uds-eks
-      - uuid: fca344d4-0da2-49eb-abda-fef86b5f8efb
-        control-id: ac-6.10
-        description: >-
-          # Control Summary
-          Prevent non-privileged users from executing privileged functions.
+                See IaC resource aws_iam_role auth_eks_role
+                https://github.com/defenseunicorns/terraform-aws-uds-eks
+            - uuid: fca344d4-0da2-49eb-abda-fef86b5f8efb
+              control-id: ac-6.10
+              description: >-
+                # Control Summary
+                Prevent non-privileged users from executing privileged functions.
 
-          Access to EKS cluster is controlled by RBAC AWS IAM Roles. AWS IAM RBAC Roles are implicit deny.
-          https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
-          The Access policy is defined in this module. The role and user assignment is handled in this module.
+                Access to EKS cluster is controlled by RBAC AWS IAM Roles. AWS IAM RBAC Roles are implicit deny.
+                https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
+                The Access policy is defined in this module. The role and user assignment is handled in this module.
 
-          See IaC resource aws_iam_role auth_eks_role
-          https://github.com/defenseunicorns/terraform-aws-uds-eks      
-      - uuid: e9657496-df46-48f8-a991-edac4a125ad4
-        control-id: au-2
-        description: >-
-          # Control Summary
-          a. Identify the types of events that the system is capable of logging in support of the audit
-          function: [Assignment: organization-defined event types that the system is capable of
-          logging];
-          b. Coordinate the event logging function with other organizational entities requiring auditrelated information to guide and inform the selection criteria for events to be logged;
-          c. Specify the following event types for logging within the system: [Assignment: organizationdefined event types (subset of the event types defined in AU-2a.) along with the frequency of
-          (or situation requiring) logging for each identified event type];
-          d. Provide a rationale for why the event types selected for logging are deemed to be adequate
-          to support after-the-fact investigations of incidents; and
-          e. Review and update the event types selected for logging [Assignment: organization-defined
-          frequency].
+                See IaC resource aws_iam_role auth_eks_role
+                https://github.com/defenseunicorns/terraform-aws-uds-eks
+            - uuid: e9657496-df46-48f8-a991-edac4a125ad4
+              control-id: au-2
+              description: >-
+                # Control Summary
+                a. Identify the types of events that the system is capable of logging in support of the audit
+                function: [Assignment: organization-defined event types that the system is capable of
+                logging];
+                b. Coordinate the event logging function with other organizational entities requiring auditrelated information to guide and inform the selection criteria for events to be logged;
+                c. Specify the following event types for logging within the system: [Assignment: organizationdefined event types (subset of the event types defined in AU-2a.) along with the frequency of
+                (or situation requiring) logging for each identified event type];
+                d. Provide a rationale for why the event types selected for logging are deemed to be adequate
+                to support after-the-fact investigations of incidents; and
+                e. Review and update the event types selected for logging [Assignment: organization-defined
+                frequency].
 
-          # Control Implementation
-          Cloudwatch Logs are enabled for the EKS Cluster Control Plane. https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html
+                # Control Implementation
+                Cloudwatch Logs are enabled for the EKS Cluster Control Plane. https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html
 
-          See git::https://github.com/terraform-aws-modules/terraform-aws-eks.git?ref=v19.15.3 EKS module where logging is enabled by default.
-      - uuid: 4d0cf113-0bbe-401e-bd70-c88e6fe04d50
-        control-id: au-3
-        description: >-
-          # Control Summary
-          Ensure that audit records contain information that establishes the following:
-          a. What type of event occurred;
-          b. When the event occurred;
-          c. Where the event occurred;
-          d. Source of the event;
-          e. Outcome of the event; and
-          f. Identity of any individuals, subjects, or objects/entities associated with the event.
+                See git::https://github.com/terraform-aws-modules/terraform-aws-eks.git?ref=v19.15.3 EKS module where logging is enabled by default.
+            - uuid: 4d0cf113-0bbe-401e-bd70-c88e6fe04d50
+              control-id: au-3
+              description: >-
+                # Control Summary
+                Ensure that audit records contain information that establishes the following:
+                a. What type of event occurred;
+                b. When the event occurred;
+                c. Where the event occurred;
+                d. Source of the event;
+                e. Outcome of the event; and
+                f. Identity of any individuals, subjects, or objects/entities associated with the event.
 
-          # Control Implementation
-          Cloudwatch Logs are enabled for the EKS Cluster Control Plane. https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html
+                # Control Implementation
+                Cloudwatch Logs are enabled for the EKS Cluster Control Plane. https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html
 
-          See git::https://github.com/terraform-aws-modules/terraform-aws-eks.git?ref=v19.15.3 EKS module where logging is enabled by default.
-      - uuid: f5c4cc62-2b8f-451e-948e-cf7ca8e2ed87
-        control-id: au-3.1
-        description: >-
-          # Control Summary
-          Generate audit records containing the following additional information: [Assignment:
-          organization-defined additional information].
+                See git::https://github.com/terraform-aws-modules/terraform-aws-eks.git?ref=v19.15.3 EKS module where logging is enabled by default.
+            - uuid: f5c4cc62-2b8f-451e-948e-cf7ca8e2ed87
+              control-id: au-3.1
+              description: >-
+                # Control Summary
+                Generate audit records containing the following additional information: [Assignment:
+                organization-defined additional information].
 
-          # Control Implementation
-          Cloudwatch Logs are enabled for the EKS Cluster Control Plane. https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html
+                # Control Implementation
+                Cloudwatch Logs are enabled for the EKS Cluster Control Plane. https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html
 
-          See git::https://github.com/terraform-aws-modules/terraform-aws-eks.git?ref=v19.15.3 EKS module where logging is enabled by default.
-      - uuid: 8a6c1f4-203b-4862-9db8-1b2b95e85ebd
-        control-id: au-8
-        description: >-
-          # Control Summary
-          a. Use internal system clocks to generate time stamps for audit records; and
-          b. Record time stamps for audit records that meet [Assignment: organization-defined
-          granularity of time measurement] and that use Coordinated Universal Time, have a fixed
-          local time offset from Coordinated Universal Time, or that include the local time offset as
-          part of the time stamp.
+                See git::https://github.com/terraform-aws-modules/terraform-aws-eks.git?ref=v19.15.3 EKS module where logging is enabled by default.
+            - uuid: 8a6c1f4-203b-4862-9db8-1b2b95e85ebd
+              control-id: au-8
+              description: >-
+                # Control Summary
+                a. Use internal system clocks to generate time stamps for audit records; and
+                b. Record time stamps for audit records that meet [Assignment: organization-defined
+                granularity of time measurement] and that use Coordinated Universal Time, have a fixed
+                local time offset from Coordinated Universal Time, or that include the local time offset as
+                part of the time stamp.
 
-          # Control Implementation
-          Cloudwatch Logs are enabled for the EKS Cluster Control Plane. https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html
+                # Control Implementation
+                Cloudwatch Logs are enabled for the EKS Cluster Control Plane. https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html
 
-          See git::https://github.com/terraform-aws-modules/terraform-aws-eks.git?ref=v19.15.3 EKS module where logging is enabled by default.
-      - uuid: 69e91737-781c-4596-bf9b-e4bb0123bbf8
-      - uuid: 0a425c74-ec7f-4608-971f-1ebe04ef1f85
-        control-id: cm-2
-        description: >-
-          # Control Summary
-          a. Develop, document, and maintain under configuration control, a current baseline
-          configuration of the system; and
-          b. Review and update the baseline configuration of the system:
-          1. [Assignment: organization-defined frequency];
-          2. When required due to [Assignment: organization-defined circumstances]; and
-          3. When system components are installed or upgraded
+                See git::https://github.com/terraform-aws-modules/terraform-aws-eks.git?ref=v19.15.3 EKS module where logging is enabled by default.
+            - uuid: 69e91737-781c-4596-bf9b-e4bb0123bbf8
+            - uuid: 0a425c74-ec7f-4608-971f-1ebe04ef1f85
+              control-id: cm-2
+              description: >-
+                # Control Summary
+                a. Develop, document, and maintain under configuration control, a current baseline
+                configuration of the system; and
+                b. Review and update the baseline configuration of the system:
+                1. [Assignment: organization-defined frequency];
+                2. When required due to [Assignment: organization-defined circumstances]; and
+                3. When system components are installed or upgraded
 
-          # Control Implementation
-          Terraform is used to create the baseline configuration and stores the configuration in a state file. https://developer.hashicorp.com/terraform/language/state
-      - uuid: a9bbcec5-9925-4134-8cf0-8979e60c6617
-        control-id: cm-2.2
-        description: >-
-          # Control Summary
-          Maintain the currency, completeness, accuracy, and availability of the baseline
-          configuration of the system using [Assignment: organization-defined automated
-          mechanisms].
+                # Control Implementation
+                Terraform is used to create the baseline configuration and stores the configuration in a state file. https://developer.hashicorp.com/terraform/language/state
+            - uuid: a9bbcec5-9925-4134-8cf0-8979e60c6617
+              control-id: cm-2.2
+              description: >-
+                # Control Summary
+                Maintain the currency, completeness, accuracy, and availability of the baseline
+                configuration of the system using [Assignment: organization-defined automated
+                mechanisms].
 
-          # Control Implementation
-          Terraform is used to create the baseline configuration and stores the configuration in a state file. https://developer.hashicorp.com/terraform/language/state
-      - uuid: 305dec49-3f81-450e-996f-33b1e52049f4
-        control-id: cm-2.3
-        description: >-
-          # Control Summary
-          Retain [Assignment: organization-defined number] of previous versions of baseline
-          configurations of the system to support rollback.
+                # Control Implementation
+                Terraform is used to create the baseline configuration and stores the configuration in a state file. https://developer.hashicorp.com/terraform/language/state
+            - uuid: 305dec49-3f81-450e-996f-33b1e52049f4
+              control-id: cm-2.3
+              description: >-
+                # Control Summary
+                Retain [Assignment: organization-defined number] of previous versions of baseline
+                configurations of the system to support rollback.
 
-          # Control Implementation
-          S3 versioning is enabled on the S3 Bucket where Teraform state is stored. This provides versionsing for rollbacks
-          by restoring the previous versions of the state file. https://developer.hashicorp.com/terraform/language/state
-          https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html
-      
-      
-### STOPPED MAPPING HERE ###      
-      
-      - uuid: 2b3bb578-ef73-4957-8feb-b49782785d9f
-        control-id: ia-5
-        description: >-
-          Access to the S3 bucket is controled by RBAC AWS IAM Roles. For other AWS services to access the S3 Bucket such
-          as EKS, the service will need access to the IAM Roles. https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
-      - uuid: 54944372-1287-4de6-85e1-7230e350e457
-        control-id: ia-9
-        description: >-
-          Access to the S3 bucket is controled by RBAC AWS IAM Roles. For other AWS services to access the S3 Bucket such
-          as EKS, the service will need access to the IAM Roles. https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
-      - uuid: 7c9e507f-6155-4eb0-a1b1-cbf6002906a3
-        control-id: mp-2
-        description: >-
-          Access to S3 Bucket is controlled by RBAC AWS IAM Roles. https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
-      - uuid: 20e3383d-d419-4f27-b07f-afbed62d491d
-        control-id: sa-10
-        description: >-
-          Terraform is used to create the baseline configuration and stores the configuration in a state file. https://developer.hashicorp.com/terraform/language/state
-      - uuid: 8b96dd15-6848-4bae-918f-089c563ec9bd
-        control-id: sc-28
-        description: >-
-          Encryption is enabled and uses AWS KMS to create and manage the cryptographic key. https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html
-      - uuid: 25eb4932-8299-4020-8740-f7dd71fd7e21
-        control-id: sc-28.1
-        description: >-
-          Encryption is enabled and uses AWS KMS to create and manage the cryptographic key. https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html
+                # Control Implementation
+                S3 versioning is enabled on the S3 Bucket where Teraform state is stored. This provides versionsing for rollbacks
+                by restoring the previous versions of the state file. https://developer.hashicorp.com/terraform/language/state
+                https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html
+            - uuid: c19fbde9-b110-4102-9673-af7d6dc8d639
+              control-id: ia-9
+              description: >-
+                # Control Summary
+                Uniquely identify and authenticate [Assignment: organization-defined system services
+                and applications] before establishing communications with devices, users, or other services or
+                applications
+
+                # Control Implementation
+                Access to the EKS Cluster is controled by RBAC AWS IAM Roles. For other AWS services to access the EKS Cluster such
+                as EC2, the service will need access to the IAM Roles. https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
+
+                See Terraform resource aws_iam_role auth_eks_role
+            - uuid: 7c9e507f-6155-4eb0-a1b1-cbf6002906a3
+            - uuid: 25b44a5e-afba-40ad-bc45-aa82d8299673
+              control-id: sa-10
+              description: >-
+                # Control Summary
+                Require the developer of the system, system component, or system service to:
+                a. Perform configuration management during system, component, or service [Selection (one or
+                more): design; development; implementation; operation; disposal];
+                b. Document, manage, and control the integrity of changes to [Assignment: organizationdefined configuration items under configuration management];
+                c. Implement only organization-approved changes to the system, component, or service;
+                d. Document approved changes to the system, component, or service and the potential
+                security and privacy impacts of such changes; and
+                e. Track security flaws and flaw resolution within the system, component, or service and report
+                findings to [Assignment: organization-defined personnel].
+
+                # Control Implementation
+                Terraform is used to create the baseline configuration and stores the configuration in a state file. https://developer.hashicorp.com/terraform/language/state
+            - uuid: 252751fb-9322-4d81-be98-5d7c1131f8fb
+              control-id: sc-28
+              description: >-
+                # Control Summary
+                Protect the [Selection (one or more): confidentiality; integrity] of the following
+                information at rest: [Assignment: organization-defined information at rest].
+
+                # Control Implementation
+                Encryption is enabled and uses AWS KMS to encrypt the EBS volumes used by EKS. https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html
+            - uuid: b7bf9710-ab3b-4042-b29e-e7afb892089b
+              control-id: sc-28.1
+              description: >-
+                # Control Summary 
+                Implement cryptographic mechanisms to prevent unauthorized disclosure and
+                modification of the following information at rest on [Assignment: organization-defined
+                system components or media]: [Assignment: organization-defined information].
+
+                # Control Implementation
+                Encryption is enabled and uses AWS KMS to encrypt the EBS volumes used by EKS. https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html
   back-matter:
     resources:
-    - uuid: 661fe0e1-3a84-4e38-b302-ea0fac8d2403
-      title: Terraform AWS S3 UDS
-      rlinks:
-       - href: https://github.com/defenseunicorns/terraform-aws-uds-s3
+      - uuid: f2fea468-8cca-4b57-bafe-d29e1cd10582
+        title: Terraform AWS S3 EKS
+        rlinks:
+          - href: https://github.com/defenseunicorns/terraform-aws-uds-eks
