@@ -13,6 +13,7 @@ on:
       - main
     paths-ignore:
       - "**.md"
+      - "release-please-config.json"
 
 permissions:
   id-token: write
