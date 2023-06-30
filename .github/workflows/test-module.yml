@@ -33,11 +33,6 @@ jobs:
     steps:
       - name: Install sshuttle
         run: sudo apt-get install -y sshuttle sshpass iptables 
-      
-      - name: Install AWS SSM Plugin
-        run: |
-          curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
-          sudo dpkg -i session-manager-plugin.deb
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -53,4 +48,4 @@ jobs:
         uses: defenseunicorns/uds-common-workflows/.github/actions/terraform-test@main
         with:
           test_retry: 1
-          test_timeout: 4h
+          test_timeout: 3h
