@@ -1,4 +1,4 @@
-
+create_aws_auth_configmap      = true #secure example assumes enable_eks_managed_nodegroups = false, need to create the configmap ourselves
 locals {
   availability_zone_name = slice(data.aws_availability_zones.available.names, 0, 3)
   azs                    = slice(data.aws_availability_zones.available.names, 0, 3)
@@ -28,7 +28,7 @@ locals {
           AWS = local.eks_admin_arns
         },
         Effect = "Allow"
-        Sid = ""
+        Sid    = ""
         Condition = {
           Bool = {
             "aws:MultiFactorAuthPresent" = "true"
@@ -45,7 +45,7 @@ locals {
           AWS = local.eks_admin_arns
         },
         Effect = "Allow"
-        Sid = ""
+        Sid    = ""
       }
     ]
   })
