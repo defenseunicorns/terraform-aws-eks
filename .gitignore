@@ -1,6 +1,7 @@
 .cache/
 .idea/
 .DS_Store
+.vscode/
 
 # Local .terraform directories
 .terraform/

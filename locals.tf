@@ -28,6 +28,7 @@ locals {
           AWS = local.eks_admin_arns
         },
         Effect = "Allow"
+        Sid = ""
         Condition = {
           Bool = {
             "aws:MultiFactorAuthPresent" = "true"
@@ -44,6 +45,7 @@ locals {
           AWS = local.eks_admin_arns
         },
         Effect = "Allow"
+        Sid = ""
       }
     ]
   })
