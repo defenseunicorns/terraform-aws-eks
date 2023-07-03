@@ -6,7 +6,20 @@ This repository contains Terraform configuration files that create an Amazon Ela
 
 To view examples for how you can leverage this EKS Module, please see the [examples](https://github.com/defenseunicorns/terraform-aws-uds-eks/tree/main/examples) directory.
 
-![squirrel](squirrel.jpg)
+## Bastion
+When the cluster public access is set to false, a deployment will fail midway through and must be completed with through sshuttle.
+
+Use of sshuttle with password:
+
+Set Bastion ID `export BASTION_INSTANCE_ID=$(terraform output -raw bastion_instance_id)`
+Connect to bastion: `sshuttle --dns -vr ec2-user@$BASTION_INSTANCE_ID 10.200.0.0/16`
+Use of sshuttle with private key:
+
+Set Bastion ID `export BASTION_INSTANCE_ID=$(terraform output -raw bastion_instance_id)`
+Dump key: `terraform output -raw bastion_instance_private_key > priv.key; chmod 600 priv.key`
+Connect to bastion: `sshuttle --dns -vr ec2-user@$BASTION_INSTANCE_ID 10.200.0.0/16 --ssh-cmd 'ssh -i priv.key'`
+Delete key afterwards: `rm priv.key`
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
