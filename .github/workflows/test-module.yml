@@ -48,6 +48,8 @@ jobs:
       
       - name: AWS SSM SSH config
         run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
           echo "host i-* mi-*" >> ~/.ssh/config
           echo "	ProxyCommand sh -c \"aws ssm start-session --target %h --document-name AWS-StartSSHSession --parameters 'portNumber=%p'\"" >> ~/.ssh/config 
 
