@@ -41,7 +41,7 @@ func TestExamplesCompleteSecure(t *testing.T) {
 			".*empty output.*": "bug in aws_s3_bucket_logging, intermittent error",
 			".*timeout while waiting for state to become 'ACTIVE'.*": "Sometimes the EKS cluster takes a long time to create",
 		},
-		MaxRetries:         5,
+		MaxRetries:         1,
 		TimeBetweenRetries: 5 * time.Second,
 	}
 	terraformOptionsWithVPCAndBastionTargets := &terraform.Options{
@@ -58,7 +58,7 @@ func TestExamplesCompleteSecure(t *testing.T) {
 			".*empty output.*": "bug in aws_s3_bucket_logging, intermittent error",
 			".*timeout while waiting for state to become 'ACTIVE'.*": "Sometimes the EKS cluster takes a long time to create",
 		},
-		MaxRetries:         5,
+		MaxRetries:         1,
 		TimeBetweenRetries: 5 * time.Second,
 	}
 	terraformOptionsWithEKSTarget := &terraform.Options{
@@ -74,7 +74,7 @@ func TestExamplesCompleteSecure(t *testing.T) {
 			".*empty output.*": "bug in aws_s3_bucket_logging, intermittent error",
 			".*timeout while waiting for state to become 'ACTIVE'.*": "Sometimes the EKS cluster takes a long time to create",
 		},
-		MaxRetries:         5,
+		MaxRetries:         1,
 		TimeBetweenRetries: 5 * time.Second,
 	}
 
