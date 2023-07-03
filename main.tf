@@ -71,7 +71,7 @@ resource "aws_iam_role" "auth_eks_role" {
   description          = "EKS AuthConfig Role"
   permissions_boundary = var.iam_role_permissions_boundary
   # assume_role_policy   = local.auth_eks_role_policy
-  assume_role_policy   = <<EOF
+  assume_role_policy = <<EOF
 {
     "Version": "2012-10-17",
     "Statement": [
