@@ -71,6 +71,7 @@ resource "aws_iam_role" "auth_eks_role" {
   description          = "EKS AuthConfig Role"
   permissions_boundary = var.iam_role_permissions_boundary
   assume_role_policy   = local.auth_eks_role_policy
+  # max_session_duration = var.eks_iam_role_max_session
 }
 
 #---------------------------------------------------------------

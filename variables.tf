@@ -44,6 +44,12 @@ variable "name" {
   default = ""
 }
 
+# variable "eks_iam_role_max_session" {
+#   type        = string
+#   description = "Maximum session duration for EKS Authentication"
+#   default     = "1h"
+# }
+
 variable "eks_use_mfa" {
   description = "Use MFA for auth_eks_role"
   type        = bool

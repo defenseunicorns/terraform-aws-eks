@@ -46,8 +46,15 @@ jobs:
           # 1800 seconds == 30 minutes
           role-duration-seconds: 21600
 
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+
       - name: Run Shared Test workfow
         uses: defenseunicorns/uds-common-workflows/.github/actions/terraform-test@main
         with:
           test_retry: 1
           test_timeout: 5h
+      
+      - name: Add sleep to close
+        # Sleep for 1 hour
+        run: sleep 3600
