@@ -15,7 +15,7 @@ locals {
     groups   = ["system:masters"]
   }]
 
-  eks_admin_arns = length(local.admin_arns) == 0 ? "[]" : jsonencode(local.admin_arns)
+  eks_admin_arns = length(local.admin_arns) == 0 ? [] : local.admin_arns
 
   # Used to resolve non-MFA policy. See https://docs.fugue.co/FG_R00255.html
   auth_eks_role_policy = var.eks_use_mfa ? jsonencode({
