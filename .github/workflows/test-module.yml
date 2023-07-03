@@ -50,4 +50,4 @@ jobs:
         uses: defenseunicorns/uds-common-workflows/.github/actions/terraform-test@main
         with:
           test_retry: 1
-          test_timeout: 3h
+          test_timeout: 5h
