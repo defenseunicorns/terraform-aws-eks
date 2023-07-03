@@ -245,13 +245,13 @@ func ValidateEFSFunctionality(t *testing.T, tempFolder string) {
 	assert.NoError(t, err)
 }
 
-// DownloadZarfInitPackage idempotently downloads the Zarf init package if it doesn't already exist.
-func DownloadZarfInitPackage(t *testing.T) {
-	t.Helper()
-	// Download the Zarf init package if it doesn't already exist
-	err := exec.Command("bash", "-c", `VERSION=$(zarf version); URL=https://github.com/defenseunicorns/zarf/releases/download/${VERSION}/zarf-init-amd64-${VERSION}.tar.zst; TARGET=~/.zarf-cache/zarf-init-amd64-${VERSION}.tar.zst; mkdir -p ~/.zarf-cache; [ -f $TARGET ] || curl -L $URL -o $TARGET`).Run()
-	require.NoError(t, err)
-}
+// // DownloadZarfInitPackage idempotently downloads the Zarf init package if it doesn't already exist.
+// func DownloadZarfInitPackage(t *testing.T) {
+// 	t.Helper()
+// 	// Download the Zarf init package if it doesn't already exist
+// 	err := exec.Command("bash", "-c", `VERSION=$(zarf version); URL=https://github.com/defenseunicorns/zarf/releases/download/${VERSION}/zarf-init-amd64-${VERSION}.tar.zst; TARGET=~/.zarf-cache/zarf-init-amd64-${VERSION}.tar.zst; mkdir -p ~/.zarf-cache; [ -f $TARGET ] || curl -L $URL -o $TARGET`).Run()
+// 	require.NoError(t, err)
+// }
 
 // ConfigureKubeconfig idempotently uses the AWS CLI to configure the user's kubeconfig file with the new EKS cluster.
 func ConfigureKubeconfig(t *testing.T, tempFolder string) {
@@ -269,18 +269,18 @@ func ConfigureKubeconfig(t *testing.T, tempFolder string) {
 	require.NoError(t, err)
 }
 
-// ValidateZarfInit idempotently ensures that zarf init runs successfully.
-func ValidateZarfInit(t *testing.T, tempFolder string) {
-	t.Helper()
-	terraformOutputOptions := &terraform.Options{
-		TerraformDir: tempFolder,
-		Logger:       logger.Discard,
-	}
-	storageClassName := terraform.Output(t, terraformOutputOptions, "efs_storageclass_name")
-	output, err := exec.Command("bash", "-c", fmt.Sprintf("zarf init --components=logging,git-server --confirm --no-log-file --no-progress --storage-class %s", storageClassName)).CombinedOutput() //nolint:gosec
-	if err != nil {
-		DoLog("zarf init failed: %v\n", err)
-		DoLog("zarf init output: %s\n", output)
-	}
-	require.NoError(t, err)
-}
+// // ValidateZarfInit idempotently ensures that zarf init runs successfully.
+// func ValidateZarfInit(t *testing.T, tempFolder string) {
+// 	t.Helper()
+// 	terraformOutputOptions := &terraform.Options{
+// 		TerraformDir: tempFolder,
+// 		Logger:       logger.Discard,
+// 	}
+// 	storageClassName := terraform.Output(t, terraformOutputOptions, "efs_storageclass_name")
+// 	output, err := exec.Command("bash", "-c", fmt.Sprintf("zarf init --components=logging,git-server --confirm --no-log-file --no-progress --storage-class %s", storageClassName)).CombinedOutput() //nolint:gosec
+// 	if err != nil {
+// 		DoLog("zarf init failed: %v\n", err)
+// 		DoLog("zarf init output: %s\n", output)
+// 	}
+// 	require.NoError(t, err)
+// }
