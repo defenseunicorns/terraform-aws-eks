@@ -12,8 +12,8 @@ When the cluster public access is set to false, a deployment will fail midway th
 Use of sshuttle with password:
 
 Set Bastion ID `export BASTION_INSTANCE_ID=$(terraform output -raw bastion_instance_id)`
-Connect to bastion: `sshuttle --dns -vr ec2-user@$BASTION_INSTANCE_ID 10.200.0.0/16`
-Use of sshuttle with private key:
+1. Connect to bastion: `sshuttle --dns -vr ec2-user@$BASTION_INSTANCE_ID 10.200.0.0/16`
+1. Use of sshuttle with private key:
 
 Set Bastion ID `export BASTION_INSTANCE_ID=$(terraform output -raw bastion_instance_id)`
 Dump key: `terraform output -raw bastion_instance_private_key > priv.key; chmod 600 priv.key`
