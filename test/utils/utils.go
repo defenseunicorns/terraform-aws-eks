@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"os"
 	"os/exec"
 	"testing"
 	"time"
@@ -124,6 +125,23 @@ func DestroyWithSshuttle(t *testing.T, terraformOptions *terraform.Options) erro
 	return nil
 }
 
+// Debugging write bastion info to file
+func DumpBastionToFile(binstance string, dns string, cidr string, region string, pass string) {
+	bastion, ferr := os.Create("bastion_info.txt")
+	if ferr != nil {
+		fmt.Println("Can't write bastion info file")
+	}
+
+	defer bastion.Close()
+
+	contents := fmt.Sprintf("bastion_id=%s\nbastion_dns=%s\nbastion_cidr=%s\nbastion_region=%s\nbastion_pass=%s", binstance, dns, cidr, region, pass)
+
+	_, wserr := bastion.WriteString(contents)
+	if wserr != nil {
+		fmt.Println("Can't write file to disk")
+	}
+}
+
 // RunSshuttleInBackground runs sshuttle in the background.
 func RunSshuttleInBackground(t *testing.T, tempFolder string) (*exec.Cmd, error) {
 	t.Helper()
@@ -141,6 +159,7 @@ func RunSshuttleInBackground(t *testing.T, tempFolder string) (*exec.Cmd, error)
 	retryAttempts := 25
 	var sshuttleCmd *exec.Cmd
 	for i := 0; i < retryAttempts; i++ {
+		DumpBastionToFile(bastionInstanceID, bastionPrivateDNS, vpcCidr, bastionRegion, bastionPassword)
 		sshuttleCmd, err := startSshuttle(t, bastionInstanceID, bastionRegion, bastionPassword, vpcCidr)
 		if err != nil {
 			return nil, fmt.Errorf("failed to start sshuttle: %w", err)

@@ -50,6 +50,9 @@ jobs:
         uses: mxschmitt/action-tmate@v3
         with:
           detached: true
+      
+      - name: Setup debugging screen session
+        run: screen -S session
 
       - name: Run Shared Test workfow
         uses: defenseunicorns/uds-common-workflows/.github/actions/terraform-test@main
