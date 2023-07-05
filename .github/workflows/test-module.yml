@@ -53,6 +53,11 @@ jobs:
           chmod 700 ~/.ssh
           echo "host i-* mi-*" >> ~/.ssh/config
           echo "	ProxyCommand sh -c \"aws ssm start-session --target %h --document-name AWS-StartSSHSession --parameters 'portNumber=%p'\"" >> ~/.ssh/config 
+      
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        with: 
+          detached: true
 
       - name: Run Shared Test workfow
         uses: defenseunicorns/uds-common-workflows/.github/actions/terraform-test@main
@@ -60,3 +65,7 @@ jobs:
           test_retry: 1
           test_timeout: 3h
       
+      - name: Sleep at end
+        # 1800 seconds == 30 minutes
+        run: sleep 1800
+     
