@@ -50,6 +50,8 @@ variable "name" {
 #   default     = "1h"
 # }
 
+# Needed to be true for CIS benchmarks
+# Left default false to not impact downstream use.
 variable "eks_use_mfa" {
   description = "Use MFA for auth_eks_role"
   type        = bool
