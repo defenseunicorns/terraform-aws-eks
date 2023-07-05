@@ -64,8 +64,3 @@ jobs:
         with:
           test_retry: 1
           test_timeout: 3h
-      
-      - name: Sleep at end
-        # 1800 seconds == 30 minutes
-        run: sleep 1800
-     

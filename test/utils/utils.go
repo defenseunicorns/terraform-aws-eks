@@ -286,7 +286,7 @@ func ConfigureKubeconfig(t *testing.T, tempFolder string) {
 	}
 	eksClusterName := terraform.Output(t, terraformOutputOptions, "eks_cluster_name")
 	region := terraform.Output(t, terraformOutputOptions, "bastion_region")
-	err := exec.Command("bash", "-c", fmt.Sprintf("mkdir -p ~/.kube && aws eks update-kubeconfig --name %s --alias %s --region %s --kubeconfig ~/.kube/%s", eksClusterName, eksClusterName, region, eksClusterName)).Run() //nolint:gosec
+	err := exec.Command("bash", "-c", fmt.Sprintf("mkdir -p ~/.kube && aws eks update-kubeconfig --name %s --region %s --kubeconfig ~/.kube/%s", eksClusterName, region, eksClusterName)).Run() //nolint:gosec
 	require.NoError(t, err)
 	// Make sure it worked. This command should return without error
 	err = exec.Command("bash", "-c", "kubectl get nodes --kubeconfig ~/.kube/%s", eksClusterName).Run()
