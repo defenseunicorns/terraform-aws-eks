@@ -1,5 +1,14 @@
 package e2e_test
 
+import (
+	utils "e2e_test/test/utils"
+	"testing"
+	"time"
+
+	"github.com/gruntwork-io/terratest/modules/terraform"
+	teststructure "github.com/gruntwork-io/terratest/modules/test-structure"
+)
+
 func TestExamplesCompleteInsecure(t *testing.T) {
 	t.Parallel()
 	tempFolder := teststructure.CopyTerraformFolderToTemp(t, "..", "examples/complete")
