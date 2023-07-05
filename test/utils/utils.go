@@ -231,8 +231,14 @@ func ValidateEFSFunctionality(t *testing.T, tempFolder string) {
 
 	// Get the cluster
 	cluster, err := GetEKSCluster(t, tempFolder)
+	if err != nil {
+		DoLog("Did not GetEKSCluster: %v\n", err)
+	}
 	require.NoError(t, err)
 	clientset, err := NewK8sClientset(cluster)
+	if err != nil {
+		DoLog("Did not find NewK8sClientset: %v\n", err)
+	}
 	require.NoError(t, err)
 	// Wait for the job "test-write" in the namespace "default" to complete, with a 2-minute timeout
 	namespace := "default"
