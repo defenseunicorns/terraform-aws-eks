@@ -42,9 +42,9 @@ func TestExamplesCompleteInsecure(t *testing.T) {
 
 	// Run assertions
 	teststructure.RunTestStage(t, "TEST", func() {
+		utils.ConfigureKubeconfig(t, tempFolder)
 		utils.ValidateEFSFunctionality(t, tempFolder)
 		// utils.DownloadZarfInitPackage(t)
-		utils.ConfigureKubeconfig(t, tempFolder)
 		// utils.ValidateZarfInit(t, tempFolder)
 	})
 }

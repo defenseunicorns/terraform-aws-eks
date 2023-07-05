@@ -120,9 +120,9 @@ func TestExamplesCompleteSecure(t *testing.T) {
 			err := utils.StopSshuttle(t, cmd)
 			require.NoError(t, err)
 		}(t, cmd)
+		utils.ConfigureKubeconfig(t, tempFolder)
 		utils.ValidateEFSFunctionality(t, tempFolder)
 		// utils.DownloadZarfInitPackage(t)
-		utils.ConfigureKubeconfig(t, tempFolder)
 		// utils.ValidateZarfInit(t, tempFolder)
 	})
 }
