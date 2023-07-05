@@ -2,6 +2,7 @@ package e2e_test
 
 import (
 	utils "e2e_test/test/utils"
+	"os"
 	"testing"
 	"time"
 
@@ -11,7 +12,9 @@ import (
 
 func TestExamplesCompleteInsecure(t *testing.T) {
 	t.Parallel()
-	tempFolder := teststructure.CopyTerraformFolderToTemp(t, "..", "examples/complete")
+	newTestDir := "../tmptest/insecure" // Create a fresh seperate temp directory
+	os.MkdirAll(newTestDir, os.ModePerm)
+	tempFolder := teststructure.CopyTerraformFolderToTemp(t, newTestDir, "examples/complete")
 	terraformOptions := &terraform.Options{
 		TerraformDir: tempFolder,
 		Upgrade:      false,
