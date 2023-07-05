@@ -159,7 +159,6 @@ func RunSshuttleInBackground(t *testing.T, tempFolder string) (*exec.Cmd, error)
 	retryAttempts := 25
 	var sshuttleCmd *exec.Cmd
 	for i := 0; i < retryAttempts; i++ {
-		DumpBastionToFile(bastionInstanceID, bastionPrivateDNS, vpcCidr, bastionRegion, bastionPassword)
 		sshuttleCmd, err := startSshuttle(t, bastionInstanceID, bastionRegion, bastionPassword, vpcCidr)
 		if err != nil {
 			return nil, fmt.Errorf("failed to start sshuttle: %w", err)
