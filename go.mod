@@ -1,4 +1,4 @@
-module github.com/defenseunicorns/terraform-aws-uds-eks
+module e2e_test
 
 go 1.20
 

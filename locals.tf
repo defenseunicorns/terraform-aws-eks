@@ -14,4 +14,38 @@ locals {
     username = admin_user
     groups   = ["system:masters"]
   }]
+
+  eks_admin_arns = length(local.admin_arns) == 0 ? [] : local.admin_arns
+
+  # Used to resolve non-MFA policy. See https://docs.fugue.co/FG_R00255.html
+  auth_eks_role_policy = var.eks_use_mfa ? jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Principal = {
+          AWS = local.eks_admin_arns
+        },
+        Effect = "Allow"
+        Sid    = ""
+        Condition = {
+          Bool = {
+            "aws:MultiFactorAuthPresent" = "true"
+          }
+        }
+      }
+    ]
+    }) : jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Principal = {
+          AWS = local.eks_admin_arns
+        },
+        Effect = "Allow"
+        Sid    = ""
+      }
+    ]
+  })
 }

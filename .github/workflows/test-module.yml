@@ -13,6 +13,9 @@ on:
       - main
     paths-ignore:
       - "**.md"
+      - "release-please-config.json"
+      - ".release-please-manifest.json"
+      - "**.txt"
 
 permissions:
   id-token: write
@@ -31,12 +34,8 @@ jobs:
     # Only run when the pull request is not in draft status
     if: github.event.pull_request.draft == false
     steps:
-
-      - name: Checkout the code
-        uses: actions/checkout@v3
-
-      - name: Initialize Pipeline
-        uses: ./.github/actions/init-pipeline
+      - name: Install sshuttle
+        run: sudo apt-get install -y sshuttle sshpass iptables 
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -45,8 +44,23 @@ jobs:
           role-session-name: ${{ github.event.client_payload.pull_request.head.sha || github.sha }}
           aws-region: us-east-1
           # 21600 seconds == 6 hours
+          # 1800 seconds == 30 minutes
           role-duration-seconds: 21600
-
-      - name: Run live infra tests
+      
+      - name: AWS SSM SSH config
         run: |
-          make test
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          echo "host i-* mi-*" >> ~/.ssh/config
+          echo "	ProxyCommand sh -c \"aws ssm start-session --target %h --document-name AWS-StartSSHSession --parameters 'portNumber=%p'\"" >> ~/.ssh/config 
+      
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
+      #   with: 
+      #     detached: true
+
+      - name: Run Shared Test workfow
+        uses: defenseunicorns/uds-common-workflows/.github/actions/terraform-test@main
+        with:
+          test_retry: 1
+          test_timeout: 3h

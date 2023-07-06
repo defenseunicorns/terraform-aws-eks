@@ -1,3 +1,4 @@
+
 # tflint-ignore: terraform_unused_declarations
 variable "cluster_name" {
   description = "Name of cluster - used by Terratest for e2e test automation"
@@ -41,6 +42,20 @@ variable "aws_region" {
 variable "name" {
   type    = string
   default = ""
+}
+
+# variable "eks_iam_role_max_session" {
+#   type        = string
+#   description = "Maximum session duration for EKS Authentication"
+#   default     = "1h"
+# }
+
+# Needed to be true for CIS benchmarks
+# Left default false to not impact downstream use.
+variable "eks_use_mfa" {
+  description = "Use MFA for auth_eks_role"
+  type        = bool
+  default     = false
 }
 
 variable "iam_role_permissions_boundary" {

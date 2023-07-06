@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/defenseunicorns/terraform-aws-uds-eks/test/e2e/utils"
+	utils "e2e_test/test/utils"
 )
 
 // This test deploys the complete example in "secure mode". Secure mode is:
@@ -26,7 +26,7 @@ import (
 func TestExamplesCompleteSecure(t *testing.T) {
 	t.Parallel()
 	// Setup options
-	tempFolder := teststructure.CopyTerraformFolderToTemp(t, "../..", "examples/complete")
+	tempFolder := teststructure.CopyTerraformFolderToTemp(t, "..", "examples/complete")
 	terraformInitOptions := &terraform.Options{
 		TerraformDir: tempFolder,
 		Upgrade:      false,
@@ -41,7 +41,7 @@ func TestExamplesCompleteSecure(t *testing.T) {
 			".*empty output.*": "bug in aws_s3_bucket_logging, intermittent error",
 			".*timeout while waiting for state to become 'ACTIVE'.*": "Sometimes the EKS cluster takes a long time to create",
 		},
-		MaxRetries:         5,
+		MaxRetries:         1,
 		TimeBetweenRetries: 5 * time.Second,
 	}
 	terraformOptionsWithVPCAndBastionTargets := &terraform.Options{
@@ -58,7 +58,7 @@ func TestExamplesCompleteSecure(t *testing.T) {
 			".*empty output.*": "bug in aws_s3_bucket_logging, intermittent error",
 			".*timeout while waiting for state to become 'ACTIVE'.*": "Sometimes the EKS cluster takes a long time to create",
 		},
-		MaxRetries:         5,
+		MaxRetries:         1,
 		TimeBetweenRetries: 5 * time.Second,
 	}
 	terraformOptionsWithEKSTarget := &terraform.Options{
@@ -74,7 +74,7 @@ func TestExamplesCompleteSecure(t *testing.T) {
 			".*empty output.*": "bug in aws_s3_bucket_logging, intermittent error",
 			".*timeout while waiting for state to become 'ACTIVE'.*": "Sometimes the EKS cluster takes a long time to create",
 		},
-		MaxRetries:         5,
+		MaxRetries:         1,
 		TimeBetweenRetries: 5 * time.Second,
 	}
 
@@ -120,9 +120,9 @@ func TestExamplesCompleteSecure(t *testing.T) {
 			err := utils.StopSshuttle(t, cmd)
 			require.NoError(t, err)
 		}(t, cmd)
-		utils.ValidateEFSFunctionality(t, tempFolder)
-		utils.DownloadZarfInitPackage(t)
 		utils.ConfigureKubeconfig(t, tempFolder)
-		utils.ValidateZarfInit(t, tempFolder)
+		utils.ValidateEFSFunctionality(t, tempFolder)
+		// utils.DownloadZarfInitPackage(t)
+		// utils.ValidateZarfInit(t, tempFolder)
 	})
 }

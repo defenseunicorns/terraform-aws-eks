@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"os"
 	"os/exec"
 	"testing"
 	"time"
@@ -124,6 +125,23 @@ func DestroyWithSshuttle(t *testing.T, terraformOptions *terraform.Options) erro
 	return nil
 }
 
+// Debugging write bastion info to file
+func DumpBastionToFile(binstance string, dns string, cidr string, region string, pass string) {
+	bastion, ferr := os.Create("bastion_info.txt")
+	if ferr != nil {
+		fmt.Println("Can't write bastion info file")
+	}
+
+	defer bastion.Close()
+
+	contents := fmt.Sprintf("bastion_id=%s\nbastion_dns=%s\nbastion_cidr=%s\nbastion_region=%s\nbastion_pass=%s", binstance, dns, cidr, region, pass)
+
+	_, wserr := bastion.WriteString(contents)
+	if wserr != nil {
+		fmt.Println("Can't write file to disk")
+	}
+}
+
 // RunSshuttleInBackground runs sshuttle in the background.
 func RunSshuttleInBackground(t *testing.T, tempFolder string) (*exec.Cmd, error) {
 	t.Helper()
@@ -213,8 +231,14 @@ func ValidateEFSFunctionality(t *testing.T, tempFolder string) {
 
 	// Get the cluster
 	cluster, err := GetEKSCluster(t, tempFolder)
+	if err != nil {
+		DoLog("Did not GetEKSCluster: %v\n", err)
+	}
 	require.NoError(t, err)
 	clientset, err := NewK8sClientset(cluster)
+	if err != nil {
+		DoLog("Did not find NewK8sClientset: %v\n", err)
+	}
 	require.NoError(t, err)
 	// Wait for the job "test-write" in the namespace "default" to complete, with a 2-minute timeout
 	namespace := "default"
