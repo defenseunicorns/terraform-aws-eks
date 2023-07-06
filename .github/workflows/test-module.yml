@@ -16,6 +16,7 @@ on:
       - "release-please-config.json"
       - ".release-please-manifest.json"
       - "**.txt"
+      - "oscal-component.yaml"
 
 permissions:
   id-token: write
@@ -35,7 +36,7 @@ jobs:
     if: github.event.pull_request.draft == false
     steps:
       - name: Install sshuttle
-        run: sudo apt-get install -y sshuttle sshpass iptables 
+        run: sudo apt-get install -y sshuttle sshpass iptables
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -46,17 +47,17 @@ jobs:
           # 21600 seconds == 6 hours
           # 1800 seconds == 30 minutes
           role-duration-seconds: 21600
-      
+
       - name: AWS SSM SSH config
         run: |
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
           echo "host i-* mi-*" >> ~/.ssh/config
-          echo "	ProxyCommand sh -c \"aws ssm start-session --target %h --document-name AWS-StartSSHSession --parameters 'portNumber=%p'\"" >> ~/.ssh/config 
-      
+          echo "	ProxyCommand sh -c \"aws ssm start-session --target %h --document-name AWS-StartSSHSession --parameters 'portNumber=%p'\"" >> ~/.ssh/config
+
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
-      #   with: 
+      #   with:
       #     detached: true
 
       - name: Run Shared Test workfow
