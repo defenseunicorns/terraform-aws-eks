@@ -16,7 +16,7 @@ on:
       - "release-please-config.json"
       - ".release-please-manifest.json"
       - "**.txt"
-      - "oscal-component.yaml"
+      - "oscal-component.y*ml"
 
 permissions:
   id-token: write
