@@ -36,7 +36,7 @@ Use of `sshuttle` with private key:
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.6.2 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.7.0 |
 | <a name="provider_kubectl"></a> [kubectl](#provider\_kubectl) | 1.14.0 |
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | 2.21.1 |
 | <a name="provider_random"></a> [random](#provider\_random) | 3.5.1 |
@@ -121,6 +121,5 @@ Use of `sshuttle` with private key:
 | <a name="output_oidc_provider_arn"></a> [oidc\_provider\_arn](#output\_oidc\_provider\_arn) | EKS OIDC provider ARN |
 | <a name="output_region"></a> [region](#output\_region) | AWS region |
 <!-- END_TF_DOCS -->
-
 
 
