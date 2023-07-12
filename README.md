@@ -121,4 +121,3 @@ Use of `sshuttle` with private key:
 | <a name="output_oidc_provider_arn"></a> [oidc\_provider\_arn](#output\_oidc\_provider\_arn) | EKS OIDC provider ARN |
 | <a name="output_region"></a> [region](#output\_region) | AWS region |
 <!-- END_TF_DOCS -->
-
