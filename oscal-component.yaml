@@ -4,7 +4,7 @@ component-definition:
     title: Terraform EKS Module
     last-modified: "2023-06-27T13:30:55Z"
     version: "20230627"
-    oscal-version: 1.0.0
+    oscal-version: 1.0.4
     parties:
       - uuid: f3cf70f8-ba44-4e55-9ea3-389ef24847d3
         type: organization
