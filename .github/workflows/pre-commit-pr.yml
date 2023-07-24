@@ -7,6 +7,6 @@ jobs:
   scan-terraform:
     uses: defenseunicorns/uds-common-workflows/.github/workflows/terraform-scan.yaml@main
     with:
-      regula-severity: off 
-      soft-fail: false 
+      regula-severity: off
+      soft-fail: false
       github-token: $GITHUB_TOKEN
