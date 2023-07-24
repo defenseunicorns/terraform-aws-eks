@@ -78,7 +78,7 @@ amazon_eks_aws_ebs_csi_driver_config = {
 enable_aws_node_termination_handler = true
 aws_node_termination_handler_helm_config = {
   wait    = false
-  version = "v0.22.0"
+  version = "v0.21.0"
 }
 
 enable_cluster_autoscaler = true
