@@ -23,12 +23,12 @@ secondary_cidr_blocks = ["100.64.0.0/16"] #https://aws.amazon.com/blogs/containe
 
 bastion_ssh_user     = "ec2-user" # local user in bastion used to ssh
 bastion_ssh_password = "my-password"
-zarf_version         = "v0.26.3"
+zarf_version         = "v0.28.3"
 
 ###########################################################
 #################### EKS Config ###########################
 
-cluster_version = "1.26"
+cluster_version = "1.27"
 
 # #################### EKS Addon #########################
 # add other "eks native" marketplace addons and configs to this list
@@ -84,17 +84,17 @@ aws_node_termination_handler_helm_config = {
 enable_cluster_autoscaler = true
 cluster_autoscaler_helm_config = {
   wait    = false
-  version = "v9.28.0"
-  set = [
-    {
-      name  = "extraArgs.expander"
-      value = "priority"
-    },
-    {
-      name  = "image.tag"
-      value = "v1.27.1"
-    }
-  ]
+  version = "v9.29.1"
+  # set = [
+  #   {
+  #     name  = "extraArgs.expander"
+  #     value = "priority"
+  #   },
+  #   {
+  #     name  = "image.tag"
+  #     value = "v1.27.2"
+  #   }
+  # ]
 }
 
 enable_metrics_server = true
@@ -106,5 +106,5 @@ metrics_server_helm_config = {
 enable_calico = true
 calico_helm_config = {
   wait    = false
-  version = "v3.25.1"
+  version = "v3.26.1"
 }
