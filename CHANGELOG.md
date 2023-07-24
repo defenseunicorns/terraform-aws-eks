@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.0.3 (2023-07-24)
+
+## What's Changed
+* K8s 1.27 by @ntwkninja in https://github.com/defenseunicorns/terraform-aws-uds-eks/pull/28
+
+## New Contributors
+* @ntwkninja made their first contribution in https://github.com/defenseunicorns/terraform-aws-uds-eks/pull/28
+
+**Full Changelog**: https://github.com/defenseunicorns/terraform-aws-uds-eks/compare/v0.0.2...v0.0.3
+
 ## 0.0.2 (2023-07-18)
 
 ## What's Changed
