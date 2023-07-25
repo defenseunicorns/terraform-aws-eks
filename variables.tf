@@ -202,6 +202,18 @@ variable "amazon_eks_aws_ebs_csi_driver_config" {
   default     = {}
 }
 
+variable "enable_gp3_default_storage_class" {
+  description = "Enable gp3 as default storage class"
+  type        = bool
+  default     = false
+}
+
+variable "storageclass_reclaim_policy" {
+  description = "Reclaim policy for gp3 storage class, valid options are Delete and Retain"
+  type        = string
+  default     = "Delete"
+}
+
 #----------------AWS EFS CSI Driver-------------------------
 variable "enable_efs" {
   description = "Enable EFS CSI Driver add-on"

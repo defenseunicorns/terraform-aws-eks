@@ -74,6 +74,7 @@ amazon_eks_aws_ebs_csi_driver_config = {
   wait        = false
   most_recent = true
 }
+enable_gp3_default_storage_class = true
 
 enable_aws_node_termination_handler = true
 aws_node_termination_handler_helm_config = {
