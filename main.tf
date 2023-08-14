@@ -1,6 +1,61 @@
-#---------------------------------------------------------------
-# EKS Blueprints
-#---------------------------------------------------------------
+###############################################################
+# EKS Cluster
+###############################################################
+locals {
+  admin_arns = distinct(concat(
+    [for admin_user in var.aws_admin_usernames : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/${admin_user}"],
+    [data.aws_caller_identity.current.arn]
+  ))
+  aws_auth_users = [for admin_user in var.aws_admin_usernames : {
+    userarn  = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/${admin_user}"
+    username = admin_user
+    groups   = ["system:masters"]
+  }]
+
+  eks_admin_arns = length(local.admin_arns) == 0 ? [] : local.admin_arns
+
+  # Used to resolve non-MFA policy. See https://docs.fugue.co/FG_R00255.html
+  auth_eks_role_policy = var.eks_use_mfa ? jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Principal = {
+          AWS = local.eks_admin_arns
+        },
+        Effect = "Allow"
+        Sid    = ""
+        Condition = {
+          Bool = {
+            "aws:MultiFactorAuthPresent" = "true"
+          }
+        }
+      }
+    ]
+    }) : jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Principal = {
+          AWS = local.eks_admin_arns
+        },
+        Effect = "Allow"
+        Sid    = ""
+      }
+    ]
+  })
+
+  aws_eks_auth_roles = concat(
+    var.aws_auth_roles,
+    [
+      {
+        rolearn  = aws_iam_role.auth_eks_role.arn
+        username = aws_iam_role.auth_eks_role.name
+        groups   = ["system:masters"]
+      }
+  ])
+}
 
 module "aws_eks" {
   source = "git::https://github.com/terraform-aws-modules/terraform-aws-eks.git?ref=v19.15.3"
@@ -30,41 +85,18 @@ module "aws_eks" {
   #   So, by default the security groups are restrictive. Users needs to enable rules for specific ports required for App requirement or Add-ons
   #   See the notes below for each rule used in these examples
   #----------------------------------------------------------------------------------------------------------#
-  cluster_security_group_additional_rules = {
-    ingress_bastion_to_cluster = {
-      # name        = "allow bastion ingress to cluster"
-      description              = "Bastion SG to Cluster"
-      security_group_id        = module.aws_eks.cluster_security_group_id
-      from_port                = 443
-      to_port                  = 443
-      protocol                 = "tcp"
-      type                     = "ingress"
-      source_security_group_id = var.source_security_group_id
-    }
-  }
+  cluster_security_group_additional_rules = var.cluster_security_group_additional_rules
+
 
   create_aws_auth_configmap = var.create_aws_auth_configmap
   manage_aws_auth_configmap = var.manage_aws_auth_configmap
 
   kms_key_administrators = distinct(concat(local.admin_arns, var.kms_key_administrators))
   aws_auth_users         = distinct(concat(local.aws_auth_users, var.aws_auth_users))
-  aws_auth_roles = [
-    {
-      rolearn  = aws_iam_role.auth_eks_role.arn
-      username = aws_iam_role.auth_eks_role.name
-      groups   = ["system:masters"]
-    },
-    {
-      rolearn  = var.bastion_role_arn
-      username = var.bastion_role_name
-      groups   = ["system:masters"]
-    }
-  ]
+  aws_auth_roles         = local.aws_eks_auth_roles
 
   tags = var.tags
 }
-
-
 
 resource "aws_iam_role" "auth_eks_role" {
   name                 = "${var.name}-auth-eks-role"
@@ -72,60 +104,4 @@ resource "aws_iam_role" "auth_eks_role" {
   permissions_boundary = var.iam_role_permissions_boundary
   assume_role_policy   = local.auth_eks_role_policy
   # max_session_duration = var.eks_iam_role_max_session
-}
-
-#---------------------------------------------------------------
-# EFS Configurations
-#---------------------------------------------------------------
-
-resource "random_id" "efs_name" {
-  byte_length = 2
-  prefix      = "EFS-"
-}
-
-resource "kubernetes_storage_class_v1" "efs" {
-  count = var.enable_efs ? 1 : 0
-  metadata {
-    name = lower(random_id.efs_name.hex)
-  }
-
-  storage_provisioner = "efs.csi.aws.com"
-  reclaim_policy      = var.reclaim_policy
-  parameters = {
-    provisioningMode = "efs-ap" # Dynamic provisioning
-    fileSystemId     = module.efs[0].id
-    directoryPerms   = "700"
-  }
-  mount_options = [
-    "iam"
-  ]
-
-  depends_on = [
-    module.eks_blueprints_kubernetes_addons
-  ]
-}
-
-module "efs" {
-  source  = "terraform-aws-modules/efs/aws"
-  version = "~> 1.0"
-
-  count = var.enable_efs ? 1 : 0
-
-  name = lower(random_id.efs_name.hex)
-  # Mount targets / security group
-  mount_targets = {
-    for k, v in zipmap(local.availability_zone_name, var.private_subnet_ids) : k => { subnet_id = v }
-  }
-
-  security_group_description = "${local.cluster_name} EFS security group"
-  security_group_vpc_id      = var.vpc_id
-  security_group_rules = {
-    vpc = {
-      # relying on the defaults provdied for EFS/NFS (2049/TCP + ingress)
-      description = "NFS ingress from VPC private subnets"
-      cidr_blocks = var.cidr_blocks
-    }
-  }
-
-  tags = var.tags
 }

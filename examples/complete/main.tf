@@ -131,6 +131,27 @@ locals {
   }
 
   self_managed_node_groups = var.enable_self_managed_nodegroups ? local.mission_app_self_mg_node_group : {}
+
+  ingress_bastion_to_cluster = {
+    # name        = "allow bastion ingress to cluster"
+    description              = "Bastion SG to Cluster"
+    security_group_id        = module.eks.cluster_security_group_id
+    from_port                = 443
+    to_port                  = 443
+    protocol                 = "tcp"
+    type                     = "ingress"
+    source_security_group_id = module.bastion.security_group_ids[0]
+  }
+
+  # if bastion role vars are defined, add bastion role to aws_auth_roles list
+  enable_bastion_access = length(var.bastion_role_arn) > 0 && length(var.bastion_role_name)
+  bastion_aws_auth_entry = local.enable_bastion_access ? [
+    {
+      rolearn  = var.bastion_role_arn
+      username = var.bastion_role_name
+      groups   = ["system:masters"]
+  }] : []
+
 }
 
 ###########################################################
@@ -213,22 +234,21 @@ module "bastion" {
 module "eks" {
   source = "../.."
 
-  name                            = local.cluster_name
-  aws_region                      = var.region
-  vpc_id                          = module.vpc.vpc_id
-  private_subnet_ids              = module.vpc.private_subnets
-  control_plane_subnet_ids        = module.vpc.private_subnets
-  iam_role_permissions_boundary   = var.iam_role_permissions_boundary
-  source_security_group_id        = module.bastion.security_group_ids[0]
-  cluster_endpoint_public_access  = var.cluster_endpoint_public_access
-  cluster_endpoint_private_access = true
-  vpc_cni_custom_subnet           = module.vpc.intra_subnets
-  aws_admin_usernames             = var.aws_admin_usernames
-  cluster_version                 = var.cluster_version
-  bastion_role_arn                = module.bastion.bastion_role_arn
-  bastion_role_name               = module.bastion.bastion_role_name
-  cidr_blocks                     = module.vpc.private_subnets_cidr_blocks
-  eks_use_mfa                     = var.eks_use_mfa
+  name                                    = local.cluster_name
+  aws_region                              = var.region
+  vpc_id                                  = module.vpc.vpc_id
+  private_subnet_ids                      = module.vpc.private_subnets
+  control_plane_subnet_ids                = module.vpc.private_subnets
+  iam_role_permissions_boundary           = var.iam_role_permissions_boundary
+  cluster_security_group_additional_rules = local.ingress_bastion_to_cluster
+  cluster_endpoint_public_access          = var.cluster_endpoint_public_access
+  cluster_endpoint_private_access         = true
+  vpc_cni_custom_subnet                   = module.vpc.intra_subnets
+  aws_admin_usernames                     = var.aws_admin_usernames
+  cluster_version                         = var.cluster_version
+  cidr_blocks                             = module.vpc.private_subnets_cidr_blocks
+  eks_use_mfa                             = var.eks_use_mfa
+  aws_auth_roles                          = local.bastion_aws_auth_entry
 
   # If using EKS Managed Node Groups, the aws-auth ConfigMap is created by eks itself and terraform can not create it
   create_aws_auth_configmap = var.create_aws_auth_configmap
@@ -258,21 +278,20 @@ module "eks" {
 
   # AWS EKS EBS CSI Driver
   enable_amazon_eks_aws_ebs_csi_driver = var.enable_amazon_eks_aws_ebs_csi_driver
-  amazon_eks_aws_ebs_csi_driver_config = var.amazon_eks_aws_ebs_csi_driver_config
   enable_gp3_default_storage_class     = var.enable_gp3_default_storage_class
   storageclass_reclaim_policy          = var.storageclass_reclaim_policy
 
   # AWS EKS EFS CSI Driver
-  enable_efs     = var.enable_efs
-  reclaim_policy = var.reclaim_policy
+  enable_amazon_eks_aws_efs_csi_driver = var.enable_amazon_eks_aws_efs_csi_driver
+  reclaim_policy                       = var.reclaim_policy
 
   # AWS EKS node termination handler
-  enable_aws_node_termination_handler      = var.enable_aws_node_termination_handler
-  aws_node_termination_handler_helm_config = var.aws_node_termination_handler_helm_config
+  enable_aws_node_termination_handler = var.enable_aws_node_termination_handler
+  aws_node_termination_handler        = var.aws_node_termination_handler
 
   # k8s Metrics Server
-  enable_metrics_server      = var.enable_metrics_server
-  metrics_server_helm_config = var.metrics_server_helm_config
+  enable_metrics_server = var.enable_metrics_server
+  metrics_server        = var.metrics_server
 
   # k8s Cluster Autoscaler
   enable_cluster_autoscaler      = var.enable_cluster_autoscaler

@@ -1,6 +1,6 @@
 # tflint-ignore: terraform_unused_declarations
 variable "cluster_name" {
-  description = "Name of cluster - used by Terratest for e2e test automation"
+  description = "Name of cluster"
   type        = string
   default     = ""
 }
@@ -85,6 +85,12 @@ variable "aws_admin_usernames" {
   default     = []
 }
 
+variable "aws_auth_roles" {
+  description = "List of role maps to add to the aws-auth configmap"
+  type        = list(any)
+  default     = []
+}
+
 variable "create_aws_auth_configmap" {
   description = "Determines whether to create the aws-auth configmap. NOTE - this is only intended for scenarios where the configmap does not exist (i.e. - when using only self-managed node groups). Most users should use `manage_aws_auth_configmap`"
   type        = bool
@@ -121,22 +127,10 @@ variable "vpc_cni_custom_subnet" {
   default     = []
 }
 
-variable "source_security_group_id" {
-  description = "List of additional rules to add to cluster security group"
-  type        = string
-  default     = ""
-}
-
-variable "bastion_role_arn" {
-  description = "ARN of role authorized kubectl access"
-  type        = string
-  default     = ""
-}
-
-variable "bastion_role_name" {
-  description = "Name of role authorized kubectl access"
-  type        = string
-  default     = ""
+variable "cluster_security_group_additional_rules" {
+  description = "List of additional security group rules to add to the cluster security group created. Set `source_node_security_group = true` inside rules to set the `node_security_group` as source"
+  type        = any
+  default     = {}
 }
 
 variable "dataplane_wait_duration" {
@@ -196,12 +190,6 @@ variable "enable_amazon_eks_aws_ebs_csi_driver" {
   default     = false
 }
 
-variable "amazon_eks_aws_ebs_csi_driver_config" {
-  description = "configMap for AWS EBS CSI Driver add-on"
-  type        = any
-  default     = {}
-}
-
 variable "enable_gp3_default_storage_class" {
   description = "Enable gp3 as default storage class"
   type        = bool
@@ -215,7 +203,7 @@ variable "storageclass_reclaim_policy" {
 }
 
 #----------------AWS EFS CSI Driver-------------------------
-variable "enable_efs" {
+variable "enable_amazon_eks_aws_efs_csi_driver" {
   description = "Enable EFS CSI Driver add-on"
   type        = bool
   default     = false
@@ -239,8 +227,8 @@ variable "enable_metrics_server" {
   default     = false
 }
 
-variable "metrics_server_helm_config" {
-  description = "Metrics Server Helm Chart config"
+variable "metrics_server" {
+  description = "Metrics Server config for aws-ia/eks-blueprints-addon/aws"
   type        = any
   default     = {}
 }
@@ -252,12 +240,11 @@ variable "enable_aws_node_termination_handler" {
   default     = false
 }
 
-variable "aws_node_termination_handler_helm_config" {
-  description = "AWS Node Termination Handler Helm Chart config"
+variable "aws_node_termination_handler" {
+  description = "AWS Node Termination Handler config for aws-ia/eks-blueprints-addon/aws"
   type        = any
   default     = {}
 }
-
 #----------------Cluster Autoscaler-------------------------
 variable "enable_cluster_autoscaler" {
   description = "Enable Cluster autoscaler add-on"
