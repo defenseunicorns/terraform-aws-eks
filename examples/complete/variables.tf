@@ -6,11 +6,6 @@ variable "region" {
   type        = string
 }
 
-variable "region2" {
-  description = "The AWS region to deploy into"
-  type        = string
-}
-
 variable "name_prefix" {
   description = "The prefix to use when naming all resources"
   type        = string
@@ -189,7 +184,7 @@ variable "enable_cluster_autoscaler" {
   default     = false
 }
 
-variable "cluster_autoscaler_helm_config" {
+variable "cluster_autoscaler" {
   description = "Cluster Autoscaler Helm Chart config"
   type        = any
   default     = {}
@@ -215,7 +210,7 @@ variable "enable_calico" {
   default     = true
 }
 
-variable "calico_helm_config" {
+variable "calico" {
   description = "Calico Helm Chart config"
   type        = any
   default     = {}
@@ -252,4 +247,10 @@ variable "zarf_version" {
   description = "The version of Zarf to use"
   type        = string
   default     = ""
+}
+
+variable "enable_bastion" {
+  description = "If true, a bastion will be created"
+  type        = bool
+  default     = false
 }

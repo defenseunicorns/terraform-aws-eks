@@ -55,6 +55,18 @@ locals {
         groups   = ["system:masters"]
       }
   ])
+
+  #merge in irsa role arn
+  ebs_csi_driver_addon_extra_config = var.enable_amazon_eks_aws_ebs_csi_driver ? {
+    aws-ebs-csi-driver = {
+      service_account_role_arn = module.ebs_csi_driver_irsa[0].iam_role_arn
+    }
+  } : {}
+
+  cluster_addons = merge(
+    var.cluster_addons,
+    local.ebs_csi_driver_addon_extra_config
+  )
 }
 
 module "aws_eks" {
@@ -77,7 +89,7 @@ module "aws_eks" {
 
   dataplane_wait_duration = var.dataplane_wait_duration
 
-  cluster_addons = var.cluster_addons
+  cluster_addons = local.cluster_addons
 
   #----------------------------------------------------------------------------------------------------------#
   # Security groups used in this module created by the upstream modules terraform-aws-eks (https://github.com/terraform-aws-modules/terraform-aws-eks).

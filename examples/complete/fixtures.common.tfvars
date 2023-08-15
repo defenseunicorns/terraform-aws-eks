@@ -62,11 +62,9 @@ cluster_addons = {
     most_recent = true
   }
   aws-ebs-csi-driver = {
-    most_recent              = true
-    service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
+    most_recent = true
   }
 }
-
 
 #################### Blueprints addons ###################
 #wait false for all addons, as it times out on teardown in the test pipeline
@@ -83,7 +81,7 @@ aws_node_termination_handler = {
 }
 
 enable_cluster_autoscaler = true
-cluster_autoscaler_helm_config = {
+cluster_autoscaler = {
   wait          = false
   chart_version = "v9.29.1"
   # set = [
@@ -105,7 +103,7 @@ metrics_server = {
 }
 
 enable_calico = true
-calico_helm_config = {
+calico = {
   wait          = false
   chart_version = "v3.26.1"
 }

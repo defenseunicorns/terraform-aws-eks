@@ -185,7 +185,7 @@ EOD
 
 #----------------AWS EBS CSI Driver-------------------------
 variable "enable_amazon_eks_aws_ebs_csi_driver" {
-  description = "Enable EKS Managed AWS EBS CSI Driver add-on; enable_amazon_eks_aws_ebs_csi_driver and enable_self_managed_aws_ebs_csi_driver are mutually exclusive"
+  description = "Enable EKS Managed AWS EBS CSI Driver add-on"
   type        = bool
   default     = false
 }
@@ -252,7 +252,7 @@ variable "enable_cluster_autoscaler" {
   default     = false
 }
 
-variable "cluster_autoscaler_helm_config" {
+variable "cluster_autoscaler" {
   description = "Cluster Autoscaler Helm Chart config"
   type        = any
   default = {
@@ -281,10 +281,10 @@ variable "cluster_autoscaler_helm_config" {
 variable "enable_calico" {
   description = "Enable Calico add-on"
   type        = bool
-  default     = false
+  default     = true
 }
 
-variable "calico_helm_config" {
+variable "calico" {
   description = "Calico Helm Chart config"
   type        = any
   default     = {}
