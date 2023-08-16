@@ -197,6 +197,12 @@ variable "enable_amazon_eks_aws_efs_csi_driver" {
   default     = false
 }
 
+variable "aws_efs_csi_driver" {
+  description = "AWS EFS CSI Driver helm chart config"
+  type        = any
+  default     = {}
+}
+
 variable "reclaim_policy" {
   description = "Reclaim policy for EFS storage class, valid options are Delete and Retain"
   type        = string

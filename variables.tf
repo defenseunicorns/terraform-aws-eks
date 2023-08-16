@@ -207,7 +207,12 @@ variable "enable_amazon_eks_aws_efs_csi_driver" {
   description = "Enable EFS CSI Driver add-on"
   type        = bool
   default     = false
+}
 
+variable "aws_efs_csi_driver" {
+  description = "AWS EFS CSI Driver helm chart config"
+  type        = any
+  default     = {}
 }
 
 variable "reclaim_policy" {

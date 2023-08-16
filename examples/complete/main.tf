@@ -279,7 +279,9 @@ module "eks" {
 
   # AWS EKS EFS CSI Driver
   enable_amazon_eks_aws_efs_csi_driver = var.enable_amazon_eks_aws_efs_csi_driver
-  reclaim_policy                       = var.reclaim_policy
+  aws_efs_csi_driver                   = var.aws_efs_csi_driver
+
+  reclaim_policy = var.reclaim_policy
 
   # AWS EKS node termination handler
   enable_aws_node_termination_handler = var.enable_aws_node_termination_handler

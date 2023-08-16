@@ -2,16 +2,8 @@
 # EKS Blueprints Add-Ons
 ################################################################################
 
-data "aws_autoscaling_group" "managed_ng" {
-  for_each = { for node_group_name in module.aws_eks.eks_managed_node_groups_autoscaling_group_names : node_group_name => node_group_name }
-  name     = each.value
-}
-
 locals {
-  node_group_arns = concat(
-    [for key, value in module.aws_eks.self_managed_node_groups : lookup(value, "autoscaling_group_arn", "")],
-    [for key, value in data.aws_autoscaling_group.managed_ng : value.arn]
-  )
+  node_group_arns = [for key, value in module.aws_eks.self_managed_node_groups : lookup(value, "autoscaling_group_arn", "")]
 }
 
 module "eks_blueprints_kubernetes_addons" {
@@ -19,17 +11,19 @@ module "eks_blueprints_kubernetes_addons" {
 
   cluster_name      = module.aws_eks.cluster_name
   cluster_endpoint  = module.aws_eks.cluster_endpoint
-  oidc_provider_arn = module.aws_eks.oidc_provider
+  oidc_provider_arn = module.aws_eks.oidc_provider_arn
   cluster_version   = module.aws_eks.cluster_version
 
   # time_sleep w/ trigger for nodes to be deployed
   create_delay_dependencies = local.node_group_arns
 
   # only used for aws_node_termination_handler, if this list is empty, then enable_aws_node_termination_handler should also be false.
+  # you don't need to tag eks managed node group ASGs for NTH - https://github.com/aws/aws-node-termination-handler/blob/main/README.md?plain=1#L41
   aws_node_termination_handler_asg_arns = local.node_group_arns
 
   # EKS EFS CSI Driver
   enable_aws_efs_csi_driver = var.enable_amazon_eks_aws_efs_csi_driver
+  aws_efs_csi_driver        = var.aws_efs_csi_driver
 
   # K8s Add-ons
 
