@@ -258,5 +258,5 @@ variable "zarf_version" {
 variable "enable_bastion" {
   description = "If true, a bastion will be created"
   type        = bool
-  default     = false
+  default     = true
 }
