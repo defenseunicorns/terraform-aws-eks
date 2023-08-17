@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.5](https://github.com/defenseunicorns/terraform-aws-uds-eks/compare/v0.0.4...v0.0.5) (2023-08-17)
+
+
+### Miscellaneous Chores
+
+* configure release please and codeowners for git repo ([#37](https://github.com/defenseunicorns/terraform-aws-uds-eks/issues/37)) ([5f3e74e](https://github.com/defenseunicorns/terraform-aws-uds-eks/commit/5f3e74e72ea7d76004b17f7da79e17e949e6f761))
+
 ## 0.0.4 (2023-08-17)
 
 ## What's Changed
