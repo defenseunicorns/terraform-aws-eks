@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.0.4 (2023-08-17)
+
+## What's Changed
+* Migration from blueprints and decouple bastion requirements by @zack-is-cool in https://github.com/defenseunicorns/terraform-aws-uds-eks/pull/35
+
+## New Contributors
+* @zack-is-cool made their first contribution in https://github.com/defenseunicorns/terraform-aws-uds-eks/pull/35
+
+**Full Changelog**: https://github.com/defenseunicorns/terraform-aws-uds-eks/compare/v0.0.3...v0.0.4
+
 ## 0.0.3 (2023-07-24)
 
 ## What's Changed
