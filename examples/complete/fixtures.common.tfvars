@@ -61,31 +61,33 @@ cluster_addons = {
   kube-proxy = {
     most_recent = true
   }
+  aws-ebs-csi-driver = {
+    most_recent = true
+  }
 }
-
 
 #################### Blueprints addons ###################
 #wait false for all addons, as it times out on teardown in the test pipeline
 
-enable_efs = true
+enable_amazon_eks_aws_efs_csi_driver = true
+aws_efs_csi_driver = {
+  wait          = false
+  chart_version = "2.4.8"
+}
 
 enable_amazon_eks_aws_ebs_csi_driver = true
-amazon_eks_aws_ebs_csi_driver_config = {
-  wait        = false
-  most_recent = true
-}
-enable_gp3_default_storage_class = true
+enable_gp3_default_storage_class     = true
 
 enable_aws_node_termination_handler = true
-aws_node_termination_handler_helm_config = {
-  wait    = false
-  version = "v0.21.0"
+aws_node_termination_handler = {
+  wait          = false
+  chart_version = "v0.21.0"
 }
 
 enable_cluster_autoscaler = true
-cluster_autoscaler_helm_config = {
-  wait    = false
-  version = "v9.29.1"
+cluster_autoscaler = {
+  wait          = false
+  chart_version = "v9.29.1"
   # set = [
   #   {
   #     name  = "extraArgs.expander"
@@ -99,13 +101,13 @@ cluster_autoscaler_helm_config = {
 }
 
 enable_metrics_server = true
-metrics_server_helm_config = {
-  wait    = false
-  version = "v3.10.0"
+metrics_server = {
+  wait          = false
+  chart_version = "v3.10.0"
 }
 
 enable_calico = true
-calico_helm_config = {
-  wait    = false
-  version = "v3.26.1"
+calico = {
+  wait          = false
+  chart_version = "v3.26.1"
 }

@@ -42,11 +42,16 @@ output "cluster_certificate_authority_data" {
 }
 
 output "efs_storageclass_name" {
-  description = "The name of the EFS storageclass that was created (if var.enable_efs was set to true)"
+  description = "The name of the EFS storageclass that was created (if var.enable_amazon_eks_aws_efs_csi_driver was set to true)"
   value       = try(kubernetes_storage_class_v1.efs[0].id, null)
 }
 
 output "cluster_iam_role_arn" {
   description = "EKS cluster IAM role ARN"
   value       = module.aws_eks.cluster_iam_role_arn
+}
+
+output "cluster_security_group_id" {
+  description = "EKS cluster security group ID"
+  value       = module.aws_eks.cluster_security_group_id
 }
