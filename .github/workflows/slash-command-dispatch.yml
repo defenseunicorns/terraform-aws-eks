@@ -1,0 +1,52 @@
+name: |-
+  Slash Command Dispatch
+  Trigger CI jobs using ChatOps slash commands
+
+on:
+  issue_comment:
+    types: [created]
+  workflow_call:
+    inputs:
+      runs-on:
+        description: "Overrides job runs-on setting (json-encoded list)"
+        type: string
+        required: false
+        default: '["ubuntu-latest"]'
+    secrets:
+      PAT:
+        description: "GitHub API token"
+        required: true
+
+jobs:
+  slashCommandDispatchTest:
+    if: github.event.issue.pull_request && contains(github.event.comment.body, '/test')
+    runs-on:  ${{ fromJSON(inputs.runs-on) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Slash Command Dispatch
+        uses: peter-evans/slash-command-dispatch@v3
+        with:
+          token: ${{ secrets.PAT }}
+          repository: defenseunicorns/delivery-github-actions-workflows
+          commands: test
+          permission: write
+          issue-type: pull-request
+
+
+  slashCommandDispatchUpdate:
+    if: github.event.issue.pull_request && contains(github.event.comment.body, '/update')
+    runs-on:  ${{ fromJSON(inputs.runs-on) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Slash Command Dispatch
+        uses: peter-evans/slash-command-dispatch@v3
+        with:
+          token: ${{ secrets.PAT }}
+          repository: defenseunicorns/delivery-github-actions-workflows
+          commands: update
+          permission: write
+          issue-type: pull-request
