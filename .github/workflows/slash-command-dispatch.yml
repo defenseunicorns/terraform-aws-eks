@@ -5,22 +5,20 @@ name: |-
 on:
   issue_comment:
     types: [created]
-  workflow_call:
-    inputs:
-      runs-on:
-        description: "Overrides job runs-on setting (json-encoded list)"
-        type: string
-        required: false
-        default: '["ubuntu-latest"]'
     secrets:
       PAT:
         description: "GitHub API token"
         required: true
 
 jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: hmarr/debug-action@v2
+
   slashCommandDispatchTest:
     if: github.event.issue.pull_request && contains(github.event.comment.body, '/test')
-    runs-on:  ${{ fromJSON(inputs.runs-on) }}
+    runs-on:  ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -37,7 +35,7 @@ jobs:
 
   slashCommandDispatchUpdate:
     if: github.event.issue.pull_request && contains(github.event.comment.body, '/update')
-    runs-on:  ${{ fromJSON(inputs.runs-on) }}
+    runs-on:  ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
