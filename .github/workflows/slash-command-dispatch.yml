@@ -5,10 +5,6 @@ name: |-
 on:
   issue_comment:
     types: [created]
-    secrets:
-      PAT:
-        description: "GitHub API token"
-        required: true
 
 jobs:
   debug:
@@ -31,6 +27,7 @@ jobs:
           commands: test
           permission: write
           issue-type: pull-request
+
 
 
   slashCommandDispatchUpdate:
