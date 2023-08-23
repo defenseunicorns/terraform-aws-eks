@@ -3,13 +3,9 @@ module e2e_test
 go 1.20
 
 require (
-	github.com/aws/aws-sdk-go v1.44.301
+	github.com/defenseunicorns/delivery-aws-iac v0.0.8
 	github.com/gruntwork-io/terratest v0.43.8
 	github.com/stretchr/testify v1.8.4
-	k8s.io/api v0.27.3
-	k8s.io/apimachinery v0.27.3
-	k8s.io/client-go v0.27.3
-	sigs.k8s.io/aws-iam-authenticator v0.6.10
 )
 
 require (
@@ -20,6 +16,7 @@ require (
 	cloud.google.com/go/storage v1.27.0 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
+	github.com/aws/aws-sdk-go v1.44.301 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bgentry/go-netrc v0.0.0-20140422174119-9fd32a8b3d3d // indirect
 	github.com/boombuler/barcode v1.0.1-0.20190219062509-6c824513bacc // indirect
@@ -98,9 +95,13 @@ require (
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
+	k8s.io/api v0.27.3 // indirect
+	k8s.io/apimachinery v0.27.3 // indirect
+	k8s.io/client-go v0.27.3 // indirect
 	k8s.io/klog/v2 v2.90.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20230501164219-8b0f38b5fd1f // indirect
 	k8s.io/utils v0.0.0-20230209194617-a36077c30491 // indirect
+	sigs.k8s.io/aws-iam-authenticator v0.6.10 // indirect
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.3 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect
