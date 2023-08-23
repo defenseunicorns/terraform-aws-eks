@@ -1,4 +1,4 @@
-CI TESTING 
+CI TESTING
 
 # AWS EKS Module
 
