@@ -5,6 +5,7 @@ on:
     types: [created]
 
 jobs:
+
   debug:
     runs-on: ubuntu-latest
     steps:
@@ -14,13 +15,11 @@ jobs:
     if: github.event.issue.pull_request && contains(github.event.comment.body, '/test')
     runs-on:  ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
       - name: Slash Command Dispatch
         uses: peter-evans/slash-command-dispatch@v3
         with:
           token: ${{ secrets.PAT }}
+          reaction-token: ${{ secrets.PAT }}
           # repository: zack-is-cool/delivery-github-actions-workflows
           commands: test
           permission: write
@@ -32,13 +31,11 @@ jobs:
     if: github.event.issue.pull_request && contains(github.event.comment.body, '/update')
     runs-on:  ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
       - name: Slash Command Dispatch
         uses: peter-evans/slash-command-dispatch@v3
         with:
           token: ${{ secrets.PAT }}
+          reaction-token: ${{ secrets.PAT }}
           # repository: zack-is-cool/delivery-github-actions-workflows
           commands: update
           permission: write
