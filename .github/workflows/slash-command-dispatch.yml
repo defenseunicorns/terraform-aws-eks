@@ -1,6 +1,4 @@
-name: |-
-  Slash Command Dispatch
-  Trigger CI jobs using ChatOps slash commands
+name: Slash Command Dispatch
 
 on:
   issue_comment:
@@ -23,7 +21,7 @@ jobs:
         uses: peter-evans/slash-command-dispatch@v3
         with:
           token: ${{ secrets.PAT }}
-          repository: zack-is-cool/delivery-github-actions-workflows
+          # repository: zack-is-cool/delivery-github-actions-workflows
           commands: test
           permission: write
           issue-type: pull-request
@@ -41,7 +39,7 @@ jobs:
         uses: peter-evans/slash-command-dispatch@v3
         with:
           token: ${{ secrets.PAT }}
-          repository: zack-is-cool/delivery-github-actions-workflows
+          # repository: zack-is-cool/delivery-github-actions-workflows
           commands: update
           permission: write
           issue-type: pull-request
