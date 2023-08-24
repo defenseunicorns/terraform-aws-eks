@@ -25,8 +25,6 @@ jobs:
           permission: write
           issue-type: pull-request
 
-
-
   slashCommandDispatchUpdate:
     if: github.event.issue.pull_request && contains(github.event.comment.body, '/update')
     runs-on:  ubuntu-latest
