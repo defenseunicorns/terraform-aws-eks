@@ -1,0 +1,22 @@
+name: test
+on:
+  repository_dispatch:
+    types: [test-command]
+
+permissions:
+  id-token: write
+  contents: read
+
+defaults:
+  run:
+    # We need -e -o pipefail for consistency with GitHub Actions' default behavior
+    shell: bash -e -o pipefail {0}
+
+jobs:
+
+  e2e-test:
+    uses: defenseunicorns/delivery-github-actions-workflows/.github/workflows/e2e-test.yml@main
+    secrets:
+      token: ${{ secrets.PAT }}
+      AWS_COMMERCIAL_ROLE_TO_ASSUME: ${{ secrets.AWS_COMMERCIAL_ROLE_TO_ASSUME }}
+      AWS_GOVCLOUD_ROLE_TO_ASSUME: ${{ secrets.AWS_GOVCLOUD_ROLE_TO_ASSUME }}

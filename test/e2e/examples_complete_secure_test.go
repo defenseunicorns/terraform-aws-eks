@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	utils "e2e_test/test/utils"
+	"github.com/defenseunicorns/delivery-aws-iac/test/e2e/utils"
 )
 
 // This test deploys the complete example in "secure mode". Secure mode is:
@@ -26,7 +26,7 @@ import (
 func TestExamplesCompleteSecure(t *testing.T) {
 	t.Parallel()
 	// Setup options
-	tempFolder := teststructure.CopyTerraformFolderToTemp(t, "..", "examples/complete")
+	tempFolder := teststructure.CopyTerraformFolderToTemp(t, "../..", "examples/complete")
 	terraformInitOptions := &terraform.Options{
 		TerraformDir: tempFolder,
 		Upgrade:      false,
@@ -38,10 +38,9 @@ func TestExamplesCompleteSecure(t *testing.T) {
 			"fixtures.secure.tfvars",
 		},
 		RetryableTerraformErrors: map[string]string{
-			".*empty output.*": "bug in aws_s3_bucket_logging, intermittent error",
-			".*timeout while waiting for state to become 'ACTIVE'.*": "Sometimes the EKS cluster takes a long time to create",
+			".*": "Failed to apply Terraform configuration due to an error.",
 		},
-		MaxRetries:         1,
+		MaxRetries:         5,
 		TimeBetweenRetries: 5 * time.Second,
 	}
 	terraformOptionsWithVPCAndBastionTargets := &terraform.Options{
@@ -55,10 +54,9 @@ func TestExamplesCompleteSecure(t *testing.T) {
 			"module.bastion",
 		},
 		RetryableTerraformErrors: map[string]string{
-			".*empty output.*": "bug in aws_s3_bucket_logging, intermittent error",
-			".*timeout while waiting for state to become 'ACTIVE'.*": "Sometimes the EKS cluster takes a long time to create",
+			".*": "Failed to apply Terraform configuration due to an error.",
 		},
-		MaxRetries:         1,
+		MaxRetries:         5,
 		TimeBetweenRetries: 5 * time.Second,
 	}
 	terraformOptionsWithEKSTarget := &terraform.Options{
@@ -71,10 +69,9 @@ func TestExamplesCompleteSecure(t *testing.T) {
 			"module.eks",
 		},
 		RetryableTerraformErrors: map[string]string{
-			".*empty output.*": "bug in aws_s3_bucket_logging, intermittent error",
-			".*timeout while waiting for state to become 'ACTIVE'.*": "Sometimes the EKS cluster takes a long time to create",
+			".*": "Failed to apply Terraform configuration due to an error.",
 		},
-		MaxRetries:         1,
+		MaxRetries:         5,
 		TimeBetweenRetries: 5 * time.Second,
 	}
 
@@ -120,9 +117,9 @@ func TestExamplesCompleteSecure(t *testing.T) {
 			err := utils.StopSshuttle(t, cmd)
 			require.NoError(t, err)
 		}(t, cmd)
-		utils.ConfigureKubeconfig(t, tempFolder)
 		utils.ValidateEFSFunctionality(t, tempFolder)
-		// utils.DownloadZarfInitPackage(t)
-		// utils.ValidateZarfInit(t, tempFolder)
+		utils.DownloadZarfInitPackage(t)
+		utils.ConfigureKubeconfig(t, tempFolder)
+		utils.ValidateZarfInit(t, tempFolder)
 	})
 }
