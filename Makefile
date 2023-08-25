@@ -1,5 +1,8 @@
 include .env
 
+# import any TF_VAR_ environment variables into the docker container.
+TF_VARS := $(shell env | grep '^TF_VAR_' | sed 's/^/-e /' | tr '\n' ' ')
+
 .DEFAULT_GOAL := help
 
 # Optionally add the "-it" flag for docker run commands if the env var "CI" is not set (meaning we are on a local machine and not in github actions)
@@ -61,7 +64,7 @@ _test-all: _create-folders
 		-e SKIP_SETUP \
 		-e SKIP_TEST \
 		-e SKIP_TEARDOWN \
-		"$(shell env | grep '^TF_VAR_' | sed 's/^/-e /' | tr '\n' ' ')" \
+		$(if $(TF_VARS),$(TF_VARS),) \
 		${BUILD_HARNESS_REPO}:${BUILD_HARNESS_VERSION} \
 		bash -c 'git config --global --add safe.directory /app && asdf install && cd examples/complete && terraform init -upgrade=true && cd ../../test/e2e && go test -count 1 -v $(EXTRA_TEST_ARGS) .'
 
@@ -91,7 +94,7 @@ bastion-connect: _create-folders ## To be used after deploying "secure mode" of 
 		-e AWS_SESSION_TOKEN \
 		-e AWS_SECURITY_TOKEN \
 		-e AWS_SESSION_EXPIRATION \
-		"$(shell env | grep '^TF_VAR_' | sed 's/^/-e /' | tr '\n' ' ')" \
+		$(if $(TF_VARS),$(TF_VARS),) \
 		${BUILD_HARNESS_REPO}:${BUILD_HARNESS_VERSION} \
 		bash -c 'git config --global --add safe.directory /app \
 				&& asdf install \
