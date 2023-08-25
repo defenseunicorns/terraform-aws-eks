@@ -1,3 +1,4 @@
+SHELL += -x
 include .env
 
 # import any TF_VAR_ environment variables into the docker container.
