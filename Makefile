@@ -91,6 +91,7 @@ bastion-connect: _create-folders ## To be used after deploying "secure mode" of 
 		-e AWS_SESSION_TOKEN \
 		-e AWS_SECURITY_TOKEN \
 		-e AWS_SESSION_EXPIRATION \
+		$(shell env | grep '^TF_VAR_' | sed 's/^/-e /' | tr '\n' ' ') \
 		${BUILD_HARNESS_REPO}:${BUILD_HARNESS_VERSION} \
 		bash -c 'git config --global --add safe.directory /app \
 				&& asdf install \
