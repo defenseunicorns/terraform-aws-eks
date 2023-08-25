@@ -71,6 +71,7 @@ _test-all: _create-folders
 .PHONY: test-env-vars
 test-env-vars: _create-folders
 	echo "Running automated tests. This will take several minutes. At times it does not log anything to the console. If you interrupt the test run you will need to log into AWS console and manually delete any orphaned infrastructure."
+	echo "${TF_VARS}"
 	docker run $(TTY_ARG) --rm \
 		--cap-add=NET_ADMIN \
 		--cap-add=NET_RAW \
@@ -97,7 +98,7 @@ test-env-vars: _create-folders
 		-e SKIP_SETUP \
 		-e SKIP_TEST \
 		-e SKIP_TEARDOWN \
-		$(if $(TF_VARS),$(TF_VARS),) \
+		$(if ${TF_VARS},${TF_VARS},) \
 		${BUILD_HARNESS_REPO}:${BUILD_HARNESS_VERSION} \
 		bash -c 'env | grep TF_VAR'
 
