@@ -1,0 +1,20 @@
+name: update
+on:
+  repository_dispatch:
+    types: [update-command]
+
+permissions:
+  id-token: write
+  contents: write
+
+defaults:
+  run:
+    # We need -e -o pipefail for consistency with GitHub Actions' default behavior
+    shell: bash -e -o pipefail {0}
+
+jobs:
+
+  update:
+    uses: defenseunicorns/delivery-github-actions-workflows/.github/workflows/update.yml@main
+    secrets:
+      token: ${{ secrets.PAT }}

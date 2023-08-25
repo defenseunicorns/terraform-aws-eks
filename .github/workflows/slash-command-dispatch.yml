@@ -1,0 +1,38 @@
+name: Slash Command Dispatch
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: hmarr/debug-action@v2
+
+  slashCommandDispatchTest:
+    if: github.event.issue.pull_request && contains(github.event.comment.body, '/test')
+    runs-on:  ubuntu-latest
+    steps:
+      - name: Slash Command Dispatch
+        uses: peter-evans/slash-command-dispatch@v3
+        with:
+          token: ${{ secrets.PAT }}
+          reaction-token: ${{ secrets.PAT }}
+          commands: test
+          permission: write
+          issue-type: pull-request
+
+  slashCommandDispatchUpdate:
+    if: github.event.issue.pull_request && contains(github.event.comment.body, '/update')
+    runs-on:  ubuntu-latest
+    steps:
+      - name: Slash Command Dispatch
+        uses: peter-evans/slash-command-dispatch@v3
+        with:
+          token: ${{ secrets.PAT }}
+          reaction-token: ${{ secrets.PAT }}
+          commands: update
+          permission: write
+          issue-type: pull-request
