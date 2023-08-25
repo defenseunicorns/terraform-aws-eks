@@ -1,4 +1,8 @@
+SHELL += -x
 include .env
+
+# import any TF_VAR_ environment variables into the docker container.
+TF_VARS := $(shell env | grep '^TF_VAR_' | awk -F= '{printf "-e %s ", $$1}')
 
 .DEFAULT_GOAL := help
 
@@ -61,6 +65,7 @@ _test-all: _create-folders
 		-e SKIP_SETUP \
 		-e SKIP_TEST \
 		-e SKIP_TEARDOWN \
+		${TF_VARS} \
 		${BUILD_HARNESS_REPO}:${BUILD_HARNESS_VERSION} \
 		bash -c 'git config --global --add safe.directory /app && asdf install && cd examples/complete && terraform init -upgrade=true && cd ../../test/e2e && go test -count 1 -v $(EXTRA_TEST_ARGS) .'
 
@@ -90,6 +95,7 @@ bastion-connect: _create-folders ## To be used after deploying "secure mode" of 
 		-e AWS_SESSION_TOKEN \
 		-e AWS_SECURITY_TOKEN \
 		-e AWS_SESSION_EXPIRATION \
+		${TF_VARS} \
 		${BUILD_HARNESS_REPO}:${BUILD_HARNESS_VERSION} \
 		bash -c 'git config --global --add safe.directory /app \
 				&& asdf install \
@@ -162,3 +168,7 @@ pre-commit-common: ## Run the common pre-commit hooks. Returns nonzero exit code
 .PHONY: fix-cache-permissions
 fix-cache-permissions: ## Fixes the permissions on the pre-commit cache
 	docker run $(TTY_ARG) --rm -v "${PWD}:/app" --workdir "/app" -e "PRE_COMMIT_HOME=/app/.cache/pre-commit" ${BUILD_HARNESS_REPO}:${BUILD_HARNESS_VERSION} chmod -R a+rx .cache
+
+.PHONY: autoformat
+autoformat: ## Update files with automatic formatting tools. Uses Docker for maximum compatibility.
+	$(MAKE) _runhooks HOOK="" SKIP="check-added-large-files,check-merge-conflict,detect-aws-credentials,detect-private-key,check-yaml,golangci-lint,terraform_checkov,terraform_tflint,renovate-config-validator"

@@ -4,11 +4,6 @@
 # Setting region per test case to avoid AWS service quota limits
 #region  = "us-east-2" # target AWS region
 #region2 = "us-east-1" # RDS backup target AWS region
-
-tags = {
-  ManagedBy = "Terraform"
-  Repo      = "https://github.com/defenseunicorns/terraform-aws-uds-eks"
-}
 name_prefix               = "ci"
 manage_aws_auth_configmap = true
 

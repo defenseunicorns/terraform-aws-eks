@@ -1,0 +1,18 @@
+# If the workflow trigger is "pull_request", run pre-commit checks.
+name: pre-commit
+
+on:
+  pull_request:
+
+permissions:
+  pull-requests: write
+  id-token: write
+  contents: read
+
+jobs:
+  pre-commit:
+    uses: defenseunicorns/delivery-github-actions-workflows/.github/workflows/pre-commit.yml@main
+    secrets:
+      token: ${{ secrets.PAT}}
+    with:
+      check-types: '["common", "terraform", "golang"]'
