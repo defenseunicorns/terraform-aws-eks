@@ -2,7 +2,7 @@ SHELL += -x
 include .env
 
 # import any TF_VAR_ environment variables into the docker container.
-TF_VARS := $(shell env | grep '^TF_VAR_' | sed 's/^/-e /' | tr '\n' ' ')
+TF_VARS := $(shell env | grep '^TF_VAR_' | awk -F= '{printf "-e %s ", $$1}')
 
 .DEFAULT_GOAL := help
 
@@ -99,9 +99,9 @@ test-env-vars: _create-folders
 		-e SKIP_SETUP \
 		-e SKIP_TEST \
 		-e SKIP_TEARDOWN \
-		$(if ${TF_VARS},${TF_VARS},) \
+		${TF_VARS} \
 		${BUILD_HARNESS_REPO}:${BUILD_HARNESS_VERSION} \
-		bash -c 'env | grep TF_VAR'
+		bash -c 'env | grep TF_VAR || echo "null yo" && exit 0'
 
 .PHONY: bastion-connect
 bastion-connect: _create-folders ## To be used after deploying "secure mode" of examples/complete. It (a) creates a tunnel through the bastion host using sshuttle, and (b) sets up the KUBECONFIG so that the EKS cluster is able to be interacted with. Requires the standard AWS cred environment variables to be set. We recommend using 'aws-vault' to set them.
