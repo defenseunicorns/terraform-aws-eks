@@ -15,7 +15,7 @@ defaults:
 jobs:
 
   e2e-test:
-    uses: zack-is-cool/delivery-github-actions-workflows/.github/workflows/e2e-test.yml@main
+    uses: defenseunicorns/delivery-github-actions-workflows/.github/workflows/e2e-test.yml@main
     secrets:
       token: ${{ secrets.PAT }}
       AWS_COMMERCIAL_ROLE_TO_ASSUME: ${{ secrets.AWS_COMMERCIAL_ROLE_TO_ASSUME }}

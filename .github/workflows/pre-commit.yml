@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   pre-commit:
-    uses: zack-is-cool/delivery-github-actions-workflows/.github/workflows/pre-commit.yml@main
+    uses: defenseunicorns/delivery-github-actions-workflows/.github/workflows/pre-commit.yml@main
     secrets:
       token: ${{ secrets.PAT}}
     with:

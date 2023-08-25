@@ -15,6 +15,6 @@ defaults:
 jobs:
 
   update:
-    uses: zack-is-cool/delivery-github-actions-workflows/.github/workflows/update.yml@main
+    uses: defenseunicorns/delivery-github-actions-workflows/.github/workflows/update.yml@main
     secrets:
       token: ${{ secrets.PAT }}

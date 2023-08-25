@@ -20,7 +20,6 @@ jobs:
         with:
           token: ${{ secrets.PAT }}
           reaction-token: ${{ secrets.PAT }}
-          # repository: zack-is-cool/delivery-github-actions-workflows
           commands: test
           permission: write
           issue-type: pull-request
@@ -34,7 +33,6 @@ jobs:
         with:
           token: ${{ secrets.PAT }}
           reaction-token: ${{ secrets.PAT }}
-          # repository: zack-is-cool/delivery-github-actions-workflows
           commands: update
           permission: write
           issue-type: pull-request
