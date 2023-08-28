@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.0.6](https://github.com/defenseunicorns/terraform-aws-uds-eks/compare/v0.0.5...v0.0.6) (2023-08-28)
+
+
+### Bug Fixes
+
+* Add EBS role boundary. ([#42](https://github.com/defenseunicorns/terraform-aws-uds-eks/issues/42)) ([21ce795](https://github.com/defenseunicorns/terraform-aws-uds-eks/commit/21ce79533cbeaa15b2d74242192159e1fa92a59d))
+
+
+### Miscellaneous Chores
+
+* **ci:** add release-please.yml ([#45](https://github.com/defenseunicorns/terraform-aws-uds-eks/issues/45)) ([5b33dbc](https://github.com/defenseunicorns/terraform-aws-uds-eks/commit/5b33dbccfe3289e6fee8583dfa076a8aa1d8ec00))
+
+
+### Continuous Integration
+
+* Refactor workflows for consolidated pipelines ([#41](https://github.com/defenseunicorns/terraform-aws-uds-eks/issues/41)) ([3f6ffd0](https://github.com/defenseunicorns/terraform-aws-uds-eks/commit/3f6ffd0e3545a09273743062a89eaee7c74c1342))
+
 ## [0.0.5](https://github.com/defenseunicorns/terraform-aws-uds-eks/compare/v0.0.4...v0.0.5) (2023-08-17)
 
 
