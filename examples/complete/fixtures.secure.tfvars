@@ -1,4 +1,3 @@
-region                         = "us-east-2"
 enable_eks_managed_nodegroups  = false
 enable_self_managed_nodegroups = true
 bastion_tenancy                = "dedicated"
