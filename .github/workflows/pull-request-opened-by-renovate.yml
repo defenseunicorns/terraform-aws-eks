@@ -1,0 +1,28 @@
+# This autoformats using pre-commit, then triggers an automatic test run if and only if Renovate is the author and the PR was just opened. See ADR #0008.
+name: pull-request-opened-by-renovate
+on:
+  pull_request:
+    # WARNING: DO NOT ADD MORE EVENT TYPES HERE! Because this workflow will push a new commit to the PR in the Autoformat step, adding more event types may cause an infinite loop.
+    types:
+      - opened
+    branches:
+      - 'renovate/**'
+
+permissions:
+  id-token: write
+  contents: write
+
+defaults:
+  run:
+    # We need -e -o pipefail for consistency with GitHub Actions' default behavior
+    shell: bash -e -o pipefail {0}
+
+jobs:
+  renovate-test:
+    if: github.event.client_payload.github.actor == 'renovate[bot]' || github.actor == 'renovate[bot]'
+    uses: defenseunicorns/delivery-github-actions-workflows/.github/workflows/renovate-test.yml@main
+    secrets:
+      APPLICATION_ID: ${{ secrets.NARWHAL_BOT_APP_ID }}
+      APPLICATION_PRIVATE_KEY: ${{ secrets.NARWHAL_BOT_SECRET }}
+      AWS_COMMERCIAL_ROLE_TO_ASSUME: ${{ secrets.AWS_COMMERCIAL_ROLE_TO_ASSUME }}
+      AWS_GOVCLOUD_ROLE_TO_ASSUME: ${{ secrets.AWS_GOVCLOUD_ROLE_TO_ASSUME }}
