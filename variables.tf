@@ -280,17 +280,3 @@ variable "cluster_autoscaler" {
     ]
   }
 }
-
-#----------------Calico-------------------------
-
-variable "enable_calico" {
-  description = "Enable Calico add-on"
-  type        = bool
-  default     = true
-}
-
-variable "calico" {
-  description = "Calico Helm Chart config"
-  type        = any
-  default     = {}
-}
