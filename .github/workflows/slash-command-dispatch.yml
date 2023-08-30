@@ -6,11 +6,6 @@ on:
 
 jobs:
 
-  debug:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: hmarr/debug-action@v2
-
   slashCommandDispatchTest:
     if: github.event.issue.pull_request && contains(github.event.comment.body, '/test')
     runs-on:  ubuntu-latest
