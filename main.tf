@@ -117,3 +117,81 @@ resource "aws_iam_role" "auth_eks_role" {
   assume_role_policy   = local.auth_eks_role_policy
   # max_session_duration = var.eks_iam_role_max_session
 }
+
+################################################################################
+# Marketplace Addon Dependencies
+################################################################################
+
+module "ebs_csi_driver_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.20"
+
+  count = var.enable_amazon_eks_aws_ebs_csi_driver ? 1 : 0
+
+  role_name_prefix              = "${module.aws_eks.cluster_name}-ebs-csi-driver-"
+  role_permissions_boundary_arn = var.iam_role_permissions_boundary
+
+  attach_ebs_csi_policy = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.aws_eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
+    }
+  }
+
+  tags = var.tags
+}
+
+################################################################################
+# Storage Class config
+################################################################################
+
+resource "kubernetes_annotations" "gp2" {
+  count = var.enable_gp3_default_storage_class && var.enable_amazon_eks_aws_ebs_csi_driver ? 1 : 0
+
+  api_version = "storage.k8s.io/v1"
+  kind        = "StorageClass"
+  force       = "true"
+
+  metadata {
+    name = "gp2"
+  }
+
+  annotations = {
+    # Modify annotations to remove gp2 as default storage class still reatain the class
+    "storageclass.kubernetes.io/is-default-class" = "false"
+  }
+
+  depends_on = [
+    module.eks_blueprints_kubernetes_addons
+  ]
+}
+
+resource "kubernetes_storage_class_v1" "gp3" {
+  count = var.enable_gp3_default_storage_class && var.enable_amazon_eks_aws_ebs_csi_driver ? 1 : 0
+
+  metadata {
+    name = "gp3"
+
+    annotations = {
+      # Annotation to set gp3 as default storage class
+      "storageclass.kubernetes.io/is-default-class" = "true"
+    }
+  }
+
+  storage_provisioner    = "ebs.csi.aws.com"
+  allow_volume_expansion = true
+  reclaim_policy         = var.storageclass_reclaim_policy
+  volume_binding_mode    = "WaitForFirstConsumer"
+
+  parameters = {
+    encrypted = true
+    fsType    = "ext4"
+    type      = "gp3"
+  }
+
+  depends_on = [
+    module.eks_blueprints_kubernetes_addons
+  ]
+}

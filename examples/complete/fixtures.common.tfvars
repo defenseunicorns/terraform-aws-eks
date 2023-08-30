@@ -23,7 +23,7 @@ zarf_version         = "v0.28.3"
 ###########################################################
 #################### EKS Config ###########################
 
-cluster_version = "1.27"
+cluster_version = "1.26"
 
 # #################### EKS Addon #########################
 # add other "eks native" marketplace addons and configs to this list
@@ -40,7 +40,8 @@ cluster_addons = {
           "WARM_PREFIX_TARGET": "1",
           "ANNOTATE_POD_IP": "true",
           "POD_SECURITY_GROUP_ENFORCING_MODE": "standard"
-        }
+        },
+        "enableNetworkPolicy": "true",
       }
     JSON
   }
@@ -49,7 +50,7 @@ cluster_addons = {
     most_recent = true
 
     timeouts = {
-      create = "25m"
+      create = "2m"
       delete = "10m"
     }
   }
@@ -57,9 +58,17 @@ cluster_addons = {
     most_recent = true
   }
   aws-ebs-csi-driver = {
+    preserve    = true
     most_recent = true
+    timeouts = {
+      create = "2m"
+      delete = "10m"
+    }
   }
 }
+
+enable_amazon_eks_aws_ebs_csi_driver = true
+enable_gp3_default_storage_class     = true
 
 #################### Blueprints addons ###################
 #wait false for all addons, as it times out on teardown in the test pipeline
@@ -69,9 +78,6 @@ aws_efs_csi_driver = {
   wait          = false
   chart_version = "2.4.8"
 }
-
-enable_amazon_eks_aws_ebs_csi_driver = true
-enable_gp3_default_storage_class     = true
 
 enable_aws_node_termination_handler = true
 aws_node_termination_handler = {
@@ -99,10 +105,4 @@ enable_metrics_server = true
 metrics_server = {
   wait          = false
   chart_version = "v3.10.0"
-}
-
-enable_calico = true
-calico = {
-  wait          = false
-  chart_version = "v3.26.1"
 }

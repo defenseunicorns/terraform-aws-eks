@@ -132,6 +132,16 @@ module "bastion" {
 # EKS Cluster
 ################################################################################
 
+data "aws_ami" "eks_default_bottlerocket" {
+  most_recent = true
+  owners      = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["bottlerocket-aws-k8s-${var.cluster_version}-x86_64-*"]
+  }
+}
+
 locals {
   cluster_security_group_additional_rules = merge(
     var.enable_bastion ? { ingress_bastion_to_cluster = local.ingress_bastion_to_cluster } : {},
@@ -167,26 +177,9 @@ locals {
     instance_type                          = null
     update_launch_template_default_version = true
 
-    use_mixed_instances_policy = true
-
-    instance_requirements = {
-      allowed_instance_types = ["m7i.4xlarge", "m6a.4xlarge", "m5a.4xlarge"] #this should be adjusted to the appropriate instance family if reserved instances are being utilized
-      memory_mib = {
-        min = 64000
-      }
-      vcpu_count = {
-        min = 16
-      }
-    }
-
     placement = {
       tenancy = var.eks_worker_tenancy
     }
-
-    pre_bootstrap_userdata = <<-EOT
-        yum install -y amazon-ssm-agent
-        systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent
-      EOT
 
     post_userdata = <<-EOT
         echo "Bootstrap successfully completed! You can further apply config or install to run after bootstrap if needed"
@@ -197,7 +190,6 @@ locals {
     bootstrap_extra_args = "--use-max-pods false"
 
     iam_role_additional_policies = {
-      AmazonSSMManagedInstanceCore      = "arn:${data.aws_partition.current.partition}:iam::aws:policy/AmazonSSMManagedInstanceCore",
       AmazonElasticFileSystemFullAccess = "arn:${data.aws_partition.current.partition}:iam::aws:policy/AmazonElasticFileSystemFullAccess"
     }
 
@@ -224,20 +216,38 @@ locals {
 
   mission_app_self_mg_node_group = {
     bigbang_ng = {
-      subnet_ids   = module.vpc.private_subnets
-      min_size     = 2
-      max_size     = 2
-      desired_size = 2
+      platform      = "bottlerocket"
+      ami_id        = data.aws_ami.eks_default_bottlerocket.id
+      instance_type = "m5d.2xlarge" # conflicts with instance_requirements settings
+      min_size      = 3
+      max_size      = 5
+      desired_size  = 3
+      key_name      = module.key_pair.key_pair_name
 
-      block_device_mappings = {
-        xvda = {
-          device_name = "/dev/xvda"
-          ebs = {
-            volume_size = 50
-            volume_type = "gp3"
-          }
-        }
-      }
+      bootstrap_extra_args = <<-EOT
+        # The admin host container provides SSH access and runs with "superpowers".
+        # It is disabled by default, but can be disabled explicitly.
+        [settings.host-containers.admin]
+        enabled = false
+
+        # The control host container provides out-of-band access via SSM.
+        # It is enabled by default, and can be disabled if you do not expect to use SSM.
+        # This could leave you with no way to access the API and change settings on an existing node!
+        [settings.host-containers.control]
+        enabled = true
+
+        # extra args added
+        [settings.kernel]
+        lockdown = "integrity"
+
+        [settings.kubernetes.node-labels]
+        # label1 = "sso"
+        # label2 = "bb-core"
+
+        [settings.kubernetes.node-taints]
+        # dedicated = "experimental:PreferNoSchedule"
+        # special = "true:NoSchedule"
+      EOT
     }
   }
 
@@ -262,6 +272,7 @@ module "eks" {
   cidr_blocks                             = module.vpc.private_subnets_cidr_blocks
   eks_use_mfa                             = var.eks_use_mfa
   aws_auth_roles                          = local.bastion_aws_auth_entry
+  dataplane_wait_duration                 = var.dataplane_wait_duration
 
   # If using EKS Managed Node Groups, the aws-auth ConfigMap is created by eks itself and terraform can not create it
   create_aws_auth_configmap = var.create_aws_auth_configmap
@@ -311,12 +322,61 @@ module "eks" {
   # k8s Cluster Autoscaler
   enable_cluster_autoscaler = var.enable_cluster_autoscaler
   cluster_autoscaler        = var.cluster_autoscaler
+}
 
-  #----------------------------------------------------------------
-  # custom helm charts
-  #----------------------------------------------------------------
+module "key_pair" {
+  source  = "terraform-aws-modules/key-pair/aws"
+  version = "~> 2.0"
 
-  #Calico
-  enable_calico = var.enable_calico
-  calico        = var.calico
+  key_name_prefix    = local.cluster_name
+  create_private_key = true
+
+  tags = local.tags
+}
+
+module "ebs_kms_key" {
+  source  = "terraform-aws-modules/kms/aws"
+  version = "~> 1.5"
+
+  description = "Customer managed key to encrypt EKS managed node group volumes"
+
+  # Policy
+  key_administrators = [
+    data.aws_caller_identity.current.arn
+  ]
+
+  key_service_roles_for_autoscaling = [
+    # required for the ASG to manage encrypted volumes for nodes
+    "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling",
+    # required for the cluster / persistentvolume-controller to create encrypted PVCs
+    module.eks.cluster_iam_role_arn,
+  ]
+
+  # Aliases
+  aliases                 = ["eks/keycloak_ng_sso/ebs"]
+  aliases_use_name_prefix = true
+
+  tags = local.tags
+}
+
+resource "aws_iam_policy" "additional" {
+  # checkov:skip=CKV_AWS_355: todo reduce resources on policy
+
+  name        = "${local.cluster_name}-additional"
+  description = "Example usage of node additional policy"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "ec2:Describe*",
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+    ]
+  })
+
+  tags = local.tags
 }
