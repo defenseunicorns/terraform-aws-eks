@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.0.7](https://github.com/defenseunicorns/terraform-aws-uds-eks/compare/v0.0.6...v0.0.7) (2023-08-30)
+
+
+### Features
+
+* Remove calico and simplify example ([494fc55](https://github.com/defenseunicorns/terraform-aws-uds-eks/commit/494fc5535cf1bf3a051428b41f10b68f235ff4d1))
+
+
+### Continuous Integration
+
+* remove region to fix tests ([#47](https://github.com/defenseunicorns/terraform-aws-uds-eks/issues/47)) ([dc9aee5](https://github.com/defenseunicorns/terraform-aws-uds-eks/commit/dc9aee5d87a8bfdfb575450fcada4971a6c6f21a))
+* update ci for app ([#49](https://github.com/defenseunicorns/terraform-aws-uds-eks/issues/49)) ([0211373](https://github.com/defenseunicorns/terraform-aws-uds-eks/commit/0211373c3aab9634f3971a47e1d6fb235e90cca5))
+
 ## [0.0.6](https://github.com/defenseunicorns/terraform-aws-uds-eks/compare/v0.0.5...v0.0.6) (2023-08-28)
 
 
