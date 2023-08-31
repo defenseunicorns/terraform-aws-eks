@@ -116,6 +116,12 @@ variable "enable_self_managed_nodegroups" {
   type        = bool
 }
 
+variable "dataplane_wait_duration" {
+  description = "The duration to wait for the EKS cluster to be ready before creating the node groups"
+  type        = string
+  default     = "30s"
+}
+
 ###########################################################
 ################## EKS Addons Config ######################
 
@@ -208,20 +214,6 @@ variable "reclaim_policy" {
   type        = string
   default     = "Delete"
 }
-
-#----------------Calico-------------------------
-variable "enable_calico" {
-  description = "Enable Calico add-on"
-  type        = bool
-  default     = true
-}
-
-variable "calico" {
-  description = "Calico Helm Chart config"
-  type        = any
-  default     = {}
-}
-
 
 ###########################################################
 ################## Bastion Config #########################

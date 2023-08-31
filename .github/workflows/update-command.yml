@@ -13,8 +13,8 @@ defaults:
     shell: bash -e -o pipefail {0}
 
 jobs:
-
   update:
     uses: defenseunicorns/delivery-github-actions-workflows/.github/workflows/update.yml@main
     secrets:
-      token: ${{ secrets.PAT }}
+      APPLICATION_ID: ${{ secrets.NARWHAL_BOT_APP_ID }}
+      APPLICATION_PRIVATE_KEY: ${{ secrets.NARWHAL_BOT_SECRET }}
