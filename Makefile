@@ -39,7 +39,7 @@ _create-folders:
 .PHONY: _test-all
 _test-all: _create-folders
 	echo "Running automated tests. This will take several minutes. At times it does not log anything to the console. If you interrupt the test run you will need to log into AWS console and manually delete any orphaned infrastructure."
-	docker run $(TTY_ARG) --rm \
+	docker run $(TTY_ARG) \
 		--cap-add=NET_ADMIN \
 		--cap-add=NET_RAW \
 		-v "${PWD}:/app" \
