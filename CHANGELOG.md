@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.0.8](https://github.com/defenseunicorns/terraform-aws-uds-eks/compare/v0.0.7...v0.0.8) (2023-09-06)
+
+
+### Bug Fixes
+
+* refactor away from kubectl provider and fix precommit ([#53](https://github.com/defenseunicorns/terraform-aws-uds-eks/issues/53)) ([1f44320](https://github.com/defenseunicorns/terraform-aws-uds-eks/commit/1f44320b73cf50d391914478aff99edb4f0bb64f))
+
+
+### Miscellaneous Chores
+
+* **deps:** update all dependencies ([#44](https://github.com/defenseunicorns/terraform-aws-uds-eks/issues/44)) ([79bc088](https://github.com/defenseunicorns/terraform-aws-uds-eks/commit/79bc08875be77453293ae3d5008ad73ed1d96229))
+
 ## [0.0.7](https://github.com/defenseunicorns/terraform-aws-uds-eks/compare/v0.0.6...v0.0.7) (2023-08-30)
 
 
