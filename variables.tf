@@ -280,3 +280,9 @@ variable "cluster_autoscaler" {
     ]
   }
 }
+
+variable "create_eni_configs" {
+  description = "Merge ENI configs for VPC CNI into cluster_addons configuration"
+  type        = bool
+  default     = true
+}

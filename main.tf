@@ -56,8 +56,11 @@ locals {
       }
   ])
 
+  ############
   # cluster_addons additional logic
+  ############
 
+  # ebs_csi_driver_addon_extra_config is used to merge in the service_account_role_arn to the existing aws-ebs-csi-driver config in cluster_addons
   should_config_ebs_csi_driver = (
     var.enable_amazon_eks_aws_ebs_csi_driver &&
     var.cluster_addons["aws-ebs-csi-driver"] != null
@@ -76,6 +79,7 @@ locals {
   # Check conditions for whether ENI configs should be created for VPC CNI.
   # Conditions include: VPC CNI configured in var.cluster_addons, custom subnet should be provided, and the number of custom subnets should match the number of availability zones.
   should_create_eni_configs = (
+    var.create_eni_configs &&
     var.cluster_addons["vpc-cni"] != null &&
     length(var.vpc_cni_custom_subnet) != 0 &&
     length(var.vpc_cni_custom_subnet) == length(local.azs)
