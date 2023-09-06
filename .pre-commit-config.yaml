@@ -26,12 +26,15 @@ repos:
       - id: go-fmt
       - id: golangci-lint
   - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.83.0
+    rev: v1.83.2
     hooks:
       - id: terraform_fmt
       - id: terraform_docs
         args:
+          - --hook-config=--add-to-existing-file=true
+          - --hook-config=--create-file-if-not-exist=true
           - --args=--lockfile=false
+          - --args=--recursive=true
       - id: terraform_checkov
         verbose: true
         args:
