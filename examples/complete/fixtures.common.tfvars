@@ -61,7 +61,7 @@ cluster_addons = {
     preserve    = true
     most_recent = true
     timeouts = {
-      create = "2m"
+      create = "4m"
       delete = "10m"
     }
   }
