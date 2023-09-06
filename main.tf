@@ -56,16 +56,67 @@ locals {
       }
   ])
 
-  #merge in irsa role arn
-  ebs_csi_driver_addon_extra_config = var.enable_amazon_eks_aws_ebs_csi_driver ? {
-    aws-ebs-csi-driver = {
-      service_account_role_arn = module.ebs_csi_driver_irsa[0].iam_role_arn
-    }
+  ############
+  # cluster_addons additional logic
+  ############
+
+  # ebs_csi_driver_addon_extra_config is used to merge in the service_account_role_arn to the existing aws-ebs-csi-driver config in cluster_addons
+  should_config_ebs_csi_driver = (
+    var.enable_amazon_eks_aws_ebs_csi_driver &&
+    var.cluster_addons["aws-ebs-csi-driver"] != null
+  )
+
+  # Merge in the service_account_role_arn to the existing aws-ebs-csi-driver config
+  ebs_csi_driver_addon_extra_config = local.should_config_ebs_csi_driver ? {
+    "aws-ebs-csi-driver" = merge(
+      var.cluster_addons["aws-ebs-csi-driver"],
+      {
+        service_account_role_arn = module.ebs_csi_driver_irsa[0].iam_role_arn
+      }
+    )
+  } : {}
+
+  # Check conditions for whether ENI configs should be created for VPC CNI.
+  # Conditions include: VPC CNI configured in var.cluster_addons, custom subnet should be provided, and the number of custom subnets should match the number of availability zones.
+  should_create_eni_configs = (
+    var.create_eni_configs &&
+    var.cluster_addons["vpc-cni"] != null &&
+    length(var.vpc_cni_custom_subnet) != 0 &&
+    length(var.vpc_cni_custom_subnet) == length(local.azs)
+  )
+
+  # Define ENI Configurations if should_create_eni_configs evaluates to true.
+  eniConfig = local.should_create_eni_configs ? {
+    create = true,
+    region = var.aws_region,
+    subnets = { for az, subnet in zipmap(local.azs, var.vpc_cni_custom_subnet) : az => {
+      id = subnet,
+      securityGroups = compact([
+        module.aws_eks.cluster_primary_security_group_id,
+        module.aws_eks.node_security_group_id,
+        module.aws_eks.cluster_security_group_id
+      ])
+    } }
+  } : null
+
+  # Merge extra configuration for VPC CNI if should_create_eni_configs evaluates to true.
+  # This merges at a deeper level to preserve existing keys like 'most_recent' and 'before_compute'.
+  vpc_cni_addon_extra_config = local.should_create_eni_configs ? {
+    "vpc-cni" = merge(
+      var.cluster_addons["vpc-cni"],
+      {
+        configuration_values = jsonencode(merge(
+          jsondecode(var.cluster_addons["vpc-cni"].configuration_values),
+          { eniConfig = local.eniConfig }
+        ))
+      }
+    )
   } : {}
 
   cluster_addons = merge(
     var.cluster_addons,
-    local.ebs_csi_driver_addon_extra_config
+    local.ebs_csi_driver_addon_extra_config,
+    local.vpc_cni_addon_extra_config
   )
 }
 
