@@ -34,7 +34,6 @@ repos:
           - --hook-config=--add-to-existing-file=true
           - --hook-config=--create-file-if-not-exist=true
           - --args=--lockfile=false
-          - --args=--recursive=true
       - id: terraform_checkov
         verbose: true
         args:
