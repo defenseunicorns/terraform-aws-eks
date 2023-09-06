@@ -14,7 +14,7 @@ defaults:
 
 jobs:
   e2e-test:
-    uses: defenseunicorns/delivery-github-actions-workflows/.github/workflows/e2e-test.yml@ci/refactor_for_github_app_token_expiration
+    uses: defenseunicorns/delivery-github-actions-workflows/.github/workflows/e2e-test.yml@main
     secrets:
       APPLICATION_ID: ${{ secrets.NARWHAL_BOT_APP_ID }}
       APPLICATION_PRIVATE_KEY: ${{ secrets.NARWHAL_BOT_SECRET }}
