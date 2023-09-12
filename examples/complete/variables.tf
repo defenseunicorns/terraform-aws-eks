@@ -215,6 +215,32 @@ variable "reclaim_policy" {
   default     = "Delete"
 }
 
+#----------------AWS Loadbalancer Controller-------------------------
+variable "enable_aws_load_balancer_controller" {
+  description = "Enable AWS Loadbalancer Controller add-on"
+  type        = bool
+  default     = false
+}
+
+variable "aws_load_balancer_controller" {
+  description = "AWS Loadbalancer Controller Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+#----------------k8s Secret Store CSI Driver-------------------------
+variable "enable_secrets_store_csi_driver" {
+  description = "Enable k8s Secret Store CSI Driver add-on"
+  type        = bool
+  default     = false
+}
+
+variable "secrets_store_csi_driver" {
+  description = "k8s Secret Store CSI Driver Helm Chart config"
+  type        = any
+  default     = {}
+}
+
 ###########################################################
 ################## Bastion Config #########################
 variable "bastion_tenancy" {

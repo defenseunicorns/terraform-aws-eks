@@ -106,3 +106,15 @@ metrics_server = {
   wait          = false
   chart_version = "v3.10.0"
 }
+
+enable_aws_load_balancer_controller = true
+aws_load_balancer_controller = {
+  wait          = false
+  chart_version = "v1.6.0"
+}
+
+enable_secrets_store_csi_driver = true
+secrets_store_csi_driver = {
+  wait          = false
+  chart_version = "v1.3.4"
+}
