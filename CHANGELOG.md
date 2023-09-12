@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.0.9](https://github.com/defenseunicorns/terraform-aws-uds-eks/compare/v0.0.8...v0.0.9) (2023-09-12)
+
+
+### Bug Fixes
+
+* add optional secrets csi driver and aws lb controller ([#59](https://github.com/defenseunicorns/terraform-aws-uds-eks/issues/59)) ([5c8f07e](https://github.com/defenseunicorns/terraform-aws-uds-eks/commit/5c8f07ed26607045503afafff9044dbb4d0991dd))
+
+
+### Miscellaneous Chores
+
+* **deps:** update all dependencies ([#52](https://github.com/defenseunicorns/terraform-aws-uds-eks/issues/52)) ([7d6a7f9](https://github.com/defenseunicorns/terraform-aws-uds-eks/commit/7d6a7f9d06e68f9b15a11e7d340ce9bd1f0117e3))
+
 ## [0.0.8](https://github.com/defenseunicorns/terraform-aws-uds-eks/compare/v0.0.7...v0.0.8) (2023-09-06)
 
 
