@@ -25,8 +25,6 @@ module "eks_blueprints_kubernetes_addons" {
   enable_aws_efs_csi_driver = var.enable_amazon_eks_aws_efs_csi_driver
   aws_efs_csi_driver        = var.aws_efs_csi_driver
 
-  # K8s Add-ons
-
   # EKS Metrics Server
   enable_metrics_server = var.enable_metrics_server
   metrics_server        = var.metrics_server
@@ -38,6 +36,14 @@ module "eks_blueprints_kubernetes_addons" {
   # EKS Cluster Autoscaler
   enable_cluster_autoscaler = var.enable_cluster_autoscaler
   cluster_autoscaler        = var.cluster_autoscaler
+
+  # EKS AWS Load Balancer Controller
+  enable_aws_load_balancer_controller = var.enable_aws_load_balancer_controller
+  aws_load_balancer_controller        = var.aws_load_balancer_controller
+
+  # K8s Secrets Store CSI Driver
+  enable_secrets_store_csi_driver = var.enable_secrets_store_csi_driver
+  secrets_store_csi_driver        = var.secrets_store_csi_driver
 
   # Arbitrary helm charts can be fed into a helm_release var in blueprints. Note that the standard "create" var doesn't work with these
   # see https://github.com/aws-ia/terraform-aws-eks-blueprints-addons/blob/main/docs/helm-release.md

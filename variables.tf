@@ -127,6 +127,12 @@ variable "vpc_cni_custom_subnet" {
   default     = []
 }
 
+variable "create_eni_configs" {
+  description = "Merge ENI configs for VPC CNI into cluster_addons configuration"
+  type        = bool
+  default     = true
+}
+
 variable "cluster_security_group_additional_rules" {
   description = "List of additional security group rules to add to the cluster security group created. Set `source_node_security_group = true` inside rules to set the `node_security_group` as source"
   type        = any
@@ -167,9 +173,6 @@ variable "eks_managed_node_group_defaults" {
   default     = {}
 }
 
-###########################################################
-################## EKS "Native" add-ons Config ######################
-
 variable "cluster_addons" {
   description = <<-EOD
   Nested of eks native add-ons and their associated parameters.
@@ -182,6 +185,9 @@ EOD
   type        = any
   default     = {}
 }
+
+####################################################################
+################## AWS EKS Marketplace Addons ######################
 
 #----------------AWS EBS CSI Driver-------------------------
 variable "enable_amazon_eks_aws_ebs_csi_driver" {
@@ -281,8 +287,28 @@ variable "cluster_autoscaler" {
   }
 }
 
-variable "create_eni_configs" {
-  description = "Merge ENI configs for VPC CNI into cluster_addons configuration"
+#----------------AWS Loadbalancer Controller-------------------------
+variable "enable_aws_load_balancer_controller" {
+  description = "Enable AWS Loadbalancer Controller add-on"
   type        = bool
-  default     = true
+  default     = false
+}
+
+variable "aws_load_balancer_controller" {
+  description = "AWS Loadbalancer Controller Helm Chart config"
+  type        = any
+  default     = {}
+}
+
+#----------------k8s Secret Store CSI Driver-------------------------
+variable "enable_secrets_store_csi_driver" {
+  description = "Enable k8s Secret Store CSI Driver add-on"
+  type        = bool
+  default     = false
+}
+
+variable "secrets_store_csi_driver" {
+  description = "k8s Secret Store CSI Driver Helm Chart config"
+  type        = any
+  default     = {}
 }
