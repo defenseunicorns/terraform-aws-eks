@@ -3,7 +3,7 @@ module github.com/defenseunicorns/terraform-aws-uds-eks
 go 1.21.1
 
 require (
-	github.com/defenseunicorns/delivery-aws-iac v0.0.9
+	github.com/defenseunicorns/delivery-aws-iac v0.0.10
 	github.com/defenseunicorns/delivery_aws_iac_utils v0.0.0-20230831144954-60aad36d34b4
 	github.com/gruntwork-io/terratest v0.44.0
 	github.com/stretchr/testify v1.8.4
@@ -17,7 +17,7 @@ require (
 	cloud.google.com/go/storage v1.27.0 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
-	github.com/aws/aws-sdk-go v1.45.0 // indirect
+	github.com/aws/aws-sdk-go v1.45.8 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bgentry/go-netrc v0.0.0-20140422174119-9fd32a8b3d3d // indirect
 	github.com/boombuler/barcode v1.0.1-0.20190219062509-6c824513bacc // indirect
