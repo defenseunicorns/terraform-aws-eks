@@ -5,6 +5,8 @@ optConfig:
   optIn: true
 action: issue
 enforceDefault: true
+enforceBranches:
+  - ci/allstart-test
 requireApproval: true
 requireCodeOwnerReviews: true
 approvalCount: 1
