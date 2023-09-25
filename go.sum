@@ -205,6 +205,8 @@ github.com/armon/go-socks5 v0.0.0-20160902184237-e75332964ef5 h1:0CwZNZbxp69SHPd
 github.com/aws/aws-sdk-go v1.44.122/go.mod h1:y4AeaBuwd2Lk+GepC1E9v0qOiTws0MIWAX4oIKwKHZo=
 github.com/aws/aws-sdk-go v1.45.0 h1:qoVOQHuLacxJMO71T49KeE70zm+Tk3vtrl7XO4VUPZc=
 github.com/aws/aws-sdk-go v1.45.0/go.mod h1:aVsgQcEevwlmQ7qHE9I3h+dtQgpqhFB+i8Phjh7fkwI=
+github.com/aws/aws-sdk-go v1.45.8 h1:QbOMBTuRYx11fBwNSAJuztXmQf47deFz+CVYjakqmRo=
+github.com/aws/aws-sdk-go v1.45.8/go.mod h1:aVsgQcEevwlmQ7qHE9I3h+dtQgpqhFB+i8Phjh7fkwI=
 github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973/go.mod h1:Dwedo/Wpr24TaqPxmxbtue+5NUziq4I4S80YR8gNf3Q=
 github.com/beorn7/perks v1.0.0/go.mod h1:KWe93zE9D1o94FZ5RNwFwVgaQK1VOXiVxmqh+CedLV8=
 github.com/beorn7/perks v1.0.1 h1:VlbKKnNfV8bJzeqoa4cOKqO6bYr3WgKZxO8Z16+hsOM=
@@ -242,6 +244,8 @@ github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/defenseunicorns/delivery-aws-iac v0.0.9 h1:JJ7Pb5306xVthPeEUA/MiDYecPLCpRpDDklLkyd1LKc=
 github.com/defenseunicorns/delivery-aws-iac v0.0.9/go.mod h1:WqJH1vS5IBLhVDgMBxSpP/V8BRuQYb4i1IU78zzUgXI=
+github.com/defenseunicorns/delivery-aws-iac v0.0.10 h1:YTg7Bg6lbRMbGzSO+32KtX3QSS2QritROpA+hd7XEa8=
+github.com/defenseunicorns/delivery-aws-iac v0.0.10/go.mod h1:3xW7bPS2SNlbc5YjC5YUpH/efIKIqmJ/r44di+0stj0=
 github.com/defenseunicorns/delivery_aws_iac_utils v0.0.0-20230830194203-68c13d5f6b57 h1:mznfF5/SdbjdnIXXI/aFmQSH+VKJ5eJDS+XeQGqfG1w=
 github.com/defenseunicorns/delivery_aws_iac_utils v0.0.0-20230830194203-68c13d5f6b57/go.mod h1:Ha5eggYhztDke81iTQM6CDS0ifPBJViHABSnpIF+tiE=
 github.com/defenseunicorns/delivery_aws_iac_utils v0.0.0-20230831144954-60aad36d34b4 h1:5bVwXkhYiGSmnOUOdfbnet+Uhcv2Xp2QeFLBF/g+EFo=
