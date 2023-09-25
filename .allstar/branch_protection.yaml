@@ -1,0 +1,19 @@
+# branch_protection.yaml
+# see https://pkg.go.dev/github.com/ossf/allstar@v0.0.0-20230831154324-215510e57c2d/pkg/policies/branch#Branch for configuration details
+
+optConfig:
+  optIn: true
+action: issue
+enforceDefault: true
+requireApproval: true
+requireCodeOwnerReviews: true
+approvalCount: 1
+dismissStale: true
+blockForce: true
+enforceOnAdmins: true
+requireUpToDateBranch: true
+requireStatusChecks:
+  - context: 'pre-commit / pre-commit-checks (terraform)'
+  - context: 'pre-commit / pre-commit-checks (common)'
+  - context: 'pre-commit / pre-commit-checks (golang)'
+  - context: 'test / e2e-commercial-insecure'
