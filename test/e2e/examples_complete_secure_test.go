@@ -25,6 +25,10 @@ import (
 // 4. Destroy the rest of the example.
 func TestExamplesCompleteSecure(t *testing.T) {
 	t.Parallel()
+
+	// Set the TF_VAR_region to us-east-2 if it's not already set
+	utils.SetDefaultEnvVar("TF_VAR_region", "us-east-2")
+
 	// Setup options
 	tempFolder := teststructure.CopyTerraformFolderToTemp(t, "../..", "examples/complete")
 	terraformInitOptions := &terraform.Options{
