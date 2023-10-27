@@ -142,11 +142,11 @@ test: ## Run all automated tests. Requires access to an AWS account. Costs real 
 	$(MAKE) _test-all EXTRA_TEST_ARGS="-timeout 3h"
 
 .PHONY: test-ci-complete-insecure
-test-complete-insecure: ## Run one test (TestExamplesCompleteInsecure). Requires access to an AWS account. Costs real money.
+test-ci-complete-insecure: ## Run one test (TestExamplesCompleteInsecure). Requires access to an AWS account. Costs real money.
 	$(MAKE) _test-all EXTRA_TEST_ARGS="-timeout 3h -run TestExamplesCompleteInsecure"
 
 .PHONY: test-release-complete-secure
-test-complete-secure: ## Run one test (TestExamplesCompleteSecure). Requires access to an AWS account. Costs real money.
+test-release-complete-secure: ## Run one test (TestExamplesCompleteSecure). Requires access to an AWS account. Costs real money.
 	$(MAKE) _test-all EXTRA_TEST_ARGS="-timeout 3h -run TestExamplesCompleteSecure"
 
 .PHONY: docker-save-build-harness
