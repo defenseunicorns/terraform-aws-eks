@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.0.11](https://github.com/defenseunicorns/terraform-aws-uds-eks/compare/v0.0.10...v0.0.11) (2023-10-28)
+
+
+### Miscellaneous Chores
+
+* **deps:** update all dependencies ([#65](https://github.com/defenseunicorns/terraform-aws-uds-eks/issues/65)) ([0767870](https://github.com/defenseunicorns/terraform-aws-uds-eks/commit/07678704a4a12267a488e975181132314c9474f4))
+* **deps:** update all dependencies ([#67](https://github.com/defenseunicorns/terraform-aws-uds-eks/issues/67)) ([b5fa6ef](https://github.com/defenseunicorns/terraform-aws-uds-eks/commit/b5fa6efe614ca0482c629b3623a7e5178fef3347))
+* **deps:** update all dependencies ([#69](https://github.com/defenseunicorns/terraform-aws-uds-eks/issues/69)) ([83414cc](https://github.com/defenseunicorns/terraform-aws-uds-eks/commit/83414ccf97aa31274f4a6e72d72fbb74e0a205d1))
+* **deps:** update module golang.org/x/net to v0.17.0 [security] ([#78](https://github.com/defenseunicorns/terraform-aws-uds-eks/issues/78)) ([61882cd](https://github.com/defenseunicorns/terraform-aws-uds-eks/commit/61882cd1065739bcd4ec71f5b375f50d045486fe))
+* **deps:** update module google.golang.org/grpc to v1.56.3 [security] ([#79](https://github.com/defenseunicorns/terraform-aws-uds-eks/issues/79)) ([6b72995](https://github.com/defenseunicorns/terraform-aws-uds-eks/commit/6b729957a7828fbe282f7abeaa6b8a44427f6a75))
+
+
+### Continuous Integration
+
+* update-configs branch from delivery-github-repo-management ([#77](https://github.com/defenseunicorns/terraform-aws-uds-eks/issues/77)) ([6c64293](https://github.com/defenseunicorns/terraform-aws-uds-eks/commit/6c6429300bfced887925a5d7c50ffdaea8fb338b))
+
 ## [0.0.10](https://github.com/defenseunicorns/terraform-aws-uds-eks/compare/v0.0.9...v0.0.10) (2023-09-15)
 
 
