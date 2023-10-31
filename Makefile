@@ -98,7 +98,7 @@ go-init: _create-folders
 		-e SKIP_TEARDOWN \
 		${TF_VARS} \
 		${BUILD_HARNESS_REPO}:${BUILD_HARNESS_VERSION} \
-		bash -c 'git config --global --add safe.directory /app && go mod init github.com/defenseunicorns/terraform-aws-uds-eks && go mod tidy -v'
+		bash -c 'git config --global --add safe.directory /app && go mod init github.com/defenseunicorns/terraform-aws-eks && go mod tidy -v'
 
 .PHONY: bastion-connect
 bastion-connect: _create-folders ## To be used after deploying "secure mode" of examples/complete. It (a) creates a tunnel through the bastion host using sshuttle, and (b) sets up the KUBECONFIG so that the EKS cluster is able to be interacted with. Requires the standard AWS cred environment variables to be set. We recommend using 'aws-vault' to set them.

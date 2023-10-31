@@ -40,7 +40,7 @@ component-definition:
                 The Access policy is defined in this module. The role and user assignment is handled in this module.
 
                 See IaC resource aws_iam_role auth_eks_role
-                https://github.com/defenseunicorns/terraform-aws-uds-eks
+                https://github.com/defenseunicorns/terraform-aws-eks
             - uuid: c0d3dfcd-6501-4c15-bd1c-120648ee7834
               control-id: ac-3.7
               description: >-
@@ -54,7 +54,7 @@ component-definition:
                 The Access policy is defined in this module. The role and user assignment is handled in this module.
 
                 See IaC resource aws_iam_role auth_eks_role and module aws_eks
-                https://github.com/defenseunicorns/terraform-aws-uds-eks
+                https://github.com/defenseunicorns/terraform-aws-eks
             - uuid: e9f76acb-5e64-451e-99ae-4c5a7929dab1
               control-id: ac-3.8
               description: >-
@@ -71,7 +71,7 @@ component-definition:
                 The Access policy is defined in this module. The role and user assignment is handled in this module.
 
                 See IaC resource aws_iam_role auth_eks_role and module aws_eks
-                https://github.com/defenseunicorns/terraform-aws-uds-eks
+                https://github.com/defenseunicorns/terraform-aws-eks
             - uuid: 4cbd7515-80c7-49a7-b5a6-452e32cbcbdf
               control-id: ac-6
               description: >-
@@ -85,7 +85,7 @@ component-definition:
                 The Access policy is defined in this module. The role and user assignment is handled in this module.
 
                 See IaC resource aws_iam_role auth_eks_role
-                https://github.com/defenseunicorns/terraform-aws-uds-eks
+                https://github.com/defenseunicorns/terraform-aws-eks
             - uuid: b736b702-6378-4027-bc46-57e1c8031a4d
               control-id: ac-6.1
               description: >-
@@ -99,7 +99,7 @@ component-definition:
                 The Access policy is defined in this module. The role and user assignment is handled in this module.
 
                 See IaC resource aws_iam_role auth_eks_role
-                https://github.com/defenseunicorns/terraform-aws-uds-eks
+                https://github.com/defenseunicorns/terraform-aws-eks
             - uuid: 7d216042-ac59-4563-b0f3-cb88abc1718e
               control-id: ac-6.6
               description: >-
@@ -111,7 +111,7 @@ component-definition:
                 The Access policy is defined in this module. The role and user assignment is handled in this module.
 
                 See IaC resource aws_iam_role auth_eks_role
-                https://github.com/defenseunicorns/terraform-aws-uds-eks
+                https://github.com/defenseunicorns/terraform-aws-eks
             - uuid: fca344d4-0da2-49eb-abda-fef86b5f8efb
               control-id: ac-6.10
               description: >-
@@ -123,7 +123,7 @@ component-definition:
                 The Access policy is defined in this module. The role and user assignment is handled in this module.
 
                 See IaC resource aws_iam_role auth_eks_role
-                https://github.com/defenseunicorns/terraform-aws-uds-eks
+                https://github.com/defenseunicorns/terraform-aws-eks
             - uuid: e9657496-df46-48f8-a991-edac4a125ad4
               control-id: au-2
               description: >-
@@ -273,4 +273,4 @@ component-definition:
       - uuid: f2fea468-8cca-4b57-bafe-d29e1cd10582
         title: Terraform AWS S3 EKS
         rlinks:
-          - href: https://github.com/defenseunicorns/terraform-aws-uds-eks
+          - href: https://github.com/defenseunicorns/terraform-aws-eks
