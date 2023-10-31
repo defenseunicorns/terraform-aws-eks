@@ -18,7 +18,7 @@ locals {
     {
       RootTFModule = replace(basename(path.cwd), "_", "-") # tag names based on the directory name
       ManagedBy    = "Terraform"
-      Repo         = "https://github.com/defenseunicorns/terraform-aws-uds-eks"
+      Repo         = "https://github.com/defenseunicorns/terraform-aws-eks"
     }
   )
 }
@@ -28,7 +28,7 @@ locals {
 ################################################################################
 
 module "vpc" {
-  source = "git::https://github.com/defenseunicorns/terraform-aws-uds-vpc.git?ref=tags/v0.0.1-alpha"
+  source = "git::https://github.com/defenseunicorns/terraform-aws-vpc.git?ref=tags/v0.0.1-alpha"
 
   name                  = local.vpc_name
   vpc_cidr              = var.vpc_cidr
@@ -95,7 +95,7 @@ data "aws_ami" "amazonlinux2" {
 }
 
 module "bastion" {
-  source = "git::https://github.com/defenseunicorns/terraform-aws-uds-bastion.git?ref=tags/v0.0.1-alpha"
+  source = "git::https://github.com/defenseunicorns/terraform-aws-bastion.git?ref=tags/v0.0.1-alpha"
 
   count = var.enable_bastion ? 1 : 0
 

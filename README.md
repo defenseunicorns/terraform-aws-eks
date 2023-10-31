@@ -4,7 +4,7 @@ This repository contains Terraform configuration files that create an Amazon Ela
 
 ## Examples
 
-To view examples for how you can leverage this EKS Module, please see the [examples](https://github.com/defenseunicorns/terraform-aws-uds-eks/tree/main/examples) directory.
+To view examples for how you can leverage this EKS Module, please see the [examples](https://github.com/defenseunicorns/terraform-aws-eks/tree/main/examples) directory.
 
 ## Bastion
 When the cluster public access is set to false, a deployment will fail midway through and must be completed with through sshuttle.
