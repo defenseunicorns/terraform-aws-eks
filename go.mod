@@ -5,7 +5,7 @@ go 1.21.1
 require (
 	github.com/defenseunicorns/delivery-aws-iac v0.0.10
 	github.com/defenseunicorns/delivery_aws_iac_utils v0.0.2
-	github.com/gruntwork-io/terratest v0.46.1
+	github.com/gruntwork-io/terratest v0.46.5
 	github.com/stretchr/testify v1.8.4
 )
 
