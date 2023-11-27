@@ -91,7 +91,7 @@ module "efs" {
   name = lower(random_id.efs_name.hex)
   # Mount targets / security group
   mount_targets = {
-    for k, v in zipmap(local.availability_zone_name, var.private_subnet_ids) : k => { subnet_id = v }
+    for k, v in zipmap(var.azs, var.private_subnet_ids) : k => { subnet_id = v }
   }
 
   security_group_description = "${local.cluster_name} EFS security group"
