@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.0.12](https://github.com/defenseunicorns/terraform-aws-eks/compare/v0.0.11...v0.0.12) (2023-11-27)
+
+
+### Features
+
+* add more dynamic logic for az ([#86](https://github.com/defenseunicorns/terraform-aws-eks/issues/86)) ([4846bed](https://github.com/defenseunicorns/terraform-aws-eks/commit/4846beded46325e1e822f11fa7ec0d757d735a27))
+
+
+### Miscellaneous Chores
+
+* **deps:** update all dependencies ([#83](https://github.com/defenseunicorns/terraform-aws-eks/issues/83)) ([7babada](https://github.com/defenseunicorns/terraform-aws-eks/commit/7babadaaa972c95b3090d72b7a15e0c1eaf877b7))
+* **deps:** update all dependencies ([#90](https://github.com/defenseunicorns/terraform-aws-eks/issues/90)) ([ab1343f](https://github.com/defenseunicorns/terraform-aws-eks/commit/ab1343f8c2f76127c7ad5225461049266595c10c))
+* remove uds references ([#80](https://github.com/defenseunicorns/terraform-aws-eks/issues/80)) ([c9dc3c2](https://github.com/defenseunicorns/terraform-aws-eks/commit/c9dc3c290c0040cb130fedabb0694de66753e8a7))
+
+
+### Continuous Integration
+
+* update renovate window ([#85](https://github.com/defenseunicorns/terraform-aws-eks/issues/85)) ([f31f3f8](https://github.com/defenseunicorns/terraform-aws-eks/commit/f31f3f889006f40a0932c2a9eb2bd202e0d11523))
+
 ## [0.0.11](https://github.com/defenseunicorns/terraform-aws-eks/compare/v0.0.10...v0.0.11) (2023-10-28)
 
 
