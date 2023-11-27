@@ -1,7 +1,11 @@
+data "aws_caller_identity" "current" {}
+data "aws_partition" "current" {}
+
 ###############################################################
 # EKS Cluster
 ###############################################################
 locals {
+  cluster_name = coalesce(var.cluster_name, var.name)
   admin_arns = distinct(concat(
     [for admin_user in var.aws_admin_usernames : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/${admin_user}"],
     [data.aws_caller_identity.current.arn]
@@ -82,14 +86,14 @@ locals {
     var.create_eni_configs &&
     var.cluster_addons["vpc-cni"] != null &&
     length(var.vpc_cni_custom_subnet) != 0 &&
-    length(var.vpc_cni_custom_subnet) == length(local.azs)
+    length(var.vpc_cni_custom_subnet) == length(var.azs)
   )
 
   # Define ENI Configurations if should_create_eni_configs evaluates to true.
   eniConfig = local.should_create_eni_configs ? {
     create = true,
     region = var.aws_region,
-    subnets = { for az, subnet in zipmap(local.azs, var.vpc_cni_custom_subnet) : az => {
+    subnets = { for az, subnet in zipmap(var.azs, var.vpc_cni_custom_subnet) : az => {
       id = subnet,
       securityGroups = compact([
         module.aws_eks.cluster_primary_security_group_id,

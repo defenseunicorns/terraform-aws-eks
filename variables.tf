@@ -27,6 +27,12 @@ variable "vpc_id" {
   default     = ""
 }
 
+variable "azs" {
+  description = "List of names of availability zones to use for subnet configs"
+  type        = list(string)
+  default     = []
+}
+
 variable "private_subnet_ids" {
   description = "Private subnet IDs"
   type        = list(string)

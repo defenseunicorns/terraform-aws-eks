@@ -2,6 +2,15 @@ data "aws_partition" "current" {}
 
 data "aws_caller_identity" "current" {}
 
+
+data "aws_availability_zones" "available" {
+  filter {
+    name   = "opt-in-status"
+    values = ["opt-in-not-required"]
+  }
+}
+
+
 resource "random_id" "default" {
   byte_length = 2
 }
@@ -27,13 +36,17 @@ locals {
 # VPC
 ################################################################################
 
+locals {
+  azs = [for az_name in slice(data.aws_availability_zones.available.names, 0, min(length(data.aws_availability_zones.available.names), var.num_azs)) : az_name]
+}
+
 module "vpc" {
   source = "git::https://github.com/defenseunicorns/terraform-aws-vpc.git?ref=tags/v0.0.1-alpha"
 
   name                  = local.vpc_name
   vpc_cidr              = var.vpc_cidr
   secondary_cidr_blocks = var.secondary_cidr_blocks
-  azs                   = ["${var.region}a", "${var.region}b", "${var.region}c"]
+  azs                   = local.azs
   public_subnets        = [for k, v in module.vpc.azs : cidrsubnet(module.vpc.vpc_cidr_block, 5, k)]
   private_subnets       = [for k, v in module.vpc.azs : cidrsubnet(module.vpc.vpc_cidr_block, 5, k + 4)]
   database_subnets      = [for k, v in module.vpc.azs : cidrsubnet(module.vpc.vpc_cidr_block, 5, k + 8)]
@@ -267,6 +280,7 @@ module "eks" {
   cluster_endpoint_public_access          = var.cluster_endpoint_public_access
   cluster_endpoint_private_access         = true
   vpc_cni_custom_subnet                   = module.vpc.intra_subnets
+  azs                                     = module.vpc.azs
   aws_admin_usernames                     = var.aws_admin_usernames
   cluster_version                         = var.cluster_version
   cidr_blocks                             = module.vpc.private_subnets_cidr_blocks
