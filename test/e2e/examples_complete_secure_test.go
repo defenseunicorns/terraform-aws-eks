@@ -89,15 +89,15 @@ func TestExamplesCompleteSecure(t *testing.T) {
 			}
 			_, outputBastionInstanceIDErr := terraform.OutputE(t, terraformOutputOptions, "bastion_instance_id")
 			// We are intentionally using `assert` here and not `require`. We want the rest of this function to run even if there are errors.
-			assert.NoError(t, outputBastionInstanceIDErr) //nolint:testifylint
+			assert.NoError(t, outputBastionInstanceIDErr)
 			_, outputVpcCidrErr := terraform.OutputE(t, terraformOutputOptions, "vpc_cidr")
-			assert.NoError(t, outputVpcCidrErr) //nolint:testifylint
+			assert.NoError(t, outputVpcCidrErr)
 			_, outputBastionRegionErr := terraform.OutputE(t, terraformOutputOptions, "bastion_region")
-			assert.NoError(t, outputBastionRegionErr) //nolint:testifylint
+			assert.NoError(t, outputBastionRegionErr)
 			if outputBastionInstanceIDErr == nil && outputVpcCidrErr == nil && outputBastionRegionErr == nil {
 				// We can only destroy using sshuttle if the bastion exists and is functional. If we get, for example, an error saying there is not enough capacity in the chosen AZ, the bastion will have never been deployed and this will fail because `terraform output` didn't return anything.
 				err := utils.DestroyWithSshuttle(t, terraformOptionsWithEKSTarget)
-				assert.NoError(t, err) //nolint:testifylint
+				assert.NoError(t, err)
 			}
 			terraform.Destroy(t, terraformOptionsNoTargets)
 		})
