@@ -7,7 +7,7 @@ locals {
 }
 
 module "eks_blueprints_kubernetes_addons" {
-  source = "git::https://github.com/aws-ia/terraform-aws-eks-blueprints-addons.git?ref=v1.10.1"
+  source = "git::https://github.com/aws-ia/terraform-aws-eks-blueprints-addons.git?ref=v1.12.0"
 
   cluster_name      = module.aws_eks.cluster_name
   cluster_endpoint  = module.aws_eks.cluster_endpoint
