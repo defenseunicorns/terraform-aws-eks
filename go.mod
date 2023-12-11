@@ -1,11 +1,11 @@
 module github.com/defenseunicorns/terraform-aws-eks
 
-go 1.21.4
+go 1.21.5
 
 require (
-	github.com/defenseunicorns/delivery-aws-iac v0.0.10
-	github.com/defenseunicorns/delivery_aws_iac_utils v0.0.2
-	github.com/gruntwork-io/terratest v0.46.7
+	github.com/defenseunicorns/delivery-aws-iac v0.0.11
+	github.com/defenseunicorns/delivery_aws_iac_utils v0.0.5
+	github.com/gruntwork-io/terratest v0.46.8
 	github.com/stretchr/testify v1.8.4
 )
 
@@ -17,7 +17,7 @@ require (
 	cloud.google.com/go/storage v1.33.0 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
 	github.com/apparentlymart/go-textseg/v15 v15.0.0 // indirect
-	github.com/aws/aws-sdk-go v1.46.5 // indirect
+	github.com/aws/aws-sdk-go v1.48.6 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bgentry/go-netrc v0.0.0-20140422174119-9fd32a8b3d3d // indirect
 	github.com/boombuler/barcode v1.0.1-0.20190219062509-6c824513bacc // indirect
@@ -99,9 +99,9 @@ require (
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	k8s.io/api v0.28.3 // indirect
-	k8s.io/apimachinery v0.28.3 // indirect
-	k8s.io/client-go v0.28.3 // indirect
+	k8s.io/api v0.28.4 // indirect
+	k8s.io/apimachinery v0.28.4 // indirect
+	k8s.io/client-go v0.28.4 // indirect
 	k8s.io/klog/v2 v2.100.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20231010175941-2dd684a91f00 // indirect
 	k8s.io/utils v0.0.0-20230726121419-3b25d923346b // indirect
