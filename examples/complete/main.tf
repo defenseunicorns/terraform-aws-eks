@@ -314,6 +314,9 @@ module "eks" {
   # EKS Blueprints - blueprints curated helm charts
   #---------------------------------------------------------------
 
+  create_kubernetes_resources = var.create_kubernetes_resources
+  create_ssm_parameters       = var.create_ssm_parameters
+
   # AWS EKS EBS CSI Driver
   enable_amazon_eks_aws_ebs_csi_driver = var.enable_amazon_eks_aws_ebs_csi_driver
   enable_gp3_default_storage_class     = var.enable_gp3_default_storage_class

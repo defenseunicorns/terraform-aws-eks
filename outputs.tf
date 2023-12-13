@@ -55,3 +55,12 @@ output "cluster_security_group_id" {
   description = "EKS cluster security group ID"
   value       = module.aws_eks.cluster_security_group_id
 }
+
+################################################################################
+# EKS Addons metadata
+################################################################################
+# see https://github.com/aws-ia/terraform-aws-eks-blueprints-addons/blob/main/outputs.tf#L167-L276
+output "eks_addons_gitops_metadata" {
+  description = ""
+  value       = try(module.eks_blueprints_kubernetes_addons.gitops_metadata, null)
+}
