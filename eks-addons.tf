@@ -128,16 +128,14 @@ locals {
   }
 }
 
-
 resource "aws_ssm_parameter" "helm_input_values" {
-  #checkov:skip=CKV_AWS_337: TODO Need to encrypt this with KMS key
-  #checkov:skip=CKV2_AWS_34: TODO Need to encrypt this with KMS key
   for_each = var.create_ssm_parameters ? local.structured_gitops_metadata : {}
 
-  name  = "/${local.cluster_name}/${each.key}_helm_input_values"
-  value = jsonencode(each.value)
-  type  = "String"
-  tier  = "Standard"
+  name   = "/${local.cluster_name}/${each.key}_helm_input_values"
+  value  = jsonencode(each.value)
+  type   = "SecureString"
+  key_id = var.create_ssm_parameters ? var.ssm_parameter_key_arn : "alias/aws/ssm"
+  tier   = "Standard"
 
   tags = var.tags
 }

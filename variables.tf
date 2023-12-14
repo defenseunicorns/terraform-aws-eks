@@ -228,6 +228,12 @@ variable "create_ssm_parameters" {
   default     = true
 }
 
+variable "ssm_parameter_key_arn" {
+  description = "KMS key arn for use with SSM parameter encryption/decryption"
+  type        = string
+  default     = ""
+}
+
 #----------------AWS EBS CSI Driver-------------------------
 variable "enable_amazon_eks_aws_ebs_csi_driver" {
   description = "Enable EKS Managed AWS EBS CSI Driver add-on"

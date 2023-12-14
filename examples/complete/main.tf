@@ -267,6 +267,52 @@ locals {
   self_managed_node_groups = var.enable_self_managed_nodegroups ? local.mission_app_self_mg_node_group : {}
 }
 
+resource "aws_kms_key" "ssm_parameter_key" {
+  count                   = var.create_ssm_parameters ? 1 : 0
+  description             = "KMS key for SecureString SSM parameters"
+  deletion_window_in_days = var.kms_key_deletion_window
+  enable_key_rotation     = true
+  policy                  = data.aws_iam_policy_document.ssm_kms_policy.json
+  tags                    = var.tags
+  multi_region            = true
+}
+
+data "aws_iam_policy_document" "ssm_kms_policy" {
+  # checkov:skip=CKV_AWS_111: todo reduce perms on key
+  # checkov:skip=CKV_AWS_109: todo be more specific with resources
+  # checkov:skip=CKV_AWS_356: todo Ensure no IAM policies documents allow "*" as a statement's resource for restrictable actions
+  statement {
+    principals {
+      type = "AWS"
+      identifiers = [
+        "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:root"
+      ]
+    }
+    actions = [
+      "kms:*",
+    ]
+    resources = ["*"]
+  }
+  statement {
+    principals {
+      type        = "Service"
+      identifiers = ["ssm.amazonaws.com"]
+    }
+    actions = [
+      "kms:Decrypt",
+      "kms:Encrypt",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:DescribeKey",
+    ]
+    resources = ["*"]
+  }
+}
+
+locals {
+  ssm_parameter_key_arn = var.create_ssm_parameters ? aws_kms_key.ssm_parameter_key[0].arn : ""
+}
+
 module "eks" {
   source = "../.."
 
@@ -316,6 +362,7 @@ module "eks" {
 
   create_kubernetes_resources = var.create_kubernetes_resources
   create_ssm_parameters       = var.create_ssm_parameters
+  ssm_parameter_key_arn       = local.ssm_parameter_key_arn
 
   # AWS EKS EBS CSI Driver
   enable_amazon_eks_aws_ebs_csi_driver = var.enable_amazon_eks_aws_ebs_csi_driver
