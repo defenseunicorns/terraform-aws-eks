@@ -279,9 +279,11 @@ module "ssm_kms_key" {
     data.aws_caller_identity.current.arn
   ]
 
-  computed_aliases = [
-    "${local.kms_key_alias_name_prefix}-ssm"
-  ]
+  computed_aliases = {
+    ssm = {
+      name = "${local.kms_key_alias_name_prefix}-ssm"
+    }
+  }
 
   key_statements = {
     sid    = "SSM service access"
