@@ -192,8 +192,47 @@ EOD
   default     = {}
 }
 
-####################################################################
-################## AWS EKS Marketplace Addons ######################
+########################################################
+
+variable "create_kubernetes_resources" {
+  description = "Create Kubernetes resource with Helm or Kubernetes provider"
+  type        = bool
+  default     = true
+}
+
+variable "blueprints_addons_prefixes" {
+  description = "Prefixes for the eks blueprints addons, used to parse addon gitops_metadata output and create objects with"
+  type        = list(string)
+  default = [
+    "cert_manager",
+    "cluster_autoscaler",
+    "aws_cloudwatch_metrics",
+    "aws_efs_csi_driver",
+    "aws_fsx_csi_driver",
+    "aws_privateca_issuer",
+    "external_dns_route53",
+    "external_secrets",
+    "aws_load_balancer_controller",
+    "aws_for_fluentbit",
+    "aws_node_termination_handler",
+    "karpenter",
+    "velero",
+    "aws_gateway_api_controller",
+    "fargate_fluentbit_log",
+  ]
+}
+
+variable "create_ssm_parameters" {
+  description = "Create SSM parameters for values from eks blueprints addons outputs"
+  type        = bool
+  default     = true
+}
+
+variable "ssm_parameter_key_arn" {
+  description = "KMS key arn for use with SSM parameter encryption/decryption"
+  type        = string
+  default     = ""
+}
 
 #----------------AWS EBS CSI Driver-------------------------
 variable "enable_amazon_eks_aws_ebs_csi_driver" {

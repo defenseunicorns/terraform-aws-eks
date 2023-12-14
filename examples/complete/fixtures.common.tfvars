@@ -23,7 +23,7 @@ zarf_version         = "v0.29.1"
 ###########################################################
 #################### EKS Config ###########################
 
-cluster_version = "1.26"
+cluster_version = "1.27"
 
 # #################### EKS Addon #########################
 # add other "eks native" marketplace addons and configs to this list
@@ -89,16 +89,6 @@ enable_cluster_autoscaler = true
 cluster_autoscaler = {
   wait          = false
   chart_version = "v9.29.1"
-  # set = [
-  #   {
-  #     name  = "extraArgs.expander"
-  #     value = "priority"
-  #   },
-  #   {
-  #     name  = "image.tag"
-  #     value = "v1.27.2"
-  #   }
-  # ]
 }
 
 enable_metrics_server = true

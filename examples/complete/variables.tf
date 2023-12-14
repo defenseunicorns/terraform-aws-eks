@@ -144,6 +144,19 @@ EOD
   default     = {}
 }
 
+variable "create_kubernetes_resources" {
+  description = "If true, kubernetes resources related to non-marketplace addons to will be created"
+  type        = bool
+  default     = true
+}
+
+variable "create_ssm_parameters" {
+  description = "Create SSM parameters for values from eks blueprints addons"
+  type        = bool
+  default     = true
+}
+
+
 #----------------AWS EBS CSI Driver-------------------------
 variable "enable_amazon_eks_aws_ebs_csi_driver" {
   description = "Enable EKS Managed AWS EBS CSI Driver add-on"
