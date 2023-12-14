@@ -285,22 +285,26 @@ module "ssm_kms_key" {
     }
   }
 
-  key_statements = {
-    sid    = "SSM service access"
-    effect = "Allow"
-    principals = {
-      type        = "Service"
-      identifiers = ["ssm.amazonaws.com"]
+  key_statements = [
+    {
+      sid    = "SSM service access"
+      effect = "Allow"
+      principals = [
+        {
+          type        = "Service"
+          identifiers = ["ssm.amazonaws.com"]
+        }
+      ]
+      actions = [
+        "kms:Decrypt",
+        "kms:Encrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:DescribeKey",
+      ]
+      resources = ["*"]
     }
-    actions = [
-      "kms:Decrypt",
-      "kms:Encrypt",
-      "kms:ReEncrypt*",
-      "kms:GenerateDataKey*",
-      "kms:DescribeKey",
-    ]
-    resources = ["*"]
-  }
+  ]
 
   tags = local.tags
 }
