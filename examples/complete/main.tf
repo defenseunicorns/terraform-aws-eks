@@ -267,34 +267,26 @@ locals {
   self_managed_node_groups = var.enable_self_managed_nodegroups ? local.mission_app_self_mg_node_group : {}
 }
 
-resource "aws_kms_key" "ssm_parameter_key" {
-  count                   = var.create_ssm_parameters ? 1 : 0
-  description             = "KMS key for SecureString SSM parameters"
-  deletion_window_in_days = var.kms_key_deletion_window
-  enable_key_rotation     = true
-  policy                  = data.aws_iam_policy_document.ssm_kms_policy.json
-  tags                    = var.tags
-  multi_region            = true
-}
+module "ssm_kms_key" {
+  source  = "terraform-aws-modules/kms/aws"
+  version = "~> 2.0"
 
-data "aws_iam_policy_document" "ssm_kms_policy" {
-  # checkov:skip=CKV_AWS_111: todo reduce perms on key
-  # checkov:skip=CKV_AWS_109: todo be more specific with resources
-  # checkov:skip=CKV_AWS_356: todo Ensure no IAM policies documents allow "*" as a statement's resource for restrictable actions
-  statement {
-    principals {
-      type = "AWS"
-      identifiers = [
-        "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:root"
-      ]
-    }
-    actions = [
-      "kms:*",
-    ]
-    resources = ["*"]
-  }
-  statement {
-    principals {
+  create = var.create_ssm_parameters
+
+  description = "KMS key for SecureString SSM parameters"
+
+  key_administrators = [
+    data.aws_caller_identity.current.arn
+  ]
+
+  computed_aliases = [
+    "${local.kms_key_alias_name_prefix}-ssm"
+  ]
+
+  key_statements = {
+    sid    = "SSM service access"
+    effect = "Allow"
+    principals = {
       type        = "Service"
       identifiers = ["ssm.amazonaws.com"]
     }
@@ -307,10 +299,12 @@ data "aws_iam_policy_document" "ssm_kms_policy" {
     ]
     resources = ["*"]
   }
+
+  tags = local.tags
 }
 
 locals {
-  ssm_parameter_key_arn = var.create_ssm_parameters ? aws_kms_key.ssm_parameter_key[0].arn : ""
+  ssm_parameter_key_arn = var.create_ssm_parameters ? module.ssm_kms_key.key_arn : ""
 }
 
 module "eks" {
