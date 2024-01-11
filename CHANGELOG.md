@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.0.13](https://github.com/defenseunicorns/terraform-aws-eks/compare/v0.0.12...v0.0.13) (2024-01-10)
+
+
+### Features
+
+* add ability to turn off helm-release resources and write values to ssm ([#97](https://github.com/defenseunicorns/terraform-aws-eks/issues/97)) ([ef16b23](https://github.com/defenseunicorns/terraform-aws-eks/commit/ef16b232618db8782c4c4ca57493ad7e74f4827d))
+
+
+### Miscellaneous Chores
+
+* **deps:** update all dependencies ([#95](https://github.com/defenseunicorns/terraform-aws-eks/issues/95)) ([c25ede0](https://github.com/defenseunicorns/terraform-aws-eks/commit/c25ede0ba813c248694306b96f0aa74e0c892b88))
+
+
+### Continuous Integration
+
+* renovate window update and vuln handling ([#100](https://github.com/defenseunicorns/terraform-aws-eks/issues/100)) ([6f877b9](https://github.com/defenseunicorns/terraform-aws-eks/commit/6f877b97948655cab5039cce47305228e256a2d5))
+* update renovate window ([#91](https://github.com/defenseunicorns/terraform-aws-eks/issues/91)) ([0fd9ad5](https://github.com/defenseunicorns/terraform-aws-eks/commit/0fd9ad59120c84041e011cd8aae1f897532fbe65))
+
 ## [0.0.12](https://github.com/defenseunicorns/terraform-aws-eks/compare/v0.0.11...v0.0.12) (2023-11-27)
 
 
