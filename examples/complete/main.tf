@@ -265,6 +265,24 @@ locals {
   }
 
   self_managed_node_groups = var.enable_self_managed_nodegroups ? local.mission_app_self_mg_node_group : {}
+  access_entries = merge(
+    var.access_entries,
+    {
+      bastion = {
+        principal_arn = module.bastion[0].bastion_role_arn
+        type          = "STANDARD"
+        policy_associations = {
+          admin = {
+            policy_arn = "arn:${data.aws_partition.current.partition}:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+            access_scope = {
+              type = "cluster"
+            }
+          }
+        }
+      }
+    }
+  )
+
 }
 
 module "ssm_kms_key" {
@@ -331,12 +349,7 @@ module "eks" {
   cluster_version                         = var.cluster_version
   cidr_blocks                             = module.vpc.private_subnets_cidr_blocks
   eks_use_mfa                             = var.eks_use_mfa
-  aws_auth_roles                          = local.bastion_aws_auth_entry
   dataplane_wait_duration                 = var.dataplane_wait_duration
-
-  # If using EKS Managed Node Groups, the aws-auth ConfigMap is created by eks itself and terraform can not create it
-  create_aws_auth_configmap = var.create_aws_auth_configmap
-  manage_aws_auth_configmap = var.manage_aws_auth_configmap
 
   ######################## EKS Managed Node Group ###################################
   eks_managed_node_group_defaults = local.eks_managed_node_group_defaults
@@ -348,8 +361,8 @@ module "eks" {
 
   tags = local.tags
 
-
-
+  access_entries      = local.access_entries
+  authentication_mode = var.authentication_mode
   #---------------------------------------------------------------
   #"native" EKS Add-Ons
   #---------------------------------------------------------------

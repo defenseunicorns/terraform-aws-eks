@@ -28,18 +28,6 @@ variable "aws_admin_usernames" {
   default     = []
 }
 
-variable "create_aws_auth_configmap" {
-  description = "Determines whether to create the aws-auth configmap. NOTE - this is only intended for scenarios where the configmap does not exist (i.e. - when using only self-managed node groups). Most users should use `manage_aws_auth_configmap`"
-  type        = bool
-  default     = false
-}
-
-variable "manage_aws_auth_configmap" {
-  description = "Determines whether to manage the aws-auth configmap"
-  type        = bool
-  default     = false
-}
-
 variable "tags" {
   description = "A map of tags to apply to all resources"
   type        = map(string)
@@ -296,4 +284,17 @@ variable "enable_bastion" {
   description = "If true, a bastion will be created"
   type        = bool
   default     = true
+}
+
+#----------------Access Entry-------------------------
+variable "access_entries" {
+  description = "Map of access entries to add to the cluster"
+  type        = any
+  default     = {}
+}
+
+variable "authentication_mode" {
+  description = "The authentication mode for the cluster. Valid values are `CONFIG_MAP`, `API` or `API_AND_CONFIG_MAP`"
+  type        = string
+  default     = "API"
 }
