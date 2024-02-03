@@ -85,13 +85,6 @@ locals {
     source_security_group_id = try(module.bastion[0].security_group_ids[0], null)
   }
 
-  # if bastion role vars are defined, add bastion role to aws_auth_roles list
-  bastion_aws_auth_entry = local.enable_bastion_access ? [
-    {
-      rolearn  = local.bastion_role_arn
-      username = local.bastion_role_name
-      groups   = ["system:masters"]
-  }] : []
 }
 
 data "aws_ami" "amazonlinux2" {
