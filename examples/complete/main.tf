@@ -70,11 +70,6 @@ module "vpc" {
 # Bastion instance
 ################################################################################
 locals {
-  bastion_role_arn  = try(module.bastion[0].bastion_role_arn, "")
-  bastion_role_name = try(module.bastion[0].bastion_role_name, "")
-
-  enable_bastion_access = length(local.bastion_role_arn) > 0 && length(local.bastion_role_name) > 0
-
   ingress_bastion_to_cluster = {
     description              = "Bastion SG to Cluster"
     security_group_id        = module.eks.cluster_security_group_id
