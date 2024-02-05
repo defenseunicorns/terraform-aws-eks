@@ -255,7 +255,7 @@ locals {
   self_managed_node_groups = var.enable_self_managed_nodegroups ? local.mission_app_self_mg_node_group : {}
   access_entries = merge(
     var.access_entries,
-    {
+    var.enable_bastion ? {
       bastion = {
         principal_arn = module.bastion[0].bastion_role_arn
         type          = "STANDARD"
@@ -268,9 +268,8 @@ locals {
           }
         }
       }
-    }
+    } : {}
   )
-
 }
 
 module "ssm_kms_key" {
