@@ -55,7 +55,7 @@ module "eks_blueprints_kubernetes_addons" {
 
   depends_on = [
     module.aws_eks.access_entries,
-    module.aws_eks.aws_eks_access_policy_associations
+    module.aws_eks.access_policy_associations
   ]
 }
 
