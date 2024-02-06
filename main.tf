@@ -109,7 +109,7 @@ locals {
 }
 
 module "aws_eks" {
-  source = "git::https://github.com/terraform-aws-modules/terraform-aws-eks.git?ref=v20.0.0"
+  source = "git::https://github.com/terraform-aws-modules/terraform-aws-eks.git?ref=v20.2.0"
 
   cluster_name    = local.cluster_name
   cluster_version = var.cluster_version
