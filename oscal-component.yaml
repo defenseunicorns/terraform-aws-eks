@@ -142,7 +142,7 @@ component-definition:
                 # Control Implementation
                 Cloudwatch Logs are enabled for the EKS Cluster Control Plane. https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html
 
-                See git::https://github.com/terraform-aws-modules/terraform-aws-eks.git?ref=v19.15.3 EKS module where logging is enabled by default.
+                See git::https://github.com/terraform-aws-modules/terraform-aws-eks.git?ref=v20.0.0 EKS module where logging is enabled by default.
             - uuid: 4d0cf113-0bbe-401e-bd70-c88e6fe04d50
               control-id: au-3
               description: >-
@@ -158,7 +158,7 @@ component-definition:
                 # Control Implementation
                 Cloudwatch Logs are enabled for the EKS Cluster Control Plane. https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html
 
-                See git::https://github.com/terraform-aws-modules/terraform-aws-eks.git?ref=v19.15.3 EKS module where logging is enabled by default.
+                See git::https://github.com/terraform-aws-modules/terraform-aws-eks.git?ref=v20.0.0 EKS module where logging is enabled by default.
             - uuid: f5c4cc62-2b8f-451e-948e-cf7ca8e2ed87
               control-id: au-3.1
               description: >-
@@ -169,7 +169,7 @@ component-definition:
                 # Control Implementation
                 Cloudwatch Logs are enabled for the EKS Cluster Control Plane. https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html
 
-                See git::https://github.com/terraform-aws-modules/terraform-aws-eks.git?ref=v19.15.3 EKS module where logging is enabled by default.
+                See git::https://github.com/terraform-aws-modules/terraform-aws-eks.git?ref=v20.0.0 EKS module where logging is enabled by default.
             - uuid: 8a6c1f4-203b-4862-9db8-1b2b95e85ebd
               control-id: au-8
               description: >-
@@ -183,7 +183,7 @@ component-definition:
                 # Control Implementation
                 Cloudwatch Logs are enabled for the EKS Cluster Control Plane. https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html
 
-                See git::https://github.com/terraform-aws-modules/terraform-aws-eks.git?ref=v19.15.3 EKS module where logging is enabled by default.
+                See git::https://github.com/terraform-aws-modules/terraform-aws-eks.git?ref=v20.0.0 EKS module where logging is enabled by default.
             - uuid: 69e91737-781c-4596-bf9b-e4bb0123bbf8
             - uuid: 0a425c74-ec7f-4608-971f-1ebe04ef1f85
               control-id: cm-2

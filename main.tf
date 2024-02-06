@@ -10,11 +10,6 @@ locals {
     [for admin_user in var.aws_admin_usernames : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/${admin_user}"],
     [data.aws_caller_identity.current.arn]
   ))
-  aws_auth_users = [for admin_user in var.aws_admin_usernames : {
-    userarn  = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/${admin_user}"
-    username = admin_user
-    groups   = ["system:masters"]
-  }]
 
   eks_admin_arns = length(local.admin_arns) == 0 ? [] : local.admin_arns
 
@@ -49,17 +44,6 @@ locals {
       }
     ]
   })
-
-  aws_eks_auth_roles = concat(
-    var.aws_auth_roles,
-    [
-      {
-        rolearn  = aws_iam_role.auth_eks_role.arn
-        username = aws_iam_role.auth_eks_role.name
-        groups   = ["system:masters"]
-      }
-  ])
-
   ############
   # cluster_addons additional logic
   ############
@@ -125,7 +109,7 @@ locals {
 }
 
 module "aws_eks" {
-  source = "git::https://github.com/terraform-aws-modules/terraform-aws-eks.git?ref=v19.21.0"
+  source = "git::https://github.com/terraform-aws-modules/terraform-aws-eks.git?ref=v20.2.0"
 
   cluster_name    = local.cluster_name
   cluster_version = var.cluster_version
@@ -146,6 +130,10 @@ module "aws_eks" {
 
   cluster_addons = local.cluster_addons
 
+  access_entries                           = var.access_entries
+  authentication_mode                      = var.authentication_mode
+  enable_cluster_creator_admin_permissions = var.enable_cluster_creator_admin_permissions
+
   #----------------------------------------------------------------------------------------------------------#
   # Security groups used in this module created by the upstream modules terraform-aws-eks (https://github.com/terraform-aws-modules/terraform-aws-eks).
   #   Upstream module implemented Security groups based on the best practices doc https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html.
@@ -154,13 +142,7 @@ module "aws_eks" {
   #----------------------------------------------------------------------------------------------------------#
   cluster_security_group_additional_rules = var.cluster_security_group_additional_rules
 
-
-  create_aws_auth_configmap = var.create_aws_auth_configmap
-  manage_aws_auth_configmap = var.manage_aws_auth_configmap
-
   kms_key_administrators = distinct(concat(local.admin_arns, var.kms_key_administrators))
-  aws_auth_users         = distinct(concat(local.aws_auth_users, var.aws_auth_users))
-  aws_auth_roles         = local.aws_eks_auth_roles
 
   tags = var.tags
 }

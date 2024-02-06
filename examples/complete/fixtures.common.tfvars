@@ -4,8 +4,7 @@
 # Setting region per test case to avoid AWS service quota limits
 #region  = "us-east-2" # target AWS region
 #region2 = "us-east-1" # RDS backup target AWS region
-name_prefix               = "ci"
-manage_aws_auth_configmap = true
+name_prefix = "ci"
 
 ###########################################################
 #################### VPC Config ###########################
@@ -46,9 +45,7 @@ cluster_addons = {
     JSON
   }
   coredns = {
-    preserve    = true
     most_recent = true
-
     timeouts = {
       create = "2m"
       delete = "10m"
@@ -58,7 +55,6 @@ cluster_addons = {
     most_recent = true
   }
   aws-ebs-csi-driver = {
-    preserve    = true
     most_recent = true
     timeouts = {
       create = "4m"

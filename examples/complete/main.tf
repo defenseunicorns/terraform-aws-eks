@@ -43,16 +43,17 @@ locals {
 module "vpc" {
   source = "git::https://github.com/defenseunicorns/terraform-aws-vpc.git?ref=v0.1.5"
 
-  name                  = local.vpc_name
-  vpc_cidr              = var.vpc_cidr
-  secondary_cidr_blocks = var.secondary_cidr_blocks
-  azs                   = local.azs
-  public_subnets        = [for k, v in module.vpc.azs : cidrsubnet(module.vpc.vpc_cidr_block, 5, k)]
-  private_subnets       = [for k, v in module.vpc.azs : cidrsubnet(module.vpc.vpc_cidr_block, 5, k + 4)]
-  database_subnets      = [for k, v in module.vpc.azs : cidrsubnet(module.vpc.vpc_cidr_block, 5, k + 8)]
-  intra_subnets         = [for k, v in module.vpc.azs : cidrsubnet(element(module.vpc.vpc_secondary_cidr_blocks, 0), 5, k)]
-  single_nat_gateway    = true
-  enable_nat_gateway    = true
+  name                         = local.vpc_name
+  vpc_cidr                     = var.vpc_cidr
+  secondary_cidr_blocks        = var.secondary_cidr_blocks
+  azs                          = local.azs
+  public_subnets               = [for k, v in module.vpc.azs : cidrsubnet(module.vpc.vpc_cidr_block, 5, k)]
+  private_subnets              = [for k, v in module.vpc.azs : cidrsubnet(module.vpc.vpc_cidr_block, 5, k + 4)]
+  database_subnets             = [for k, v in module.vpc.azs : cidrsubnet(module.vpc.vpc_cidr_block, 5, k + 8)]
+  intra_subnets                = [for k, v in module.vpc.azs : cidrsubnet(element(module.vpc.vpc_secondary_cidr_blocks, 0), 5, k)]
+  single_nat_gateway           = true
+  enable_nat_gateway           = true
+  create_default_vpc_endpoints = false
 
   private_subnet_tags = {
     "kubernetes.io/cluster/${local.cluster_name}" = "shared"
@@ -70,11 +71,6 @@ module "vpc" {
 # Bastion instance
 ################################################################################
 locals {
-  bastion_role_arn  = try(module.bastion[0].bastion_role_arn, "")
-  bastion_role_name = try(module.bastion[0].bastion_role_name, "")
-
-  enable_bastion_access = length(local.bastion_role_arn) > 0 && length(local.bastion_role_name) > 0
-
   ingress_bastion_to_cluster = {
     description              = "Bastion SG to Cluster"
     security_group_id        = module.eks.cluster_security_group_id
@@ -85,13 +81,6 @@ locals {
     source_security_group_id = try(module.bastion[0].security_group_ids[0], null)
   }
 
-  # if bastion role vars are defined, add bastion role to aws_auth_roles list
-  bastion_aws_auth_entry = local.enable_bastion_access ? [
-    {
-      rolearn  = local.bastion_role_arn
-      username = local.bastion_role_name
-      groups   = ["system:masters"]
-  }] : []
 }
 
 data "aws_ami" "amazonlinux2" {
@@ -265,6 +254,23 @@ locals {
   }
 
   self_managed_node_groups = var.enable_self_managed_nodegroups ? local.mission_app_self_mg_node_group : {}
+  access_entries = merge(
+    var.access_entries,
+    var.enable_bastion ? {
+      bastion = {
+        principal_arn = module.bastion[0].bastion_role_arn
+        type          = "STANDARD"
+        policy_associations = {
+          admin = {
+            policy_arn = "arn:${data.aws_partition.current.partition}:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+            access_scope = {
+              type = "cluster"
+            }
+          }
+        }
+      }
+    } : {}
+  )
 }
 
 module "ssm_kms_key" {
@@ -331,12 +337,7 @@ module "eks" {
   cluster_version                         = var.cluster_version
   cidr_blocks                             = module.vpc.private_subnets_cidr_blocks
   eks_use_mfa                             = var.eks_use_mfa
-  aws_auth_roles                          = local.bastion_aws_auth_entry
   dataplane_wait_duration                 = var.dataplane_wait_duration
-
-  # If using EKS Managed Node Groups, the aws-auth ConfigMap is created by eks itself and terraform can not create it
-  create_aws_auth_configmap = var.create_aws_auth_configmap
-  manage_aws_auth_configmap = var.manage_aws_auth_configmap
 
   ######################## EKS Managed Node Group ###################################
   eks_managed_node_group_defaults = local.eks_managed_node_group_defaults
@@ -348,8 +349,8 @@ module "eks" {
 
   tags = local.tags
 
-
-
+  access_entries      = local.access_entries
+  authentication_mode = var.authentication_mode
   #---------------------------------------------------------------
   #"native" EKS Add-Ons
   #---------------------------------------------------------------
