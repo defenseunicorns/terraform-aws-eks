@@ -43,16 +43,17 @@ locals {
 module "vpc" {
   source = "git::https://github.com/defenseunicorns/terraform-aws-vpc.git?ref=v0.1.5"
 
-  name                  = local.vpc_name
-  vpc_cidr              = var.vpc_cidr
-  secondary_cidr_blocks = var.secondary_cidr_blocks
-  azs                   = local.azs
-  public_subnets        = [for k, v in module.vpc.azs : cidrsubnet(module.vpc.vpc_cidr_block, 5, k)]
-  private_subnets       = [for k, v in module.vpc.azs : cidrsubnet(module.vpc.vpc_cidr_block, 5, k + 4)]
-  database_subnets      = [for k, v in module.vpc.azs : cidrsubnet(module.vpc.vpc_cidr_block, 5, k + 8)]
-  intra_subnets         = [for k, v in module.vpc.azs : cidrsubnet(element(module.vpc.vpc_secondary_cidr_blocks, 0), 5, k)]
-  single_nat_gateway    = true
-  enable_nat_gateway    = true
+  name                         = local.vpc_name
+  vpc_cidr                     = var.vpc_cidr
+  secondary_cidr_blocks        = var.secondary_cidr_blocks
+  azs                          = local.azs
+  public_subnets               = [for k, v in module.vpc.azs : cidrsubnet(module.vpc.vpc_cidr_block, 5, k)]
+  private_subnets              = [for k, v in module.vpc.azs : cidrsubnet(module.vpc.vpc_cidr_block, 5, k + 4)]
+  database_subnets             = [for k, v in module.vpc.azs : cidrsubnet(module.vpc.vpc_cidr_block, 5, k + 8)]
+  intra_subnets                = [for k, v in module.vpc.azs : cidrsubnet(element(module.vpc.vpc_secondary_cidr_blocks, 0), 5, k)]
+  single_nat_gateway           = true
+  enable_nat_gateway           = true
+  create_default_vpc_endpoints = false
 
   private_subnet_tags = {
     "kubernetes.io/cluster/${local.cluster_name}" = "shared"
