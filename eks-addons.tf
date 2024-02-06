@@ -52,6 +52,10 @@ module "eks_blueprints_kubernetes_addons" {
   # see https://github.com/aws-ia/terraform-aws-eks-blueprints-addons/blob/main/docs/helm-release.md
 
   tags = var.tags
+
+  depends_on = [
+    module.aws_eks.access_entries
+  ]
 }
 
 ################################################################################
