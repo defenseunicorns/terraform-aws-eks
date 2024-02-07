@@ -47,7 +47,7 @@ cluster_addons = {
   coredns = {
     most_recent = true
     timeouts = {
-      create = "2m"
+      create = "10m"
       delete = "10m"
     }
   }
@@ -57,7 +57,7 @@ cluster_addons = {
   aws-ebs-csi-driver = {
     most_recent = true
     timeouts = {
-      create = "4m"
+      create = "10m"
       delete = "10m"
     }
   }
@@ -65,7 +65,7 @@ cluster_addons = {
   aws-efs-csi-driver = {
     most_recent = true
     timeouts = {
-      create = "4m"
+      create = "10m"
       delete = "10m"
     }
   }
@@ -78,10 +78,6 @@ enable_gp3_default_storage_class     = true
 #wait false for all addons, as it times out on teardown in the test pipeline
 
 enable_amazon_eks_aws_efs_csi_driver = true
-# aws_efs_csi_driver = {
-#   wait          = false
-#   chart_version = "2.4.8"
-# }
 
 enable_aws_node_termination_handler = true
 aws_node_termination_handler = {
