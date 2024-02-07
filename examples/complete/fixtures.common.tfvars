@@ -61,6 +61,14 @@ cluster_addons = {
       delete = "10m"
     }
   }
+  # consider using '"useFIPS": "true"' under configuration_values for aws_efs_csi_driver
+  aws-efs-csi-driver = {
+    most_recent = true
+    timeouts = {
+      create = "4m"
+      delete = "10m"
+    }
+  }
 }
 
 enable_amazon_eks_aws_ebs_csi_driver = true
@@ -70,10 +78,10 @@ enable_gp3_default_storage_class     = true
 #wait false for all addons, as it times out on teardown in the test pipeline
 
 enable_amazon_eks_aws_efs_csi_driver = true
-aws_efs_csi_driver = {
-  wait          = false
-  chart_version = "2.4.8"
-}
+# aws_efs_csi_driver = {
+#   wait          = false
+#   chart_version = "2.4.8"
+# }
 
 enable_aws_node_termination_handler = true
 aws_node_termination_handler = {

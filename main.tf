@@ -64,6 +64,21 @@ locals {
     )
   } : {}
 
+  should_config_efs_csi_driver = (
+    var.enable_amazon_eks_aws_efs_csi_driver &&
+    var.cluster_addons["aws-efs-csi-driver"] != null
+  )
+
+  # Merge in the service_account_role_arn to the existing aws-ebs-csi-driver config
+  efs_csi_driver_addon_extra_config = local.should_config_efs_csi_driver ? {
+    "aws-efs-csi-driver" = merge(
+      var.cluster_addons["aws-efs-csi-driver"],
+      {
+        service_account_role_arn = module.efs_csi_driver_irsa[0].iam_role_arn
+      }
+    )
+  } : {}
+
   # Check conditions for whether ENI configs should be created for VPC CNI.
   # Conditions include: VPC CNI configured in var.cluster_addons, custom subnet should be provided, and the number of custom subnets should match the number of availability zones.
   should_create_eni_configs = (
@@ -104,6 +119,7 @@ locals {
   cluster_addons = merge(
     var.cluster_addons,
     local.ebs_csi_driver_addon_extra_config,
+    local.efs_csi_driver_addon_extra_config,
     local.vpc_cni_addon_extra_config
   )
 }
@@ -180,12 +196,34 @@ module "ebs_csi_driver_irsa" {
   tags = var.tags
 }
 
+module "efs_csi_driver_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.20"
+
+  count = var.enable_amazon_eks_aws_efs_csi_driver ? 1 : 0
+
+  role_name_prefix              = "${module.aws_eks.cluster_name}-efs-csi-driver-"
+  role_permissions_boundary_arn = var.iam_role_permissions_boundary
+
+  attach_efs_csi_policy = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.aws_eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:efs-csi-controller-sa"]
+    }
+  }
+
+  tags = var.tags
+}
+
+
 ################################################################################
 # Storage Class config
 ################################################################################
 
 resource "kubernetes_annotations" "gp2" {
-  count = var.enable_gp3_default_storage_class && var.enable_amazon_eks_aws_ebs_csi_driver ? 1 : 0
+  count = var.create_kubernetes_resources && var.enable_gp3_default_storage_class && var.enable_amazon_eks_aws_ebs_csi_driver ? 1 : 0
 
   api_version = "storage.k8s.io/v1"
   kind        = "StorageClass"
@@ -206,7 +244,7 @@ resource "kubernetes_annotations" "gp2" {
 }
 
 resource "kubernetes_storage_class_v1" "gp3" {
-  count = var.enable_gp3_default_storage_class && var.enable_amazon_eks_aws_ebs_csi_driver ? 1 : 0
+  count = var.create_kubernetes_resources && var.enable_gp3_default_storage_class && var.enable_amazon_eks_aws_ebs_csi_driver ? 1 : 0
 
   metadata {
     name = "gp3"
