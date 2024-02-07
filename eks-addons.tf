@@ -64,14 +64,16 @@ module "eks_blueprints_kubernetes_addons" {
 ################################################################################
 
 resource "random_id" "efs_name" {
+  count = var.enable_amazon_eks_aws_efs_csi_driver ? 1 : 0
+
   byte_length = 2
   prefix      = "EFS-"
 }
 
 resource "kubernetes_storage_class_v1" "efs" {
-  count = var.enable_amazon_eks_aws_efs_csi_driver ? 1 : 0
+  count = var.create_kubernetes_resources && var.enable_amazon_eks_aws_efs_csi_driver ? 1 : 0
   metadata {
-    name = lower(random_id.efs_name.hex)
+    name = lower(random_id.efs_name[0].hex)
   }
 
   storage_provisioner = "efs.csi.aws.com"
@@ -96,7 +98,7 @@ module "efs" {
 
   count = var.enable_amazon_eks_aws_efs_csi_driver ? 1 : 0
 
-  name = lower(random_id.efs_name.hex)
+  name = lower(random_id.efs_name[0].hex)
   # Mount targets / security group
   mount_targets = {
     for k, v in zipmap(var.azs, var.private_subnet_ids) : k => { subnet_id = v }
