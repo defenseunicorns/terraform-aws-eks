@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.0.14](https://github.com/defenseunicorns/terraform-aws-eks/compare/v0.0.13...v0.0.14) (2024-02-07)
+
+
+### Features
+
+* remove mandatory k8s touchpoints ([#110](https://github.com/defenseunicorns/terraform-aws-eks/issues/110)) ([55d7e4d](https://github.com/defenseunicorns/terraform-aws-eks/commit/55d7e4d72eba85d965d8a9ccfa460af422e46887))
+
+
+### Bug Fixes
+
+* **deps:** update all dependencies ([#104](https://github.com/defenseunicorns/terraform-aws-eks/issues/104)) ([d56ea7b](https://github.com/defenseunicorns/terraform-aws-eks/commit/d56ea7b03e330d0aa470337b41218bcea1396d16))
+
+
+### Miscellaneous Chores
+
+* **deps:** update all dependencies ([#101](https://github.com/defenseunicorns/terraform-aws-eks/issues/101)) ([4bc56b2](https://github.com/defenseunicorns/terraform-aws-eks/commit/4bc56b25c4600c320f54e678ac75db580b352207))
+* **deps:** update all dependencies ([#106](https://github.com/defenseunicorns/terraform-aws-eks/issues/106)) ([7e57b22](https://github.com/defenseunicorns/terraform-aws-eks/commit/7e57b228bf2331a7788c109dd8397d5861df31b4))
+* **deps:** update all dependencies ([#109](https://github.com/defenseunicorns/terraform-aws-eks/issues/109)) ([b1d6936](https://github.com/defenseunicorns/terraform-aws-eks/commit/b1d69362d3ce15c214f87ffcd9d134b39a629aec))
+* **deps:** update pre-commit hook renovatebot/pre-commit-hooks to v37.132.1 ([#103](https://github.com/defenseunicorns/terraform-aws-eks/issues/103)) ([e3388e1](https://github.com/defenseunicorns/terraform-aws-eks/commit/e3388e1a0ddc7ab17917934c95d2519836c8a5dd))
+* **deps:** update pre-commit hook renovatebot/pre-commit-hooks to v37.142.1 ([#105](https://github.com/defenseunicorns/terraform-aws-eks/issues/105)) ([074787a](https://github.com/defenseunicorns/terraform-aws-eks/commit/074787ad57054f0d606dfd046347c51209cc03a8))
+* update eks module ([#107](https://github.com/defenseunicorns/terraform-aws-eks/issues/107)) ([07fdfaf](https://github.com/defenseunicorns/terraform-aws-eks/commit/07fdfaf25b7b86de84f6cc445d8eb22c5a737ef7))
+
 ## [0.0.13](https://github.com/defenseunicorns/terraform-aws-eks/compare/v0.0.12...v0.0.13) (2024-01-10)
 
 
