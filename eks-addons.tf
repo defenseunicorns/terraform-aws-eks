@@ -136,7 +136,7 @@ locals {
 
   ssm_parameter_key_arn = length(var.ssm_parameter_key_arn) > 0 ? var.ssm_parameter_key_arn : "alias/aws/ssm"
 
-  fileSystemId = var.enable_amazon_eks_aws_efs_csi_driver && !var.create_kubernetes_resources ? module.efs[0].id : ""
+  file_system_id = !var.create_kubernetes_resources && var.enable_amazon_eks_aws_efs_csi_driver ? module.efs[0].id : ""
 }
 
 resource "aws_ssm_parameter" "helm_input_values" {
@@ -154,7 +154,7 @@ resource "aws_ssm_parameter" "helm_input_values" {
 resource "aws_ssm_parameter" "file_system_id_for_efs_storage_class" {
   count  = var.create_ssm_parameters ? 1 : 0
   name   = "/${local.cluster_name}/StorageClass/efs/fileSystemId"
-  value  = local.fileSystemId
+  value  = local.file_system_id
   type   = "SecureString"
   key_id = local.ssm_parameter_key_arn
   tier   = "Standard"
