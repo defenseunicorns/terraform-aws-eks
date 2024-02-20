@@ -152,7 +152,7 @@ resource "aws_ssm_parameter" "helm_input_values" {
 }
 
 resource "aws_ssm_parameter" "file_system_id_for_efs_storage_class" {
-  count  = var.create_ssm_parameters ? 1 : 0
+  count  = var.create_ssm_parameters && local.file_system_id != "" ? 1 : 0
   name   = "/${local.cluster_name}/StorageClass/efs/fileSystemId"
   value  = local.file_system_id
   type   = "SecureString"
