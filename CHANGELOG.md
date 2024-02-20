@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.0.15](https://github.com/defenseunicorns/terraform-aws-eks/compare/v0.0.14...v0.0.15) (2024-02-20)
+
+
+### Features
+
+* add ssm parameter for fileSystemId needed for efs StorageClass ([#113](https://github.com/defenseunicorns/terraform-aws-eks/issues/113)) ([6e1856a](https://github.com/defenseunicorns/terraform-aws-eks/commit/6e1856a733e4696eb11bc2df789880f53fa9fb52))
+
+
+### Miscellaneous Chores
+
+* **deps:** update all dependencies ([#111](https://github.com/defenseunicorns/terraform-aws-eks/issues/111)) ([2862888](https://github.com/defenseunicorns/terraform-aws-eks/commit/286288857124e0a9ad9b82a6bd8d7afce11dbd39))
+* **deps:** update all dependencies ([#114](https://github.com/defenseunicorns/terraform-aws-eks/issues/114)) ([8b7a430](https://github.com/defenseunicorns/terraform-aws-eks/commit/8b7a430cb013378aa9955be0ad10dfffe6e66250))
+* **deps:** update pre-commit hook antonbabenko/pre-commit-terraform to v1.87.1 ([#115](https://github.com/defenseunicorns/terraform-aws-eks/issues/115)) ([334980f](https://github.com/defenseunicorns/terraform-aws-eks/commit/334980f977087bcdaa995d9a762c4e80a3778bfe))
+
 ## [0.0.14](https://github.com/defenseunicorns/terraform-aws-eks/compare/v0.0.13...v0.0.14) (2024-02-07)
 
 
