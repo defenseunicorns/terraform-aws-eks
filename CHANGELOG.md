@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.16](https://github.com/defenseunicorns/terraform-aws-eks/compare/v0.0.15...v0.0.16) (2024-02-23)
+
+
+### Bug Fixes
+
+* logic error for efs fsid ssm paramter count ([#116](https://github.com/defenseunicorns/terraform-aws-eks/issues/116)) ([ec7f72d](https://github.com/defenseunicorns/terraform-aws-eks/commit/ec7f72deb6cac6ae29f240873c291a79a10f0bf1))
+
 ## [0.0.15](https://github.com/defenseunicorns/terraform-aws-eks/compare/v0.0.14...v0.0.15) (2024-02-20)
 
 
