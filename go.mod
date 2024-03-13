@@ -3,10 +3,8 @@ module github.com/defenseunicorns/terraform-aws-eks
 go 1.22.0
 
 require (
-	github.com/defenseunicorns/delivery-aws-iac v0.0.11
 	github.com/defenseunicorns/delivery_aws_iac_utils v0.0.5
 	github.com/gruntwork-io/terratest v0.46.11
-	github.com/stretchr/testify v1.8.4
 )
 
 require (
@@ -75,6 +73,7 @@ require (
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/stretchr/testify v1.8.4 // indirect
 	github.com/tmccombs/hcl2json v0.6.0 // indirect
 	github.com/ulikunitz/xz v0.5.11 // indirect
 	github.com/urfave/cli v1.22.2 // indirect
@@ -95,7 +94,7 @@ require (
 	google.golang.org/genproto/googleapis/api v0.0.0-20231016165738-49dd2c1f3d0b // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20231016165738-49dd2c1f3d0b // indirect
 	google.golang.org/grpc v1.59.0 // indirect
-	google.golang.org/protobuf v1.31.0 // indirect
+	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
