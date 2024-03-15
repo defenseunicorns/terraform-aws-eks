@@ -22,7 +22,7 @@ zarf_version         = "v0.29.1"
 ###########################################################
 #################### EKS Config ###########################
 
-cluster_version = "1.27"
+cluster_version = "1.29"
 
 # #################### EKS Addon #########################
 # add other "eks native" marketplace addons and configs to this list
