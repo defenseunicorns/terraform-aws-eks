@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.0.17](https://github.com/defenseunicorns/terraform-aws-eks/compare/v0.0.16...v0.0.17) (2024-03-15)
+
+
+### Bug Fixes
+
+* remove cluster version and bump to latest ([#122](https://github.com/defenseunicorns/terraform-aws-eks/issues/122)) ([d59054e](https://github.com/defenseunicorns/terraform-aws-eks/commit/d59054ee03330d5816ea3413e4a48c567d5ed07f))
+
+
+### Miscellaneous Chores
+
+* **deps:** update all dependencies ([#118](https://github.com/defenseunicorns/terraform-aws-eks/issues/118)) ([bfa2946](https://github.com/defenseunicorns/terraform-aws-eks/commit/bfa29460f1b3cab127aa02c020f09cec1c8fd5e4))
+* **deps:** update all dependencies ([#120](https://github.com/defenseunicorns/terraform-aws-eks/issues/120)) ([d11c3d7](https://github.com/defenseunicorns/terraform-aws-eks/commit/d11c3d7fb6e628990a96ce6ea8c022a7b61b2321))
+
 ## [0.0.16](https://github.com/defenseunicorns/terraform-aws-eks/compare/v0.0.15...v0.0.16) (2024-02-23)
 
 
