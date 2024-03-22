@@ -24,10 +24,6 @@ module "eks_blueprints_kubernetes_addons" {
   #this controls whether or not the cluster resources are created for the blueprints eks addons module
   create_kubernetes_resources = var.create_kubernetes_resources
 
-  # EKS EFS CSI Driver
-  enable_aws_efs_csi_driver = var.enable_amazon_eks_aws_efs_csi_driver
-  aws_efs_csi_driver        = var.aws_efs_csi_driver
-
   # EKS Metrics Server
   enable_metrics_server = var.enable_metrics_server
   metrics_server        = var.metrics_server

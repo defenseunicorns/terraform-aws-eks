@@ -71,13 +71,12 @@ cluster_addons = {
   }
 }
 
+enable_amazon_eks_aws_efs_csi_driver = true
 enable_amazon_eks_aws_ebs_csi_driver = true
 enable_gp3_default_storage_class     = true
 
 #################### Blueprints addons ###################
 #wait false for all addons, as it times out on teardown in the test pipeline
-
-enable_amazon_eks_aws_efs_csi_driver = true
 
 enable_aws_node_termination_handler = true
 aws_node_termination_handler = {
