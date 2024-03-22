@@ -215,7 +215,6 @@ locals {
 
     # enable discovery of autoscaling groups by cluster-autoscaler
     autoscaling_group_tags = merge(
-      local.tags,
       {
         "k8s.io/cluster-autoscaler/enabled" : true,
         "k8s.io/cluster-autoscaler/${local.cluster_name}" : "owned"
@@ -229,8 +228,9 @@ locals {
     }
 
     tags = {
-      subnet_type = "private",
-      cluster     = local.cluster_name
+      subnet_type                            = "private",
+      cluster                                = local.cluster_name
+      "aws-node-termination-handler/managed" = true # only need this if NTH is enabled. This is due to aws blueprints using this resource and causing the tags to flap on every apply https://github.com/aws-ia/terraform-aws-eks-blueprints-addons/blob/257677adeed1be54326637cf919cf24df6ad7c06/main.tf#L1554-L1564
     }
   }
 
