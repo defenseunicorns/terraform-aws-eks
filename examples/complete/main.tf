@@ -335,7 +335,7 @@ module "ssm_kms_key" {
 }
 
 locals {
-  ssm_parameter_key_arn = var.create_ssm_parameters ? module.ssm_kms_key.key_arn : ""
+  ssm_parameter_kms_key_arn = var.create_ssm_parameters ? module.ssm_kms_key.key_arn : ""
 }
 
 module "eks" {
@@ -369,19 +369,12 @@ module "eks" {
 
   access_entries      = local.access_entries
   authentication_mode = var.authentication_mode
+
   #---------------------------------------------------------------
-  #"native" EKS Add-Ons
+  # "native" EKS Marketplace Add-Ons
   #---------------------------------------------------------------
 
   cluster_addons = var.cluster_addons
-
-  #---------------------------------------------------------------
-  # EKS Blueprints - blueprints curated helm charts
-  #---------------------------------------------------------------
-
-  create_kubernetes_resources = var.create_kubernetes_resources
-  create_ssm_parameters       = var.create_ssm_parameters
-  ssm_parameter_key_arn       = local.ssm_parameter_key_arn
 
   # AWS EKS EBS CSI Driver
   enable_amazon_eks_aws_ebs_csi_driver = var.enable_amazon_eks_aws_ebs_csi_driver
@@ -390,7 +383,14 @@ module "eks" {
 
   # AWS EKS EFS CSI Driver
   enable_amazon_eks_aws_efs_csi_driver = var.enable_amazon_eks_aws_efs_csi_driver
-  aws_efs_csi_driver                   = var.aws_efs_csi_driver
+
+  #---------------------------------------------------------------
+  # EKS Blueprints - blueprints curated helm charts
+  #---------------------------------------------------------------
+
+  create_kubernetes_resources = var.create_kubernetes_resources
+  create_ssm_parameters       = var.create_ssm_parameters
+  ssm_parameter_kms_key_arn   = local.ssm_parameter_kms_key_arn
 
   reclaim_policy = var.reclaim_policy
 
