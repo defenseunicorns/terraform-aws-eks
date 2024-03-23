@@ -1,5 +1,13 @@
-data "aws_caller_identity" "current" {}
 data "aws_partition" "current" {}
+data "aws_caller_identity" "current" {}
+
+data "aws_iam_session_context" "current" {
+  # This data source provides information on the IAM source role of an STS assumed role
+  # For non-role ARNs, this data source simply passes the ARN through issuer ARN
+  # Ref https://github.com/terraform-aws-modules/terraform-aws-eks/issues/2327#issuecomment-1355581682
+  # Ref https://github.com/hashicorp/terraform-provider-aws/issues/28381
+  arn = data.aws_caller_identity.current.arn
+}
 
 ###############################################################
 # EKS Cluster
@@ -8,42 +16,9 @@ locals {
   cluster_name = coalesce(var.cluster_name, var.name)
   admin_arns = distinct(concat(
     [for admin_user in var.aws_admin_usernames : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/${admin_user}"],
-    [data.aws_caller_identity.current.arn]
+    [data.aws_iam_session_context.current.issuer_arn]
   ))
 
-  eks_admin_arns = length(local.admin_arns) == 0 ? [] : local.admin_arns
-
-  # Used to resolve non-MFA policy. See https://docs.fugue.co/FG_R00255.html
-  auth_eks_role_policy = var.eks_use_mfa ? jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Principal = {
-          AWS = local.eks_admin_arns
-        },
-        Effect = "Allow"
-        Sid    = ""
-        Condition = {
-          Bool = {
-            "aws:MultiFactorAuthPresent" = "true"
-          }
-        }
-      }
-    ]
-    }) : jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Principal = {
-          AWS = local.eks_admin_arns
-        },
-        Effect = "Allow"
-        Sid    = ""
-      }
-    ]
-  })
   ############
   # cluster_addons additional logic
   ############
@@ -161,14 +136,6 @@ module "aws_eks" {
   kms_key_administrators = distinct(concat(local.admin_arns, var.kms_key_administrators))
 
   tags = var.tags
-}
-
-resource "aws_iam_role" "auth_eks_role" {
-  name                 = "${var.name}-auth-eks-role"
-  description          = "EKS AuthConfig Role"
-  permissions_boundary = var.iam_role_permissions_boundary
-  assume_role_policy   = local.auth_eks_role_policy
-  # max_session_duration = var.eks_iam_role_max_session
 }
 
 ################################################################################

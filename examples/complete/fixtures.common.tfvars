@@ -12,6 +12,55 @@ name_prefix = "ci"
 vpc_cidr              = "10.200.0.0/16"
 secondary_cidr_blocks = ["100.64.0.0/16"] #https://aws.amazon.com/blogs/containers/optimize-ip-addresses-usage-by-pods-in-your-amazon-eks-cluster/
 
+# new_bits is added to the cidr of vpc_cidr to chunk the subnets up
+# public-a - 10.200.0.0/22 - 1,022 hosts
+# public-b - 10.200.4.0/22 - 1,022 hosts
+# public-c - 10.200.8.0/22 - 1,022 hosts
+# private-a - 10.200.12.0/22 - 1,022 hosts
+# private-b - 10.200.16.0/22 - 1,022 hosts
+# private-c - 10.200.20.0/22 - 1,022 hosts
+# database-a - 10.200.24.0/27 - 30 hosts
+# database-b - 10.200.24.32/27 - 30 hosts
+# database-c - 10.200.24.64/27 - 30 hosts
+vpc_subnets = [
+  {
+    name     = "public-a"
+    new_bits = 6
+  },
+  {
+    name     = "public-b"
+    new_bits = 6
+  },
+  {
+    name     = "public-c"
+    new_bits = 6
+  },
+  {
+    name     = "private-a"
+    new_bits = 6
+  },
+  {
+    name     = "private-b"
+    new_bits = 6
+  },
+  {
+    name     = "private-c"
+    new_bits = 6
+  },
+  {
+    name     = "database-a"
+    new_bits = 11
+  },
+  {
+    name     = "database-b"
+    new_bits = 11
+  },
+  {
+    name     = "database-c"
+    new_bits = 11
+  },
+]
+
 ###########################################################
 ################## Bastion Config #########################
 
