@@ -161,6 +161,13 @@ variable "storageclass_reclaim_policy" {
   default     = "Delete"
 }
 
+#----------------Enable_EFS_CSI-------------------------
+variable "enable_amazon_eks_aws_efs_csi_driver" {
+  description = "Enable EFS CSI add-on"
+  type        = bool
+  default     = false
+}
+
 #----------------Metrics Server-------------------------
 variable "enable_metrics_server" {
   description = "Enable metrics server add-on"
@@ -196,19 +203,6 @@ variable "enable_cluster_autoscaler" {
 
 variable "cluster_autoscaler" {
   description = "Cluster Autoscaler Helm Chart config"
-  type        = any
-  default     = {}
-}
-
-#----------------Enable_EFS_CSI-------------------------
-variable "enable_amazon_eks_aws_efs_csi_driver" {
-  description = "Enable EFS CSI add-on"
-  type        = bool
-  default     = false
-}
-
-variable "aws_efs_csi_driver" {
-  description = "AWS EFS CSI Driver helm chart config"
   type        = any
   default     = {}
 }

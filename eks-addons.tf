@@ -130,7 +130,7 @@ locals {
     }) > 0
   }
 
-  ssm_parameter_key_arn = length(var.ssm_parameter_key_arn) > 0 ? var.ssm_parameter_key_arn : "alias/aws/ssm"
+  ssm_parameter_kms_key_arn = length(var.ssm_parameter_kms_key_arn) > 0 ? var.ssm_parameter_kms_key_arn : "alias/aws/ssm"
 }
 
 resource "aws_ssm_parameter" "helm_input_values" {
@@ -139,7 +139,7 @@ resource "aws_ssm_parameter" "helm_input_values" {
   name   = "/${local.cluster_name}/${each.key}_helm_input_values"
   value  = jsonencode(each.value)
   type   = "SecureString"
-  key_id = local.ssm_parameter_key_arn
+  key_id = local.ssm_parameter_kms_key_arn
   tier   = "Standard"
 
   tags = var.tags
@@ -150,7 +150,7 @@ resource "aws_ssm_parameter" "file_system_id_for_efs_storage_class" {
   name   = "/${local.cluster_name}/StorageClass/efs/fileSystemId"
   value  = module.efs[0].id
   type   = "SecureString"
-  key_id = local.ssm_parameter_key_arn
+  key_id = local.ssm_parameter_kms_key_arn
   tier   = "Standard"
 
   tags = var.tags

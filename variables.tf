@@ -136,7 +136,7 @@ variable "eks_managed_node_group_defaults" {
 variable "cluster_addons" {
   description = <<-EOD
   Nested of eks native add-ons and their associated parameters.
-  See https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_add-on for supported values.
+  See https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_addon for supported values.
   See https://github.com/terraform-aws-modules/terraform-aws-eks/blob/master/examples/complete/main.tf#L44-L60 for upstream example.
 
   to see available eks marketplace addons available for your cluster's version run:
@@ -182,7 +182,7 @@ variable "create_ssm_parameters" {
   default     = true
 }
 
-variable "ssm_parameter_key_arn" {
+variable "ssm_parameter_kms_key_arn" {
   description = "KMS key arn for use with SSM parameter encryption/decryption"
   type        = string
   default     = ""
@@ -212,12 +212,6 @@ variable "enable_amazon_eks_aws_efs_csi_driver" {
   description = "Enable EFS CSI Driver add-on"
   type        = bool
   default     = false
-}
-
-variable "aws_efs_csi_driver" {
-  description = "AWS EFS CSI Driver helm chart config"
-  type        = any
-  default     = {}
 }
 
 variable "reclaim_policy" {
