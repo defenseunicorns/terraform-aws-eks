@@ -1,6 +1,14 @@
 data "aws_partition" "current" {}
 
 data "aws_caller_identity" "current" {}
+data "aws_iam_session_context" "current" {
+  # This data source provides information on the IAM source role of an STS assumed role
+  # For non-role ARNs, this data source simply passes the ARN through issuer ARN
+  # Ref https://github.com/terraform-aws-modules/terraform-aws-eks/issues/2327#issuecomment-1355581682
+  # Ref https://github.com/hashicorp/terraform-provider-aws/issues/28381
+  arn = data.aws_caller_identity.current.arn
+}
+
 
 
 data "aws_availability_zones" "available" {
@@ -37,19 +45,29 @@ locals {
 ################################################################################
 
 locals {
-  azs = [for az_name in slice(data.aws_availability_zones.available.names, 0, min(length(data.aws_availability_zones.available.names), var.num_azs)) : az_name]
+  azs              = [for az_name in slice(data.aws_availability_zones.available.names, 0, min(length(data.aws_availability_zones.available.names), var.num_azs)) : az_name]
+  public_subnets   = [for k, v in module.subnet_addrs.network_cidr_blocks : v if strcontains(k, "public")]
+  private_subnets  = [for k, v in module.subnet_addrs.network_cidr_blocks : v if strcontains(k, "private")]
+  database_subnets = [for k, v in module.subnet_addrs.network_cidr_blocks : v if strcontains(k, "database")]
+}
+
+module "subnet_addrs" {
+  source = "git::https://github.com/hashicorp/terraform-cidr-subnets?ref=v1.0.0"
+
+  base_cidr_block = var.vpc_cidr
+  networks        = var.vpc_subnets
 }
 
 module "vpc" {
-  source = "git::https://github.com/defenseunicorns/terraform-aws-vpc.git?ref=v0.1.6"
+  source = "git::https://github.com/defenseunicorns/terraform-aws-vpc.git?ref=v0.1.7"
 
   name                         = local.vpc_name
   vpc_cidr                     = var.vpc_cidr
   secondary_cidr_blocks        = var.secondary_cidr_blocks
   azs                          = local.azs
-  public_subnets               = [for k, v in module.vpc.azs : cidrsubnet(module.vpc.vpc_cidr_block, 5, k)]
-  private_subnets              = [for k, v in module.vpc.azs : cidrsubnet(module.vpc.vpc_cidr_block, 5, k + 4)]
-  database_subnets             = [for k, v in module.vpc.azs : cidrsubnet(module.vpc.vpc_cidr_block, 5, k + 8)]
+  public_subnets               = local.public_subnets
+  private_subnets              = local.private_subnets
+  database_subnets             = local.database_subnets
   intra_subnets                = [for k, v in module.vpc.azs : cidrsubnet(element(module.vpc.vpc_secondary_cidr_blocks, 0), 5, k)]
   single_nat_gateway           = true
   enable_nat_gateway           = true
@@ -197,7 +215,6 @@ locals {
 
     # enable discovery of autoscaling groups by cluster-autoscaler
     autoscaling_group_tags = merge(
-      local.tags,
       {
         "k8s.io/cluster-autoscaler/enabled" : true,
         "k8s.io/cluster-autoscaler/${local.cluster_name}" : "owned"
@@ -211,8 +228,9 @@ locals {
     }
 
     tags = {
-      subnet_type = "private",
-      cluster     = local.cluster_name
+      subnet_type                            = "private",
+      cluster                                = local.cluster_name
+      "aws-node-termination-handler/managed" = true # only need this if NTH is enabled. This is due to aws blueprints using this resource and causing the tags to flap on every apply https://github.com/aws-ia/terraform-aws-eks-blueprints-addons/blob/257677adeed1be54326637cf919cf24df6ad7c06/main.tf#L1554-L1564
     }
   }
 
@@ -254,6 +272,7 @@ locals {
   }
 
   self_managed_node_groups = var.enable_self_managed_nodegroups ? local.mission_app_self_mg_node_group : {}
+
   access_entries = merge(
     var.access_entries,
     var.enable_bastion ? {
@@ -282,7 +301,7 @@ module "ssm_kms_key" {
   description = "KMS key for SecureString SSM parameters"
 
   key_administrators = [
-    data.aws_caller_identity.current.arn
+    data.aws_iam_session_context.current.issuer_arn
   ]
 
   computed_aliases = {
@@ -336,7 +355,6 @@ module "eks" {
   aws_admin_usernames                     = var.aws_admin_usernames
   cluster_version                         = var.cluster_version
   cidr_blocks                             = module.vpc.private_subnets_cidr_blocks
-  eks_use_mfa                             = var.eks_use_mfa
   dataplane_wait_duration                 = var.dataplane_wait_duration
 
   ######################## EKS Managed Node Group ###################################
@@ -415,7 +433,7 @@ module "ebs_kms_key" {
 
   # Policy
   key_administrators = [
-    data.aws_caller_identity.current.arn
+    data.aws_iam_session_context.current.issuer_arn
   ]
 
   key_service_roles_for_autoscaling = [

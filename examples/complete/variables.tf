@@ -52,16 +52,17 @@ variable "enable_sqs_events_on_access_log_access" {
   default     = false
 }
 
-variable "eks_use_mfa" {
-  description = "Use MFA for auth_eks_role"
-  type        = bool
-}
-
 ###########################################################
 #################### VPC Config ###########################
 variable "vpc_cidr" {
   description = "The CIDR block for the VPC"
   type        = string
+}
+
+variable "vpc_subnets" {
+  description = "A list of subnet objects to do subnet math things on - see https://github.com/hashicorp/terraform-cidr-subnets"
+  type        = list(map(any))
+  default     = [{}]
 }
 
 variable "secondary_cidr_blocks" {
