@@ -125,34 +125,12 @@ enable_amazon_eks_aws_ebs_csi_driver = true
 enable_gp3_default_storage_class     = true
 
 #################### Blueprints addons ###################
-#wait false for all addons, as it times out on teardown in the test pipeline
-
 enable_aws_node_termination_handler = true
-aws_node_termination_handler = {
-  wait          = false
-  chart_version = "v0.21.0"
-}
-
-enable_cluster_autoscaler = true
-cluster_autoscaler = {
-  wait          = false
-  chart_version = "v9.29.1"
-}
-
-enable_metrics_server = true
-metrics_server = {
-  wait          = false
-  chart_version = "v3.10.0"
-}
-
+enable_cluster_autoscaler           = true
+enable_metrics_server               = true
 enable_aws_load_balancer_controller = true
-aws_load_balancer_controller = {
-  wait          = false
-  chart_version = "v1.6.0"
-}
-
-enable_secrets_store_csi_driver = true
-secrets_store_csi_driver = {
-  wait          = false
-  chart_version = "v1.3.4"
-}
+enable_secrets_store_csi_driver     = true
+enable_external_secrets             = true
+enable_karpenter                    = true
+enable_bottlerocket_update_operator = true
+enable_cert_manager                 = true # needed for brupop

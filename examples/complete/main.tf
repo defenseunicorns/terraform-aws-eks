@@ -354,7 +354,6 @@ module "eks" {
   azs                                     = module.vpc.azs
   aws_admin_usernames                     = var.aws_admin_usernames
   cluster_version                         = var.cluster_version
-  cidr_blocks                             = module.vpc.private_subnets_cidr_blocks
   dataplane_wait_duration                 = var.dataplane_wait_duration
 
   ######################## EKS Managed Node Group ###################################
@@ -379,10 +378,12 @@ module "eks" {
   # AWS EKS EBS CSI Driver
   enable_amazon_eks_aws_ebs_csi_driver = var.enable_amazon_eks_aws_ebs_csi_driver
   enable_gp3_default_storage_class     = var.enable_gp3_default_storage_class
-  storageclass_reclaim_policy          = var.storageclass_reclaim_policy
+  ebs_storageclass_reclaim_policy      = var.ebs_storageclass_reclaim_policy
 
   # AWS EKS EFS CSI Driver
   enable_amazon_eks_aws_efs_csi_driver = var.enable_amazon_eks_aws_efs_csi_driver
+  efs_vpc_cidr_blocks                  = module.vpc.private_subnets_cidr_blocks
+  efs_storageclass_reclaim_policy      = var.efs_storageclass_reclaim_policy
 
   #---------------------------------------------------------------
   # EKS Blueprints - blueprints curated helm charts
@@ -391,8 +392,6 @@ module "eks" {
   create_kubernetes_resources = var.create_kubernetes_resources
   create_ssm_parameters       = var.create_ssm_parameters
   ssm_parameter_kms_key_arn   = local.ssm_parameter_kms_key_arn
-
-  reclaim_policy = var.reclaim_policy
 
   # AWS EKS node termination handler
   enable_aws_node_termination_handler = var.enable_aws_node_termination_handler
@@ -413,6 +412,43 @@ module "eks" {
   # k8s Secrets Store CSI Driver
   enable_secrets_store_csi_driver = var.enable_secrets_store_csi_driver
   secrets_store_csi_driver        = var.secrets_store_csi_driver
+
+  # External Secrets
+  enable_external_secrets               = var.enable_external_secrets
+  external_secrets                      = var.external_secrets
+  external_secrets_ssm_parameter_arns   = var.external_secrets_ssm_parameter_arns
+  external_secrets_secrets_manager_arns = var.external_secrets_secrets_manager_arns
+  external_secrets_kms_key_arns         = var.external_secrets_kms_key_arns
+
+
+  # Karpenter
+  enable_karpenter = var.enable_karpenter
+  karpenter        = var.karpenter
+
+  # Bottlerocket update operator
+  enable_bottlerocket_update_operator = var.enable_bottlerocket_update_operator
+  bottlerocket_update_operator        = var.bottlerocket_update_operator
+  bottlerocket_shadow                 = var.bottlerocket_shadow
+
+  # AWS Cloudwatch Metrics
+  enable_aws_cloudwatch_metrics = var.enable_aws_cloudwatch_metrics
+  aws_cloudwatch_metrics        = var.aws_cloudwatch_metrics
+
+  # AWS FSX CSI Driver
+  enable_aws_fsx_csi_driver = var.enable_aws_fsx_csi_driver
+  aws_fsx_csi_driver        = var.aws_fsx_csi_driver
+
+  # AWS Private CA Issuer
+  enable_aws_privateca_issuer = var.enable_aws_privateca_issuer
+  aws_privateca_issuer        = var.aws_privateca_issuer
+
+  # Cert Manager
+  enable_cert_manager = var.enable_cert_manager
+  cert_manager        = var.cert_manager
+
+  # External DNS
+  enable_external_dns = var.enable_external_dns
+  external_dns        = var.external_dns
 }
 
 module "key_pair" {
