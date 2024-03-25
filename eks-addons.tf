@@ -56,7 +56,6 @@ module "eks_blueprints_kubernetes_addons" {
   external_secrets_secrets_manager_arns = local.external_secrets_secrets_manager_arns
   external_secrets_kms_key_arns         = local.external_secrets_kms_key_arns
 
-
   # Karpenter
   enable_karpenter = var.enable_karpenter
   karpenter        = var.karpenter
