@@ -4,6 +4,11 @@
 
 locals {
   node_group_arns = [for key, value in module.aws_eks.self_managed_node_groups : lookup(value, "autoscaling_group_arn", "")]
+
+  # set default resource arns for external secrets if not defined relative to the current AWS partition
+  external_secrets_ssm_parameter_arns   = length(var.external_secrets_ssm_parameter_arns) > 0 ? var.external_secrets_ssm_parameter_arns : ["arn:${data.aws_partition.current.partition}:ssm:*:*:parameter/*"]
+  external_secrets_secrets_manager_arns = length(var.external_secrets_secrets_manager_arns) > 0 ? var.external_secrets_secrets_manager_arns : ["arn:${data.aws_partition.current.partition}:secretsmanager:*:*:secret:*"]
+  external_secrets_kms_key_arns         = length(var.external_secrets_kms_key_arns) > 0 ? var.external_secrets_kms_key_arns : ["arn:${data.aws_partition.current.partition}:kms:*:*:key/*"]
 }
 
 module "eks_blueprints_kubernetes_addons" {
@@ -45,8 +50,12 @@ module "eks_blueprints_kubernetes_addons" {
   secrets_store_csi_driver        = var.secrets_store_csi_driver
 
   # External Secrets
-  enable_external_secrets = var.enable_external_secrets
-  external_secrets        = var.external_secrets
+  enable_external_secrets               = var.enable_external_secrets
+  external_secrets                      = var.external_secrets
+  external_secrets_ssm_parameter_arns   = local.external_secrets_ssm_parameter_arns
+  external_secrets_secrets_manager_arns = local.external_secrets_secrets_manager_arns
+  external_secrets_kms_key_arns         = local.external_secrets_kms_key_arns
+
 
   # Karpenter
   enable_karpenter = var.enable_karpenter

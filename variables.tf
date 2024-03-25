@@ -322,6 +322,24 @@ variable "external_secrets" {
   default     = {}
 }
 
+variable "external_secrets_ssm_parameter_arns" {
+  description = "List of Systems Manager Parameter ARNs that contain secrets to mount using External Secrets"
+  type        = list(string)
+  default     = [] # if not defined, ["arn:$partition:ssm:*:*:parameter/*"]
+}
+
+variable "external_secrets_secrets_manager_arns" {
+  description = "List of Secrets Manager ARNs that contain secrets to mount using External Secrets"
+  type        = list(string)
+  default     = [] # if not defined, ["arn:$partition:secretsmanager:*:*:secret:*"]
+}
+
+variable "external_secrets_kms_key_arns" {
+  description = "List of KMS Key ARNs that are used by Secrets Manager that contain secrets to mount using External Secrets"
+  type        = list(string)
+  default     = [] # if not defined, ["arn:$partition:kms:*:*:key/*"]
+}
+
 #----------------Karpenter-------------------------
 variable "enable_karpenter" {
   description = "Enable Karpenter add-on"

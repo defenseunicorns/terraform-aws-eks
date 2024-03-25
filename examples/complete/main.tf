@@ -414,8 +414,12 @@ module "eks" {
   secrets_store_csi_driver        = var.secrets_store_csi_driver
 
   # External Secrets
-  enable_external_secrets = var.enable_external_secrets
-  external_secrets        = var.external_secrets
+  enable_external_secrets               = var.enable_external_secrets
+  external_secrets                      = var.external_secrets
+  external_secrets_ssm_parameter_arns   = var.external_secrets_ssm_parameter_arns
+  external_secrets_secrets_manager_arns = var.external_secrets_secrets_manager_arns
+  external_secrets_kms_key_arns         = var.external_secrets_kms_key_arns
+
 
   # Karpenter
   enable_karpenter = var.enable_karpenter
