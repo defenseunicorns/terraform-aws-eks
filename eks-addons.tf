@@ -44,14 +44,98 @@ module "eks_blueprints_kubernetes_addons" {
   enable_secrets_store_csi_driver = var.enable_secrets_store_csi_driver
   secrets_store_csi_driver        = var.secrets_store_csi_driver
 
-  # Arbitrary helm charts can be fed into a helm_release var in blueprints. Note that the standard "create" var doesn't work with these
-  # see https://github.com/aws-ia/terraform-aws-eks-blueprints-addons/blob/main/docs/helm-release.md
+  # External Secrets
+  enable_external_secrets = var.enable_external_secrets
+  external_secrets        = var.external_secrets
+
+  # Karpenter
+  enable_karpenter = var.enable_karpenter
+  karpenter        = var.karpenter
+
+  # Bottlerocket update operator
+  enable_bottlerocket_update_operator = var.enable_bottlerocket_update_operator
+  bottlerocket_update_operator        = var.bottlerocket_update_operator
+  bottlerocket_shadow                 = var.bottlerocket_shadow
+
+  # AWS Cloudwatch Metrics
+  enable_aws_cloudwatch_metrics = var.enable_aws_cloudwatch_metrics
+  aws_cloudwatch_metrics        = var.aws_cloudwatch_metrics
+
+  # AWS FSX CSI Driver
+  enable_aws_fsx_csi_driver = var.enable_aws_fsx_csi_driver
+  aws_fsx_csi_driver        = var.aws_fsx_csi_driver
+
+  # AWS Private CA Issuer
+  enable_aws_privateca_issuer = var.enable_aws_privateca_issuer
+  aws_privateca_issuer        = var.aws_privateca_issuer
+
+  # Cert Manager
+  enable_cert_manager = var.enable_cert_manager
+  cert_manager        = var.cert_manager
+
+  # External DNS
+  enable_external_dns = var.enable_external_dns
+  external_dns        = var.external_dns
 
   tags = var.tags
 
   depends_on = [
     module.aws_eks.access_entries,
     module.aws_eks.access_policy_associations
+  ]
+}
+
+
+################################################################################
+# EBS Storage Class config
+################################################################################
+
+resource "kubernetes_annotations" "gp2" {
+  count = var.create_kubernetes_resources && var.enable_gp3_default_storage_class && var.enable_amazon_eks_aws_ebs_csi_driver ? 1 : 0
+
+  api_version = "storage.k8s.io/v1"
+  kind        = "StorageClass"
+  force       = "true"
+
+  metadata {
+    name = "gp2"
+  }
+
+  annotations = {
+    # Modify annotations to remove gp2 as default storage class still reatain the class
+    "storageclass.kubernetes.io/is-default-class" = "false"
+  }
+
+  depends_on = [
+    module.eks_blueprints_kubernetes_addons
+  ]
+}
+
+resource "kubernetes_storage_class_v1" "gp3" {
+  count = var.create_kubernetes_resources && var.enable_gp3_default_storage_class && var.enable_amazon_eks_aws_ebs_csi_driver ? 1 : 0
+
+  metadata {
+    name = "gp3"
+
+    annotations = {
+      # Annotation to set gp3 as default storage class
+      "storageclass.kubernetes.io/is-default-class" = "true"
+    }
+  }
+
+  storage_provisioner    = "ebs.csi.aws.com"
+  allow_volume_expansion = true
+  reclaim_policy         = var.ebs_storageclass_reclaim_policy
+  volume_binding_mode    = "WaitForFirstConsumer"
+
+  parameters = {
+    encrypted = true
+    fsType    = "ext4"
+    type      = "gp3"
+  }
+
+  depends_on = [
+    module.eks_blueprints_kubernetes_addons
   ]
 }
 
@@ -73,7 +157,7 @@ resource "kubernetes_storage_class_v1" "efs" {
   }
 
   storage_provisioner = "efs.csi.aws.com"
-  reclaim_policy      = var.reclaim_policy
+  reclaim_policy      = var.efs_storageclass_reclaim_policy
   parameters = {
     provisioningMode = "efs-ap" # Dynamic provisioning
     fileSystemId     = module.efs[0].id
@@ -106,7 +190,7 @@ module "efs" {
     vpc = {
       # relying on the defaults provdied for EFS/NFS (2049/TCP + ingress)
       description = "NFS ingress from VPC private subnets"
-      cidr_blocks = var.cidr_blocks
+      cidr_blocks = var.efs_vpc_cidr_blocks
     }
   }
 
@@ -145,6 +229,8 @@ resource "aws_ssm_parameter" "helm_input_values" {
   tags = var.tags
 }
 
+# Create ssm parameter for EFS storage class for external EFS CSI driver storage class configuration because marketplace EFS CSI driver does not support storageclass provisioning
+# https://github.com/aws/containers-roadmap/issues/2198
 resource "aws_ssm_parameter" "file_system_id_for_efs_storage_class" {
   count  = var.create_ssm_parameters && var.enable_amazon_eks_aws_efs_csi_driver ? 1 : 0
   name   = "/${local.cluster_name}/StorageClass/efs/fileSystemId"

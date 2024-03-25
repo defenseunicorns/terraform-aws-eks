@@ -141,6 +141,9 @@ variable "create_ssm_parameters" {
   default     = true
 }
 
+#---------------------------------------------------------------
+# "native" EKS Marketplace Add-Ons
+#---------------------------------------------------------------
 
 #----------------AWS EBS CSI Driver-------------------------
 variable "enable_amazon_eks_aws_ebs_csi_driver" {
@@ -155,18 +158,28 @@ variable "enable_gp3_default_storage_class" {
   default     = false
 }
 
-variable "storageclass_reclaim_policy" {
+variable "ebs_storageclass_reclaim_policy" {
   description = "Reclaim policy for gp3 storage class, valid options are Delete and Retain"
   type        = string
   default     = "Delete"
 }
 
-#----------------Enable_EFS_CSI-------------------------
+#----------------AWS EFS CSI Driver-------------------------
 variable "enable_amazon_eks_aws_efs_csi_driver" {
-  description = "Enable EFS CSI add-on"
+  description = "Enable EFS CSI Driver add-on"
   type        = bool
   default     = false
 }
+
+variable "efs_storageclass_reclaim_policy" {
+  description = "Reclaim policy for EFS storage class, valid options are Delete and Retain"
+  type        = string
+  default     = "Delete"
+}
+
+#---------------------------------------------------------------
+# EKS Blueprints - blueprints curated helm charts
+#---------------------------------------------------------------
 
 #----------------Metrics Server-------------------------
 variable "enable_metrics_server" {
@@ -193,7 +206,6 @@ variable "aws_node_termination_handler" {
   type        = any
   default     = {}
 }
-
 #----------------Cluster Autoscaler-------------------------
 variable "enable_cluster_autoscaler" {
   description = "Enable Cluster autoscaler add-on"
@@ -202,15 +214,27 @@ variable "enable_cluster_autoscaler" {
 }
 
 variable "cluster_autoscaler" {
-  description = "Cluster Autoscaler Helm Chart config"
+  description = "Cluster Autoscaler config for aws-ia/eks-blueprints-addon/aws"
   type        = any
-  default     = {}
-}
-
-variable "reclaim_policy" {
-  description = "Reclaim policy for EFS storage class, valid options are Delete and Retain"
-  type        = string
-  default     = "Delete"
+  default = {
+    set = [
+      {
+        name  = "extraArgs.expander"
+        value = "priority"
+      },
+      {
+        name  = "expanderPriorities"
+        value = <<-EOT
+                  100:
+                    - .*-spot-2vcpu-8mem.*
+                  90:
+                    - .*-spot-4vcpu-16mem.*
+                  10:
+                    - .*
+                EOT
+      }
+    ]
+  }
 }
 
 #----------------AWS Loadbalancer Controller-------------------------
@@ -221,7 +245,7 @@ variable "enable_aws_load_balancer_controller" {
 }
 
 variable "aws_load_balancer_controller" {
-  description = "AWS Loadbalancer Controller Helm Chart config"
+  description = "AWS Loadbalancer Controller config for aws-ia/eks-blueprints-addon/aws"
   type        = any
   default     = {}
 }
@@ -234,7 +258,119 @@ variable "enable_secrets_store_csi_driver" {
 }
 
 variable "secrets_store_csi_driver" {
-  description = "k8s Secret Store CSI Driver Helm Chart config"
+  description = "k8s Secret Store CSI Driver config for aws-ia/eks-blueprints-addon/aws"
+  type        = any
+  default     = {}
+}
+
+#----------------External Secrets-------------------------
+
+variable "enable_external_secrets" {
+  description = "Enable External Secrets add-on"
+  type        = bool
+  default     = false
+}
+
+variable "external_secrets" {
+  description = "External Secrets config for aws-ia/eks-blueprints-addon/aws"
+  type        = any
+  default     = {}
+}
+
+#----------------Karpenter-------------------------
+variable "enable_karpenter" {
+  description = "Enable Karpenter add-on"
+  type        = bool
+  default     = false
+}
+
+variable "karpenter" {
+  description = "Karpenter config for aws-ia/eks-blueprints-addon/aws"
+  type        = any
+  default     = {}
+}
+
+#----------------Bottlerocket Update Operator-------------------------
+variable "enable_bottlerocket_update_operator" {
+  description = "Enable Bottlerocket and Bottlerocket Update Operator add-on"
+  type        = bool
+  default     = false
+}
+
+variable "bottlerocket_shadow" {
+  description = "Bottlerocket Shadow config for aws-ia/eks-blueprints-addon/aws"
+  type        = any
+  default     = {}
+}
+
+variable "bottlerocket_update_operator" {
+  description = "Bottlerocket Update Operator config for aws-ia/eks-blueprints-addon/aws"
+  type        = any
+  default     = {}
+}
+
+#----------------AWS Cloudwatch Metrics-------------------------
+variable "enable_aws_cloudwatch_metrics" {
+  description = "Enable AWS Cloudwatch Metrics add-on"
+  type        = bool
+  default     = false
+}
+
+variable "aws_cloudwatch_metrics" {
+  description = "AWS Cloudwatch Metrics config for aws-ia/eks-blueprints-addon/aws"
+  type        = any
+  default     = {}
+}
+
+#aws_fsx_csi_driver
+#----------------AWS FSX CSI Driver-------------------------
+variable "enable_aws_fsx_csi_driver" {
+  description = "Enable FSX CSI Driver add-on"
+  type        = bool
+  default     = false
+}
+
+variable "aws_fsx_csi_driver" {
+  description = "FSX CSI Driver config for aws-ia/eks-blueprints-addon/aws"
+  type        = any
+  default     = {}
+}
+
+#----------------AWS Private CA Issuer-------------------------
+variable "enable_aws_privateca_issuer" {
+  description = "Enable AWS Private CA Issuer add-on"
+  type        = bool
+  default     = false
+}
+
+variable "aws_privateca_issuer" {
+  description = "AWS Private CA Issuer config for aws-ia/eks-blueprints-addon/aws"
+  type        = any
+  default     = {}
+}
+
+#----------------Cert Manager-------------------------
+variable "enable_cert_manager" {
+  description = "Enable Cert Manager add-on"
+  type        = bool
+  default     = false
+}
+
+variable "cert_manager" {
+  description = "Cert Manager config for aws-ia/eks-blueprints-addon/aws"
+  type        = any
+  default     = {}
+}
+
+#----------------External DNS-------------------------
+variable "enable_external_dns" {
+  description = "Enable External DNS add-on"
+  type        = bool
+  default     = false
+}
+
+variable "external_dns" {
+  description = "External DNS config for aws-ia/eks-blueprints-addon/aws"
   type        = any
   default     = {}
 }
