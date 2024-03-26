@@ -27,7 +27,7 @@ func TestExamplesCompleteInsecure(t *testing.T) {
 			".*": "Failed to apply Terraform configuration due to an error.",
 		},
 		MaxRetries:         5,
-		TimeBetweenRetries: 5 * time.Second,
+		TimeBetweenRetries: 20 * time.Second,
 	}
 
 	// Defer the teardown

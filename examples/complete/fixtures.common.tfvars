@@ -133,4 +133,4 @@ enable_secrets_store_csi_driver     = true
 enable_external_secrets             = true
 enable_karpenter                    = true
 enable_bottlerocket_update_operator = true
-enable_cert_manager                 = true # needed for brupop
+enable_cert_manager                 = true # dependency for bottlerocket_update_operator
