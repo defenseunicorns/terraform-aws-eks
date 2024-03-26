@@ -380,6 +380,12 @@ variable "cert_manager" {
   default     = {}
 }
 
+variable "cert_manager_route53_hosted_zone_arns" {
+  description = "List of Route53 Hosted Zone ARNs that are used by cert-manager to create DNS records"
+  type        = list(string)
+  default     = [] # if not defined, ["arn:$partition:route53:*:*:hostedzone/*"]
+}
+
 #----------------External DNS-------------------------
 variable "enable_external_dns" {
   description = "Enable External DNS add-on"

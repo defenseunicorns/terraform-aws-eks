@@ -443,8 +443,9 @@ module "eks" {
   aws_privateca_issuer        = var.aws_privateca_issuer
 
   # Cert Manager
-  enable_cert_manager = var.enable_cert_manager
-  cert_manager        = var.cert_manager
+  enable_cert_manager                   = var.enable_cert_manager
+  cert_manager                          = var.cert_manager
+  cert_manager_route53_hosted_zone_arns = var.cert_manager_route53_hosted_zone_arns
 
   # External DNS
   enable_external_dns = var.enable_external_dns
