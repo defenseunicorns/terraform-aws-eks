@@ -5,10 +5,13 @@
 locals {
   node_group_arns = [for key, value in module.aws_eks.self_managed_node_groups : lookup(value, "autoscaling_group_arn", "")]
 
-  # set default resource arns for external secrets if not defined relative to the current AWS partition
+  # set default resource arns for external secrets  IAM policy if not defined relative to the current AWS partition, only used if external secrets is enabled
   external_secrets_ssm_parameter_arns   = length(var.external_secrets_ssm_parameter_arns) > 0 ? var.external_secrets_ssm_parameter_arns : ["arn:${data.aws_partition.current.partition}:ssm:*:*:parameter/*"]
   external_secrets_secrets_manager_arns = length(var.external_secrets_secrets_manager_arns) > 0 ? var.external_secrets_secrets_manager_arns : ["arn:${data.aws_partition.current.partition}:secretsmanager:*:*:secret:*"]
   external_secrets_kms_key_arns         = length(var.external_secrets_kms_key_arns) > 0 ? var.external_secrets_kms_key_arns : ["arn:${data.aws_partition.current.partition}:kms:*:*:key/*"]
+
+  # set default resource arns for cert manager IAM policy if not defined relative to the current AWS partition, only used if cert manager is enabled
+  cert_manager_route53_hosted_zone_arns = length(var.cert_manager_route53_hosted_zone_arns) > 0 ? var.cert_manager_route53_hosted_zone_arns : ["arn:${data.aws_partition.current.partition}:route53:*:*:hostedzone/*"]
 }
 
 module "eks_blueprints_kubernetes_addons" {
@@ -78,8 +81,9 @@ module "eks_blueprints_kubernetes_addons" {
   aws_privateca_issuer        = var.aws_privateca_issuer
 
   # Cert Manager
-  enable_cert_manager = var.enable_cert_manager
-  cert_manager        = var.cert_manager
+  enable_cert_manager                   = var.enable_cert_manager
+  cert_manager                          = var.cert_manager
+  cert_manager_route53_hosted_zone_arns = local.cert_manager_route53_hosted_zone_arns
 
   # External DNS
   enable_external_dns = var.enable_external_dns
