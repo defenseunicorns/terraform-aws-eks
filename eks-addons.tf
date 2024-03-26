@@ -11,7 +11,7 @@ locals {
   external_secrets_kms_key_arns         = length(var.external_secrets_kms_key_arns) > 0 ? var.external_secrets_kms_key_arns : ["arn:${data.aws_partition.current.partition}:kms:*:*:key/*"]
 
   # set default resource arns for cert manager IAM policy if not defined relative to the current AWS partition, only used if cert manager is enabled
-  cert_manager_route53_hosted_zone_arns = length(var.cert_manager_route53_hosted_zone_arns) > 0 ? var.cert_manager_route53_hosted_zone_arns : ["arn:${data.aws_partition.current.partition}:route53:*:*:hostedzone/*"]
+  cert_manager_route53_hosted_zone_arns = length(var.cert_manager_route53_hosted_zone_arns) > 0 ? var.cert_manager_route53_hosted_zone_arns : ["arn:${data.aws_partition.current.partition}:route53:::hostedzone/*"]
 }
 
 module "eks_blueprints_kubernetes_addons" {
