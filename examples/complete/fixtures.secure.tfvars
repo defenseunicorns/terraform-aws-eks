@@ -5,4 +5,4 @@ eks_worker_tenancy             = "dedicated"
 cluster_endpoint_public_access = false
 
 # due to private endpoint in the secure example, users will need to use sshuttle to connect to the cluster
-create_kubernetes_resources = true
+create_kubernetes_resources = false
