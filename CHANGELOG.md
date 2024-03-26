@@ -1,5 +1,35 @@
 # Changelog
 
+## [0.0.18](https://github.com/defenseunicorns/terraform-aws-eks/compare/v0.0.17...v0.0.18) (2024-03-26)
+
+
+### Features
+
+* add new blueprints addons and refactor some efs and ebs vars to be more concise ([#130](https://github.com/defenseunicorns/terraform-aws-eks/issues/130)) ([14144dd](https://github.com/defenseunicorns/terraform-aws-eks/commit/14144ddbf5af24181f75b952556ecee81e894bb5))
+
+
+### Bug Fixes
+
+* cert_manager errors and add more timeout for AWS ELB helm chart deploy failures ([#133](https://github.com/defenseunicorns/terraform-aws-eks/issues/133)) ([82f693a](https://github.com/defenseunicorns/terraform-aws-eks/commit/82f693abc901374b996b31019b629098c8a7f470))
+* don't create resources in secure test because there's no public endpoint heh ([#135](https://github.com/defenseunicorns/terraform-aws-eks/issues/135)) ([a57d846](https://github.com/defenseunicorns/terraform-aws-eks/commit/a57d8469897da1821c35cba0c6a587a1b820e6af))
+* fix cert manager policy defaults for aws partitioning ([#131](https://github.com/defenseunicorns/terraform-aws-eks/issues/131)) ([dc59a3d](https://github.com/defenseunicorns/terraform-aws-eks/commit/dc59a3d6496c5ac81ec4ed92409fcb7def7ffc6e))
+* input var ([#134](https://github.com/defenseunicorns/terraform-aws-eks/issues/134)) ([af4350d](https://github.com/defenseunicorns/terraform-aws-eks/commit/af4350dcbf8f841ed0180b17d5bc92987186c873))
+* secure-test fix ([#136](https://github.com/defenseunicorns/terraform-aws-eks/issues/136)) ([d5265cd](https://github.com/defenseunicorns/terraform-aws-eks/commit/d5265cd1d1158107dfa580f56c353072d46c8b76))
+
+
+### Miscellaneous Chores
+
+* **deps:** update all dependencies ([#125](https://github.com/defenseunicorns/terraform-aws-eks/issues/125)) ([bc83e98](https://github.com/defenseunicorns/terraform-aws-eks/commit/bc83e9847b8fd49884fc2152d219c45d323c5e6a))
+* **deps:** update all dependencies ([#129](https://github.com/defenseunicorns/terraform-aws-eks/issues/129)) ([c48fb40](https://github.com/defenseunicorns/terraform-aws-eks/commit/c48fb4022ebb767926d52be951473a2fd5dfef77))
+* **deps:** update pre-commit hook renovatebot/pre-commit-hooks to v37.252.1 ([#126](https://github.com/defenseunicorns/terraform-aws-eks/issues/126)) ([6855291](https://github.com/defenseunicorns/terraform-aws-eks/commit/6855291084d8a6594c6e20f47000cb4b214d8d6d))
+* remove efs-csi driver from blueprints addons ([#128](https://github.com/defenseunicorns/terraform-aws-eks/issues/128)) ([cd91cad](https://github.com/defenseunicorns/terraform-aws-eks/commit/cd91cad8de7b3d50716f76280152f22afdc56004))
+* remove old artifacts, implement VPC subnetting patterns ([#127](https://github.com/defenseunicorns/terraform-aws-eks/issues/127)) ([469e7c9](https://github.com/defenseunicorns/terraform-aws-eks/commit/469e7c90c15e1d1ec4bd6b5c1d501217f7a1a4a0))
+
+
+### Continuous Integration
+
+* bump cluster_version to 1.29 ([#123](https://github.com/defenseunicorns/terraform-aws-eks/issues/123)) ([4e9433a](https://github.com/defenseunicorns/terraform-aws-eks/commit/4e9433ae8be0fe08355113e71ab26f3c31c494ec))
+
 ## [0.0.17](https://github.com/defenseunicorns/terraform-aws-eks/compare/v0.0.16...v0.0.17) (2024-03-15)
 
 
