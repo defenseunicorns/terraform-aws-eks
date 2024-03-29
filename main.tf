@@ -105,19 +105,26 @@ module "aws_eks" {
   cluster_name    = local.cluster_name
   cluster_version = var.cluster_version
 
-  vpc_id                          = var.vpc_id
-  subnet_ids                      = var.private_subnet_ids
-  control_plane_subnet_ids        = var.control_plane_subnet_ids
-  iam_role_permissions_boundary   = var.iam_role_permissions_boundary
-  cluster_endpoint_public_access  = var.cluster_endpoint_public_access
-  cluster_endpoint_private_access = var.cluster_endpoint_private_access
+  vpc_id                           = var.vpc_id
+  subnet_ids                       = var.private_subnet_ids
+  control_plane_subnet_ids         = var.control_plane_subnet_ids
+  cluster_ip_family                = var.cluster_ip_family
+  cluster_service_ipv4_cidr        = var.cluster_service_ipv4_cidr
+  iam_role_permissions_boundary    = var.iam_role_permissions_boundary
+  attach_cluster_encryption_policy = var.attach_cluster_encryption_policy
+
+  cluster_endpoint_public_access       = var.cluster_endpoint_public_access
+  cluster_endpoint_public_access_cidrs = var.cluster_endpoint_public_access_cidrs
+  cluster_endpoint_private_access      = var.cluster_endpoint_private_access
+
 
   self_managed_node_group_defaults = var.self_managed_node_group_defaults
-  eks_managed_node_group_defaults  = var.eks_managed_node_group_defaults
   self_managed_node_groups         = var.self_managed_node_groups
   eks_managed_node_groups          = var.eks_managed_node_groups
+  eks_managed_node_group_defaults  = var.eks_managed_node_group_defaults
 
   dataplane_wait_duration = var.dataplane_wait_duration
+  cluster_timeouts        = var.cluster_timeouts
 
   cluster_addons = local.cluster_addons
 
@@ -126,16 +133,43 @@ module "aws_eks" {
   enable_cluster_creator_admin_permissions = var.enable_cluster_creator_admin_permissions
 
   #----------------------------------------------------------------------------------------------------------#
-  # Security groups used in this module created by the upstream modules terraform-aws-eks (https://github.com/terraform-aws-modules/terraform-aws-eks).
+  #   Security groups used in this module created by the upstream modules terraform-aws-eks (https://github.com/terraform-aws-modules/terraform-aws-eks).
   #   Upstream module implemented Security groups based on the best practices doc https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html.
-  #   So, by default the security groups are restrictive. Users needs to enable rules for specific ports required for App requirement or Add-ons
-  #   See the notes below for each rule used in these examples
+  #   By default the security groups are restrictive. Users needs to enable rules for specific ports required for App requirement or Add-ons
   #----------------------------------------------------------------------------------------------------------#
   cluster_security_group_additional_rules = var.cluster_security_group_additional_rules
+  cluster_additional_security_group_ids   = var.cluster_additional_security_group_ids
+  create_cluster_security_group           = var.create_cluster_security_group
+  cluster_security_group_id               = var.cluster_security_group_id
+  cluster_security_group_name             = var.cluster_security_group_name
+  cluster_security_group_use_name_prefix  = var.cluster_security_group_use_name_prefix
+  cluster_security_group_description      = var.cluster_security_group_description
+  cluster_security_group_tags             = var.cluster_security_group_tags
 
-  kms_key_administrators = distinct(concat(local.admin_arns, var.kms_key_administrators))
+  create_kms_key                    = var.create_kms_key
+  kms_key_description               = var.kms_key_description
+  kms_key_deletion_window_in_days   = var.kms_key_deletion_window_in_days
+  enable_kms_key_rotation           = var.enable_kms_key_rotation
+  kms_key_enable_default_policy     = var.kms_key_enable_default_policy
+  kms_key_owners                    = var.kms_key_owners
+  kms_key_administrators            = distinct(concat(local.admin_arns, var.kms_key_administrators))
+  kms_key_users                     = var.kms_key_users
+  kms_key_service_users             = var.kms_key_service_users
+  kms_key_source_policy_documents   = var.kms_key_source_policy_documents
+  kms_key_override_policy_documents = var.kms_key_override_policy_documents
+  kms_key_aliases                   = var.kms_key_aliases
 
-  tags = var.tags
+  cluster_enabled_log_types              = var.cluster_enabled_log_types
+  create_cloudwatch_log_group            = var.create_cloudwatch_log_group
+  cloudwatch_log_group_retention_in_days = var.cloudwatch_log_group_retention_in_days
+  cloudwatch_log_group_kms_key_id        = var.cloudwatch_log_group_kms_key_id
+  cloudwatch_log_group_class             = var.cloudwatch_log_group_class
+
+  cluster_tags                               = var.cluster_tags
+  create_cluster_primary_security_group_tags = var.create_cluster_primary_security_group_tags
+  cloudwatch_log_group_tags                  = var.cloudwatch_log_group_tags
+  tags                                       = var.tags
+
 }
 
 ################################################################################
