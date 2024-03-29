@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.0.19](https://github.com/defenseunicorns/terraform-aws-eks/compare/v0.0.18...v0.0.19) (2024-03-29)
+
+
+### Features
+
+* add upstream inputs related to cloudwatch, kms, cluster sg and networking ([#137](https://github.com/defenseunicorns/terraform-aws-eks/issues/137)) ([40b9731](https://github.com/defenseunicorns/terraform-aws-eks/commit/40b9731378b4e3b7be2d96fa66512c491d1aea8c))
+
+
+### Bug Fixes
+
+* dupe var 🤦 ([#139](https://github.com/defenseunicorns/terraform-aws-eks/issues/139)) ([812de82](https://github.com/defenseunicorns/terraform-aws-eks/commit/812de824353f9c211c83cebefae0211bdcbf1613))
+
 ## [0.0.18](https://github.com/defenseunicorns/terraform-aws-eks/compare/v0.0.17...v0.0.18) (2024-03-26)
 
 
