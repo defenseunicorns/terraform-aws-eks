@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v4.6.0
     hooks:
       - id: check-added-large-files
         args: ["--maxkb=1024"]
@@ -17,7 +17,7 @@ repos:
         args:
           - "--allow-multiple-documents"
   - repo: https://github.com/sirosen/texthooks
-    rev: 0.6.4
+    rev: 0.6.6
     hooks:
       - id: fix-smartquotes
   - repo: https://github.com/tekwizely/pre-commit-golang
@@ -30,7 +30,7 @@ repos:
           - "--verbose"
           - "--allow-parallel-runners"
   - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.88.3
+    rev: v1.88.4
     hooks:
       - id: terraform_fmt
       - id: terraform_docs
@@ -47,6 +47,6 @@ repos:
         args:
           - --args=--config=__GIT_WORKING_DIR__/.tflint.hcl
   - repo: https://github.com/renovatebot/pre-commit-hooks
-    rev: 37.269.3
+    rev: 37.278.0
     hooks:
       - id: renovate-config-validator
