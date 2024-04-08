@@ -1,6 +1,6 @@
 module github.com/defenseunicorns/terraform-aws-eks
 
-go 1.22.1
+go 1.22.2
 
 require (
 	github.com/defenseunicorns/delivery-aws-iac v0.0.12
