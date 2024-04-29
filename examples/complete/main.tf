@@ -59,7 +59,7 @@ module "subnet_addrs" {
 }
 
 module "vpc" {
-  source = "git::https://github.com/defenseunicorns/terraform-aws-vpc.git?ref=v0.1.7"
+  source = "git::https://github.com/defenseunicorns/terraform-aws-vpc.git?ref=v0.1.8"
 
   name                         = local.vpc_name
   vpc_cidr                     = var.vpc_cidr
