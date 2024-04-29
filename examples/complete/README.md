@@ -121,7 +121,7 @@ kubectl get nodes
 | <a name="module_key_pair"></a> [key\_pair](#module\_key\_pair) | terraform-aws-modules/key-pair/aws | ~> 2.0 |
 | <a name="module_ssm_kms_key"></a> [ssm\_kms\_key](#module\_ssm\_kms\_key) | terraform-aws-modules/kms/aws | ~> 2.0 |
 | <a name="module_subnet_addrs"></a> [subnet\_addrs](#module\_subnet\_addrs) | git::https://github.com/hashicorp/terraform-cidr-subnets | v1.0.0 |
-| <a name="module_vpc"></a> [vpc](#module\_vpc) | git::https://github.com/defenseunicorns/terraform-aws-vpc.git | v0.1.7 |
+| <a name="module_vpc"></a> [vpc](#module\_vpc) | git::https://github.com/defenseunicorns/terraform-aws-vpc.git | v0.1.8 |
 
 ## Resources
 
