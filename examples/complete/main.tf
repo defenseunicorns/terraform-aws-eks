@@ -59,7 +59,7 @@ module "subnet_addrs" {
 }
 
 module "vpc" {
-  source = "git::https://github.com/defenseunicorns/terraform-aws-vpc.git?ref=v0.1.8"
+  source = "git::https://github.com/defenseunicorns/terraform-aws-vpc.git?ref=v0.1.9"
 
   name                         = local.vpc_name
   vpc_cidr                     = var.vpc_cidr
@@ -294,7 +294,7 @@ locals {
 
 module "ssm_kms_key" {
   source  = "terraform-aws-modules/kms/aws"
-  version = "~> 2.0"
+  version = "~> 3.0"
 
   create = var.create_ssm_parameters
 
@@ -464,7 +464,7 @@ module "key_pair" {
 
 module "ebs_kms_key" {
   source  = "terraform-aws-modules/kms/aws"
-  version = "~> 2.0"
+  version = "~> 3.0"
 
   description = "Customer managed key to encrypt EKS managed node group volumes"
 
