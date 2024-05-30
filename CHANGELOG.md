@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.0.20](https://github.com/defenseunicorns/terraform-aws-eks/compare/v0.0.19...v0.0.20) (2024-05-30)
+
+
+### Bug Fixes
+
+* Add cluster ARN to outputs. ([#151](https://github.com/defenseunicorns/terraform-aws-eks/issues/151)) ([5f7ec50](https://github.com/defenseunicorns/terraform-aws-eks/commit/5f7ec50e85d7aa4d8e890e0aa35a57ee4a13e7b4))
+
+
+### Miscellaneous Chores
+
+* **deps:** update all dependencies ([#140](https://github.com/defenseunicorns/terraform-aws-eks/issues/140)) ([158a968](https://github.com/defenseunicorns/terraform-aws-eks/commit/158a968202cfa10ab49bdbd6c25f1a31dd95e129))
+* **deps:** update all dependencies ([#143](https://github.com/defenseunicorns/terraform-aws-eks/issues/143)) ([c69fe81](https://github.com/defenseunicorns/terraform-aws-eks/commit/c69fe81a344f1738c5c0faf643dbfac5514cac61))
+* **deps:** update all dependencies ([#144](https://github.com/defenseunicorns/terraform-aws-eks/issues/144)) ([039ecfb](https://github.com/defenseunicorns/terraform-aws-eks/commit/039ecfbde01cebb96455ab91820ad2355bcd51eb))
+* **deps:** update all dependencies ([#145](https://github.com/defenseunicorns/terraform-aws-eks/issues/145)) ([094975d](https://github.com/defenseunicorns/terraform-aws-eks/commit/094975d735c7cde497b7ddf4888f097f03a172d3))
+* **deps:** update all dependencies ([#147](https://github.com/defenseunicorns/terraform-aws-eks/issues/147)) ([c44502d](https://github.com/defenseunicorns/terraform-aws-eks/commit/c44502d98d3303ddcf4ef90aa932de96fd68c35d))
+* **deps:** update all dependencies ([#148](https://github.com/defenseunicorns/terraform-aws-eks/issues/148)) ([6fbf2bf](https://github.com/defenseunicorns/terraform-aws-eks/commit/6fbf2bf788ba2011237f8ea4328e4f09467687f3))
+* **deps:** update all dependencies ([#149](https://github.com/defenseunicorns/terraform-aws-eks/issues/149)) ([b95773e](https://github.com/defenseunicorns/terraform-aws-eks/commit/b95773e26d08511df6be71cb57a37c53b474b63e))
+* **deps:** update module golang.org/x/net to v0.23.0 [security] ([#142](https://github.com/defenseunicorns/terraform-aws-eks/issues/142)) ([ee9cb7d](https://github.com/defenseunicorns/terraform-aws-eks/commit/ee9cb7def4a5e72483094c9d2e17fb7f2a04481b))
+* **deps:** update pre-commit hook renovatebot/pre-commit-hooks to v37.327.2 ([#146](https://github.com/defenseunicorns/terraform-aws-eks/issues/146)) ([f453fe1](https://github.com/defenseunicorns/terraform-aws-eks/commit/f453fe19c75440305bbebbee63ad0d602479294d))
+
 ## [0.0.19](https://github.com/defenseunicorns/terraform-aws-eks/compare/v0.0.18...v0.0.19) (2024-03-29)
 
 
