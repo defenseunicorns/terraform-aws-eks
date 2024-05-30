@@ -1,3 +1,8 @@
+output "cluster_arn" {
+  description = "The ARN of the EKS cluster"
+  value       = module.aws_eks.cluster_arn
+}
+
 output "cluster_name" {
   description = "The name of the EKS cluster"
   value       = module.aws_eks.cluster_name
