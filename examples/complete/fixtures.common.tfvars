@@ -105,7 +105,12 @@ cluster_addons = {
     most_recent = true
   }
   aws-ebs-csi-driver = {
-    most_recent = true
+    most_recent          = true
+    configuration_values = <<-JSON
+      "defaultStorageClass": {
+        "enabled": true
+      }
+    JSON
     timeouts = {
       create = "10m"
       delete = "10m"

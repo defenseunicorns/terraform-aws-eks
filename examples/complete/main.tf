@@ -59,7 +59,7 @@ module "subnet_addrs" {
 }
 
 module "vpc" {
-  source = "git::https://github.com/defenseunicorns/terraform-aws-vpc.git?ref=v0.1.10"
+  source = "git::https://github.com/defenseunicorns/terraform-aws-vpc.git?ref=v0.1.11"
 
   name                         = local.vpc_name
   vpc_cidr                     = var.vpc_cidr
@@ -196,20 +196,28 @@ locals {
     iam_role_permissions_boundary          = var.iam_role_permissions_boundary
     instance_type                          = null
     update_launch_template_default_version = true
+    use_mixed_instances_policy             = true
+
+    instance_requirements = {
+      allowed_instance_types = ["m6i.4xlarge", "m5a.4xlarge"] #this should be adjusted to the appropriate instance family if reserved instances are being utilized
+      memory_mib = {
+        min = 64000
+      }
+      vcpu_count = {
+        min = 16
+      }
+    }
 
     placement = {
       tenancy = var.eks_worker_tenancy
     }
-
-    post_userdata = <<-EOT
-        echo "Bootstrap successfully completed! You can further apply config or install to run after bootstrap if needed"
-      EOT
 
     # bootstrap_extra_args used only when you pass custom_ami_id. Allows you to change the Container Runtime for Nodes
     # e.g., bootstrap_extra_args="--use-max-pods false --container-runtime containerd"
     bootstrap_extra_args = "--use-max-pods false"
 
     iam_role_additional_policies = {
+      AmazonSSMManagedInstanceCore      = "arn:${data.aws_partition.current.partition}:iam::aws:policy/AmazonSSMManagedInstanceCore",
       AmazonElasticFileSystemFullAccess = "arn:${data.aws_partition.current.partition}:iam::aws:policy/AmazonElasticFileSystemFullAccess"
     }
 
@@ -234,21 +242,39 @@ locals {
     }
   }
 
-  mission_app_self_mg_node_group = {
-    uds-core_ng = {
+  uds_core_self_mg_node_group = {
+    uds_core_ng = {
       ami_type      = "BOTTLEROCKET_x86_64"
       ami_id        = data.aws_ami.eks_default_bottlerocket.id
-      instance_type = "m5d.2xlarge" # conflicts with instance_requirements settings
+      instance_type = null # conflicts with instance_requirements settings
       min_size      = 3
       max_size      = 5
       desired_size  = 3
-      key_name      = module.key_pair.key_pair_name
+      key_name      = module.self_managed_node_group_keypair.key_pair_name
+
+      block_device_mappings = {
+        xvda = {
+          device_name = "/dev/xvda"
+          ebs = {
+            volume_size = 100
+            volume_type = "gp3"
+          }
+        }
+        xvdb = {
+          device_name = "/dev/xvdb"
+          ebs = {
+            volume_size = 100
+            volume_type = "gp3"
+            #need to add and create EBS key
+          }
+        }
+      }
 
       bootstrap_extra_args = <<-EOT
         # The admin host container provides SSH access and runs with "superpowers".
-        # It is disabled by default, but can be disabled explicitly.
+        # It is disabled by default, enabled here for easy SSH access into bottlerocket nodes with the keypair created by the module.
         [settings.host-containers.admin]
-        enabled = false
+        enabled = true
 
         # The control host container provides out-of-band access via SSM.
         # It is enabled by default, and can be disabled if you do not expect to use SSM.
@@ -262,7 +288,7 @@ locals {
 
         [settings.kubernetes.node-labels]
         # label1 = "sso"
-        # label2 = "bb-core"
+        # label2 = "uds-core"
 
         [settings.kubernetes.node-taints]
         # dedicated = "experimental:PreferNoSchedule"
@@ -271,7 +297,7 @@ locals {
     }
   }
 
-  self_managed_node_groups = var.enable_self_managed_nodegroups ? local.mission_app_self_mg_node_group : {}
+  self_managed_node_groups = var.enable_self_managed_nodegroups ? local.uds_core_self_mg_node_group : null
 
   access_entries = merge(
     var.access_entries,
@@ -289,6 +315,20 @@ locals {
         }
       }
     } : {}
+  )
+
+  vpc_cni_addon_irsa_extra_config = {
+    "vpc-cni" = merge(
+      var.cluster_addons["vpc-cni"],
+      {
+        service_account_role_arn = module.vpc_cni_ipv4_irsa_role.iam_role_arn
+      }
+    )
+  }
+
+  cluster_addons = merge(
+    var.cluster_addons,
+    local.vpc_cni_addon_irsa_extra_config
   )
 }
 
@@ -373,7 +413,7 @@ module "eks" {
   # "native" EKS Marketplace Add-Ons
   #---------------------------------------------------------------
 
-  cluster_addons = var.cluster_addons
+  cluster_addons = local.cluster_addons
 
   # AWS EKS EBS CSI Driver
   enable_amazon_eks_aws_ebs_csi_driver = var.enable_amazon_eks_aws_ebs_csi_driver
@@ -452,16 +492,6 @@ module "eks" {
   external_dns        = var.external_dns
 }
 
-module "key_pair" {
-  source  = "terraform-aws-modules/key-pair/aws"
-  version = "~> 2.0"
-
-  key_name_prefix    = local.cluster_name
-  create_private_key = true
-
-  tags = local.tags
-}
-
 module "ebs_kms_key" {
   source  = "terraform-aws-modules/kms/aws"
   version = "~> 3.0"
@@ -505,6 +535,87 @@ resource "aws_iam_policy" "additional" {
       },
     ]
   })
+
+  tags = local.tags
+}
+
+######################################################
+# EKS Self Managed Node Group Dependencies
+######################################################
+module "self_managed_node_group_keypair" {
+  source = "git::https://github.com/terraform-aws-modules/terraform-aws-key-pair?ref=v2.0.3"
+
+  key_name_prefix    = "${local.cluster_name}-self-managed-ng-"
+  create_private_key = true
+
+  tags = local.tags
+}
+
+module "self_managed_node_group_secret_key_secrets_manager_secret" {
+  source = "git::https://github.com/terraform-aws-modules/terraform-aws-secrets-manager.git?ref=v1.1.2"
+
+  name                    = module.self_managed_node_group_keypair.key_pair_name
+  description             = "Secret key for self managed node group keypair"
+  recovery_window_in_days = 0 # 0 - no recovery window, delete immediately when deleted
+
+  block_public_policy = true
+
+  ignore_secret_changes = true
+  secret_string         = module.self_managed_node_group_keypair.private_key_openssh
+
+  tags = local.tags
+}
+
+######################################################
+# vpc-cni irsa role
+######################################################
+module "vpc_cni_ipv4_irsa_role" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.39"
+
+  role_name_prefix      = "${module.eks.cluster_name}-vpc-cni-"
+  attach_vpc_cni_policy = true
+  vpc_cni_enable_ipv4   = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:aws-node"]
+    }
+  }
+
+  # extra policy to attach to the role
+  role_policy_arns = {
+    vpc_cni_logging = aws_iam_policy.vpc_cni_logging.arn
+  }
+
+  tags = local.tags
+}
+
+resource "aws_iam_policy" "vpc_cni_logging" {
+  # checkov:skip=CKV_AWS_355: "Ensure no IAM policies documents allow "*" as a statement's resource for restrictable actions"
+  # checkov:skip=CKV_AWS_290: "Ensure IAM policies does not allow write access without constraints"
+  name        = join("-", compact([var.name_prefix, "vpc-cni-logging", lower(random_id.default.hex)]))
+  description = "Additional test policy"
+
+  policy = jsonencode(
+    {
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Sid    = "CloudWatchLogging"
+          Effect = "Allow"
+          Action = [
+            "logs:DescribeLogGroups",
+            "logs:CreateLogGroup",
+            "logs:CreateLogStream",
+            "logs:PutLogEvents"
+          ]
+          Resource = "*"
+        }
+      ]
+    }
+  )
 
   tags = local.tags
 }

@@ -10,11 +10,6 @@ import (
 	"github.com/defenseunicorns/delivery_aws_iac_utils/pkg/utils"
 )
 
-// This test deploys the complete example in "secure mode". Secure mode is:
-// 1. In govcloud
-// 2. With dedicated tenancy
-// 3. With the eks endpoint in private mode
-
 func TestExamplesCompleteSecure(t *testing.T) {
 	t.Parallel()
 
@@ -23,8 +18,9 @@ func TestExamplesCompleteSecure(t *testing.T) {
 
 	tempFolder := teststructure.CopyTerraformFolderToTemp(t, "../..", "examples/complete")
 	terraformOptions := &terraform.Options{
-		TerraformDir: tempFolder,
-		Upgrade:      false,
+		TerraformBinary: "tofu",
+		TerraformDir:    tempFolder,
+		Upgrade:         false,
 		VarFiles: []string{
 			"fixtures.common.tfvars",
 			"fixtures.secure.tfvars",
