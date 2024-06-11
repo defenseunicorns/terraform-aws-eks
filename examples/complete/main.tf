@@ -61,16 +61,17 @@ module "subnet_addrs" {
 module "vpc" {
   source = "git::https://github.com/defenseunicorns/terraform-aws-vpc.git?ref=v0.1.11"
 
-  name                  = local.vpc_name
-  vpc_cidr              = var.vpc_cidr
-  secondary_cidr_blocks = var.secondary_cidr_blocks
-  azs                   = local.azs
-  public_subnets        = local.public_subnets
-  private_subnets       = local.private_subnets
-  database_subnets      = local.database_subnets
-  intra_subnets         = [for k, v in module.vpc.azs : cidrsubnet(element(module.vpc.vpc_secondary_cidr_blocks, 0), 5, k)]
-  single_nat_gateway    = true
-  enable_nat_gateway    = true
+  name                         = local.vpc_name
+  vpc_cidr                     = var.vpc_cidr
+  secondary_cidr_blocks        = var.secondary_cidr_blocks
+  azs                          = local.azs
+  public_subnets               = local.public_subnets
+  private_subnets              = local.private_subnets
+  database_subnets             = local.database_subnets
+  intra_subnets                = [for k, v in module.vpc.azs : cidrsubnet(element(module.vpc.vpc_secondary_cidr_blocks, 0), 5, k)]
+  single_nat_gateway           = true #remove if in a private VPC behind TGW
+  enable_nat_gateway           = true #remove if in a private VPC behind TGW
+  create_default_vpc_endpoints = var.create_default_vpc_endpoints
 
   private_subnet_tags = {
     "kubernetes.io/cluster/${local.cluster_name}" = "shared"
