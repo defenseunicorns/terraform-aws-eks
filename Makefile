@@ -65,7 +65,7 @@ _test-all: _create-folders
 		-e SKIP_TEARDOWN \
 		$${TF_VARS} \
 		${BUILD_HARNESS_REPO}:${BUILD_HARNESS_VERSION} \
-		bash -c 'git config --global --add safe.directory /app && cd examples/complete && cd ../../test/e2e && go test -count 1 -v $(EXTRA_TEST_ARGS) .'
+		bash -c 'git config --global --add safe.directory /app && cd examples/complete && tofu init -upgrade=true &&cd ../../test/e2e && go test -count 1 -v $(EXTRA_TEST_ARGS) .'
 
 .PHONY: go-init
 go-init: _create-folders
@@ -131,6 +131,7 @@ bastion-connect: _create-folders ## To be used after deploying "secure mode" of 
 		$${TF_VARS} \
 		${BUILD_HARNESS_REPO}:${BUILD_HARNESS_VERSION} \
 		bash -c 'git config --global --add safe.directory /app \
+				&& tofu init -upgrade=true \
 				&& sshuttle -D -e '"'"'sshpass -p "my-password" ssh -q -o CheckHostIP=no -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ProxyCommand="aws ssm --region $(shell cd examples/complete && terraform output -raw bastion_region) start-session --target %h --document-name AWS-StartSSHSession --parameters portNumber=%p"'"'"' --dns --disable-ipv6 -vr ec2-user@$(shell cd examples/complete && terraform output -raw bastion_instance_id) $(shell cd examples/complete && terraform output -raw vpc_cidr) \
 				&& aws eks --region $(shell cd examples/complete && terraform output -raw bastion_region) update-kubeconfig --name $(shell cd examples/complete && terraform output -raw eks_cluster_name) \
 				&& echo "SShuttle is running and KUBECONFIG has been set. Try running kubectl get nodes." \

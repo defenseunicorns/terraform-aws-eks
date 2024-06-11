@@ -42,14 +42,14 @@ repos:
       #     - --hook-config=--add-to-existing-file=true # Boolean. true or false
       #     - --hook-config=--create-file-if-not-exist=true # Boolean. true or false
       #     - --hook-config=--tf-path=tofu # currently terraform-docs doesn't support tofu https://github.com/terraform-docs/terraform-docs/issues/703
-      # - id: terraform_checkov
-      #   verbose: true
-      #   args:
-      #     - --args=--config-file __GIT_WORKING_DIR__/.checkov.yml
+      - id: terraform_checkov
+        verbose: true
+        args:
+          - --args=--config-file __GIT_WORKING_DIR__/.checkov.yml
+          - --hook-config=--tf-path=tofu
       - id: terraform_tflint
         args:
           - --args=--config=__GIT_WORKING_DIR__/.tflint.hcl
-          - --args=--recursive
           - --hook-config=--tf-path=tofu
   - repo: https://github.com/tofuutils/pre-commit-opentofu
     rev: v1.0.2 # Get the latest from: https://github.com/tofuutils/pre-commit-opentofu/releases
