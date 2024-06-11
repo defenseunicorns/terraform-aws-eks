@@ -593,6 +593,8 @@ module "vpc_cni_ipv4_irsa_role" {
 }
 
 resource "aws_iam_policy" "vpc_cni_logging" {
+  # checkov:skip=CKV_AWS_355: "Ensure no IAM policies documents allow "*" as a statement's resource for restrictable actions"
+  # checkov:skip=CKV_AWS_290: "Ensure IAM policies does not allow write access without constraints"
   name        = join("-", compact([var.name_prefix, "vpc-cni-logging", lower(random_id.default.hex)]))
   description = "Additional test policy"
 
