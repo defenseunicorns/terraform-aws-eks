@@ -59,7 +59,7 @@ module "subnet_addrs" {
 }
 
 module "vpc" {
-  source = "git::https://github.com/defenseunicorns/terraform-aws-vpc.git?ref=v0.1.10"
+  source = "git::https://github.com/defenseunicorns/terraform-aws-vpc.git?ref=v0.1.11"
 
   name                         = local.vpc_name
   vpc_cidr                     = var.vpc_cidr
@@ -115,7 +115,7 @@ data "aws_ami" "amazonlinux2" {
 }
 
 module "bastion" {
-  source = "git::https://github.com/defenseunicorns/terraform-aws-bastion.git?ref=v0.0.16"
+  source = "git::https://github.com/defenseunicorns/terraform-aws-bastion.git?ref=v0.0.17"
 
   count = var.enable_bastion ? 1 : 0
 
