@@ -25,7 +25,7 @@ variable "cluster_tags" {
 variable "cluster_version" {
   description = "Kubernetes version to use for EKS cluster"
   type        = string
-  default     = "1.29"
+  default     = "1.30"
 }
 
 variable "cluster_enabled_log_types" {
