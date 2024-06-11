@@ -77,6 +77,12 @@ variable "num_azs" {
   default     = 3
 }
 
+variable "create_default_vpc_endpoints" {
+  description = "If true, default VPC endpoints will be created"
+  type        = bool
+  default     = true
+}
+
 ###########################################################
 #################### EKS Config ###########################
 variable "eks_worker_tenancy" {
@@ -88,7 +94,7 @@ variable "eks_worker_tenancy" {
 variable "cluster_version" {
   description = "Kubernetes version to use for EKS cluster"
   type        = string
-  default     = "1.29"
+  default     = "1.30"
 }
 
 variable "cluster_endpoint_public_access" {

@@ -69,9 +69,9 @@ module "vpc" {
   private_subnets              = local.private_subnets
   database_subnets             = local.database_subnets
   intra_subnets                = [for k, v in module.vpc.azs : cidrsubnet(element(module.vpc.vpc_secondary_cidr_blocks, 0), 5, k)]
-  single_nat_gateway           = true
-  enable_nat_gateway           = true
-  create_default_vpc_endpoints = false
+  single_nat_gateway           = true #remove if in a private VPC behind TGW
+  enable_nat_gateway           = true #remove if in a private VPC behind TGW
+  create_default_vpc_endpoints = var.create_default_vpc_endpoints
 
   private_subnet_tags = {
     "kubernetes.io/cluster/${local.cluster_name}" = "shared"
@@ -235,8 +235,8 @@ locals {
   }
 
   mission_app_self_mg_node_group = {
-    bigbang_ng = {
-      platform      = "bottlerocket"
+    uds-core_ng = {
+      ami_type      = "BOTTLEROCKET_x86_64"
       ami_id        = data.aws_ami.eks_default_bottlerocket.id
       instance_type = "m5d.2xlarge" # conflicts with instance_requirements settings
       min_size      = 3
