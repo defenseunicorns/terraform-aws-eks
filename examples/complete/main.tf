@@ -212,15 +212,6 @@ locals {
       tenancy = var.eks_worker_tenancy
     }
 
-    pre_bootstrap_userdata = <<-EOT
-        yum install -y amazon-ssm-agent
-        systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent
-      EOT
-
-    post_userdata = <<-EOT
-        echo "Bootstrap successfully completed! You can further apply config or install to run after bootstrap if needed"
-      EOT
-
     # bootstrap_extra_args used only when you pass custom_ami_id. Allows you to change the Container Runtime for Nodes
     # e.g., bootstrap_extra_args="--use-max-pods false --container-runtime containerd"
     bootstrap_extra_args = "--use-max-pods false"
@@ -281,7 +272,7 @@ locals {
 
       bootstrap_extra_args = <<-EOT
         # The admin host container provides SSH access and runs with "superpowers".
-        # It is disabled by default, but can be disabled explicitly.
+        # It is disabled by default, enabled here for easy SSH access into bottlerocket nodes with the keypair created by the module.
         [settings.host-containers.admin]
         enabled = true
 

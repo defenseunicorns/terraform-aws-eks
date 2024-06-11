@@ -97,8 +97,8 @@ cluster_addons = {
   coredns = {
     most_recent = true
     timeouts = {
-      create = "2m"
-      delete = "2m"
+      create = "10m"
+      delete = "10m"
     }
   }
   kube-proxy = {
@@ -112,16 +112,16 @@ cluster_addons = {
       }
     JSON
     timeouts = {
-      create = "2m"
-      delete = "2m"
+      create = "10m"
+      delete = "10m"
     }
   }
   # consider using '"useFIPS": "true"' under configuration_values for aws_efs_csi_driver
   aws-efs-csi-driver = {
     most_recent = true
     timeouts = {
-      create = "2m"
-      delete = "2m"
+      create = "10m"
+      delete = "10m"
     }
   }
 }
