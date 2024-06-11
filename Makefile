@@ -65,7 +65,7 @@ _test-all: _create-folders
 		-e SKIP_TEARDOWN \
 		$${TF_VARS} \
 		${BUILD_HARNESS_REPO}:${BUILD_HARNESS_VERSION} \
-		bash -c 'git config --global --add safe.directory /app && cd examples/complete && terraform init -upgrade=true && cd ../../test/e2e && go test -count 1 -v $(EXTRA_TEST_ARGS) .'
+		bash -c 'git config --global --add safe.directory /app && cd examples/complete && cd ../../test/e2e && go test -count 1 -v $(EXTRA_TEST_ARGS) .'
 
 .PHONY: go-init
 go-init: _create-folders
@@ -131,7 +131,6 @@ bastion-connect: _create-folders ## To be used after deploying "secure mode" of 
 		$${TF_VARS} \
 		${BUILD_HARNESS_REPO}:${BUILD_HARNESS_VERSION} \
 		bash -c 'git config --global --add safe.directory /app \
-				&& terraform init -upgrade=true \
 				&& sshuttle -D -e '"'"'sshpass -p "my-password" ssh -q -o CheckHostIP=no -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ProxyCommand="aws ssm --region $(shell cd examples/complete && terraform output -raw bastion_region) start-session --target %h --document-name AWS-StartSSHSession --parameters portNumber=%p"'"'"' --dns --disable-ipv6 -vr ec2-user@$(shell cd examples/complete && terraform output -raw bastion_instance_id) $(shell cd examples/complete && terraform output -raw vpc_cidr) \
 				&& aws eks --region $(shell cd examples/complete && terraform output -raw bastion_region) update-kubeconfig --name $(shell cd examples/complete && terraform output -raw eks_cluster_name) \
 				&& echo "SShuttle is running and KUBECONFIG has been set. Try running kubectl get nodes." \
@@ -194,7 +193,7 @@ pre-commit-terraform: ## Run the terraform pre-commit hooks. Returns nonzero exi
 
 .PHONY: pre-commit-golang
 pre-commit-golang: ## Run the golang pre-commit hooks. Returns nonzero exit code if any hooks fail. Uses Docker for maximum compatibility
-	$(MAKE) _runhooks HOOK="" SKIP="check-added-large-files,check-merge-conflict,detect-aws-credentials,detect-private-key,end-of-file-fixer,fix-byte-order-marker,trailing-whitespace,check-yaml,fix-smartquotes,terraform_fmt,terraform_docs,terraform_checkov,terraform_tflint,renovate-config-validator"
+	$(MAKE) _runhooks HOOK="" SKIP="check-added-large-files,check-merge-conflict,detect-aws-credentials,detect-private-key,end-of-file-fixer,fix-byte-order-marker,trailing-whitespace,check-yaml,fix-smartquotes,terraform_fmt,tofu_docs,terraform_checkov,terraform_tflint,renovate-config-validator"
 
 .PHONY: pre-commit-renovate
 pre-commit-renovate: ## Run the renovate pre-commit hooks. Returns nonzero exit code if any hooks fail. Uses Docker for maximum compatibility
@@ -202,7 +201,7 @@ pre-commit-renovate: ## Run the renovate pre-commit hooks. Returns nonzero exit 
 
 .PHONY: pre-commit-common
 pre-commit-common: ## Run the common pre-commit hooks. Returns nonzero exit code if any hooks fail. Uses Docker for maximum compatibility
-	$(MAKE) _runhooks HOOK="" SKIP="go-fmt,golangci-lint,terraform_fmt,terraform_docs,terraform_checkov,terraform_tflint,renovate-config-validator"
+	$(MAKE) _runhooks HOOK="" SKIP="go-fmt,golangci-lint,terraform_fmt,tofu_docs,terraform_checkov,terraform_tflint,renovate-config-validator"
 
 .PHONY: fix-cache-permissions
 fix-cache-permissions: ## Fixes the permissions on the pre-commit cache

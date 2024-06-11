@@ -71,7 +71,7 @@ zarf_version         = "v0.29.1"
 ###########################################################
 #################### EKS Config ###########################
 
-cluster_version = "1.29"
+cluster_version = "1.30"
 
 # #################### EKS Addon #########################
 # add other "eks native" marketplace addons and configs to this list
@@ -96,26 +96,31 @@ cluster_addons = {
   coredns = {
     most_recent = true
     timeouts = {
-      create = "10m"
-      delete = "10m"
+      create = "2m"
+      delete = "2m"
     }
   }
   kube-proxy = {
     most_recent = true
   }
   aws-ebs-csi-driver = {
-    most_recent = true
+    most_recent          = true
+    configuration_values = <<-JSON
+      "defaultStorageClass": {
+        "enabled": true
+      }
+    JSON
     timeouts = {
-      create = "10m"
-      delete = "10m"
+      create = "2m"
+      delete = "2m"
     }
   }
   # consider using '"useFIPS": "true"' under configuration_values for aws_efs_csi_driver
   aws-efs-csi-driver = {
     most_recent = true
     timeouts = {
-      create = "10m"
-      delete = "10m"
+      create = "2m"
+      delete = "2m"
     }
   }
 }

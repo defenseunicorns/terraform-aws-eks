@@ -16,8 +16,9 @@ func TestExamplesCompletePlanOnly(t *testing.T) {
 
 	tempFolder := teststructure.CopyTerraformFolderToTemp(t, "../..", "examples/complete")
 	terraformOptionsPlan := &terraform.Options{
-		TerraformDir: tempFolder,
-		Upgrade:      false,
+		TerraformBinary: "tofu",
+		TerraformDir:    tempFolder,
+		Upgrade:         false,
 		VarFiles: []string{
 			"fixtures.common.tfvars",
 			"fixtures.insecure.tfvars",
