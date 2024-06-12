@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.0.21](https://github.com/defenseunicorns/terraform-aws-eks/compare/v0.0.20...v0.0.21) (2024-06-12)
+
+
+### Features
+
+* Migrate to tofu and implement ebs-csi defaultStorageClass configuration ([#156](https://github.com/defenseunicorns/terraform-aws-eks/issues/156)) ([d49a8c0](https://github.com/defenseunicorns/terraform-aws-eks/commit/d49a8c0799f2a0ecdb8c31b515ded7c4b53551e6))
+
+
+### Bug Fixes
+
+* add new bottlerocket nodegroup feature & upgrade eks to v1.30 ([#154](https://github.com/defenseunicorns/terraform-aws-eks/issues/154)) ([e3837d3](https://github.com/defenseunicorns/terraform-aws-eks/commit/e3837d32b97412d035f4b71926beceb1f99650af))
+
+
+### Miscellaneous Chores
+
+* **deps:** update all dependencies ([#150](https://github.com/defenseunicorns/terraform-aws-eks/issues/150)) ([cba7f32](https://github.com/defenseunicorns/terraform-aws-eks/commit/cba7f3233f055e54ff54f8523438f0898c1d7798))
+
 ## [0.0.20](https://github.com/defenseunicorns/terraform-aws-eks/compare/v0.0.19...v0.0.20) (2024-05-30)
 
 
