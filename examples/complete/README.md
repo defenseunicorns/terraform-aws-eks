@@ -102,11 +102,11 @@ kubectl get nodes
 |------|--------|---------|
 | <a name="module_ebs_kms_key"></a> [ebs\_kms\_key](#module\_ebs\_kms\_key) | terraform-aws-modules/kms/aws | ~> 3.0 |
 | <a name="module_eks"></a> [eks](#module\_eks) | ../.. | n/a |
-| <a name="module_self_managed_node_group_keypair"></a> [self\_managed\_node\_group\_keypair](#module\_self\_managed\_node\_group\_keypair) | git::<https://github.com/terraform-aws-modules/terraform-aws-key-pair> | v2.0.3 |
-| <a name="module_self_managed_node_group_secret_key_secrets_manager_secret"></a> [self\_managed\_node\_group\_secret\_key\_secrets\_manager\_secret](#module\_self\_managed\_node\_group\_secret\_key\_secrets\_manager\_secret) | git::<https://github.com/terraform-aws-modules/terraform-aws-secrets-manager.git> | v1.1.2 |
+| <a name="module_self_managed_node_group_keypair"></a> [self\_managed\_node\_group\_keypair](#module\_self\_managed\_node\_group\_keypair) | git::https://github.com/terraform-aws-modules/terraform-aws-key-pair | v2.0.3 |
+| <a name="module_self_managed_node_group_secret_key_secrets_manager_secret"></a> [self\_managed\_node\_group\_secret\_key\_secrets\_manager\_secret](#module\_self\_managed\_node\_group\_secret\_key\_secrets\_manager\_secret) | git::https://github.com/terraform-aws-modules/terraform-aws-secrets-manager.git | v1.1.2 |
 | <a name="module_ssm_kms_key"></a> [ssm\_kms\_key](#module\_ssm\_kms\_key) | terraform-aws-modules/kms/aws | ~> 3.0 |
-| <a name="module_subnet_addrs"></a> [subnet\_addrs](#module\_subnet\_addrs) | git::<https://github.com/hashicorp/terraform-cidr-subnets> | v1.0.0 |
-| <a name="module_vpc"></a> [vpc](#module\_vpc) | git::<https://github.com/defenseunicorns/terraform-aws-vpc.git> | v0.1.11 |
+| <a name="module_subnet_addrs"></a> [subnet\_addrs](#module\_subnet\_addrs) | git::https://github.com/hashicorp/terraform-cidr-subnets | v1.0.0 |
+| <a name="module_vpc"></a> [vpc](#module\_vpc) | git::https://github.com/defenseunicorns/terraform-aws-vpc.git | v0.1.11 |
 | <a name="module_vpc_cni_ipv4_irsa_role"></a> [vpc\_cni\_ipv4\_irsa\_role](#module\_vpc\_cni\_ipv4\_irsa\_role) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | ~> 5.39 |
 
 ## Resources
@@ -149,7 +149,7 @@ kubectl get nodes
 | <a name="input_bottlerocket_update_operator"></a> [bottlerocket\_update\_operator](#input\_bottlerocket\_update\_operator) | Bottlerocket Update Operator config for aws-ia/eks-blueprints-addon/aws | `any` | `{}` | no |
 | <a name="input_cert_manager"></a> [cert\_manager](#input\_cert\_manager) | Cert Manager config for aws-ia/eks-blueprints-addon/aws | `any` | `{}` | no |
 | <a name="input_cert_manager_route53_hosted_zone_arns"></a> [cert\_manager\_route53\_hosted\_zone\_arns](#input\_cert\_manager\_route53\_hosted\_zone\_arns) | List of Route53 Hosted Zone ARNs that are used by cert-manager to create DNS records | `list(string)` | `[]` | no |
-| <a name="input_cluster_addons"></a> [cluster\_addons](#input\_cluster\_addons) | Nested of eks native add-ons and their associated parameters.<br>See <https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_add-on> for supported values.<br>See <https://github.com/terraform-aws-modules/terraform-aws-eks/blob/master/examples/complete/main.tf#L44-L60> for upstream example.<br><br>to see available eks marketplace addons available for your cluster's version run:<br>aws eks describe-addon-versions --kubernetes-version $k8s\_cluster\_version --query 'addons[].{MarketplaceProductUrl: marketplaceInformation.productUrl, Name: addonName, Owner: owner Publisher: publisher, Type: type}' --output table | `any` | `{}` | no |
+| <a name="input_cluster_addons"></a> [cluster\_addons](#input\_cluster\_addons) | Nested of eks native add-ons and their associated parameters.<br>See https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_add-on for supported values.<br>See https://github.com/terraform-aws-modules/terraform-aws-eks/blob/master/examples/complete/main.tf#L44-L60 for upstream example.<br><br>to see available eks marketplace addons available for your cluster's version run:<br>aws eks describe-addon-versions --kubernetes-version $k8s\_cluster\_version --query 'addons[].{MarketplaceProductUrl: marketplaceInformation.productUrl, Name: addonName, Owner: owner Publisher: publisher, Type: type}' --output table | `any` | `{}` | no |
 | <a name="input_cluster_autoscaler"></a> [cluster\_autoscaler](#input\_cluster\_autoscaler) | Cluster Autoscaler config for aws-ia/eks-blueprints-addon/aws | `any` | <pre>{<br>  "set": [<br>    {<br>      "name": "extraArgs.expander",<br>      "value": "priority"<br>    },<br>    {<br>      "name": "expanderPriorities",<br>      "value": "100:\n  - .*-spot-2vcpu-8mem.*\n90:\n  - .*-spot-4vcpu-16mem.*\n10:\n  - .*\n"<br>    }<br>  ]<br>}</pre> | no |
 | <a name="input_cluster_endpoint_public_access"></a> [cluster\_endpoint\_public\_access](#input\_cluster\_endpoint\_public\_access) | Whether to enable private access to the EKS cluster | `bool` | `false` | no |
 | <a name="input_cluster_version"></a> [cluster\_version](#input\_cluster\_version) | Kubernetes version to use for EKS cluster | `string` | `"1.30"` | no |
@@ -195,7 +195,7 @@ kubectl get nodes
 | <a name="input_secrets_store_csi_driver"></a> [secrets\_store\_csi\_driver](#input\_secrets\_store\_csi\_driver) | k8s Secret Store CSI Driver config for aws-ia/eks-blueprints-addon/aws | `any` | `{}` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to apply to all resources | `map(string)` | `{}` | no |
 | <a name="input_vpc_cidr"></a> [vpc\_cidr](#input\_vpc\_cidr) | The CIDR block for the VPC | `string` | n/a | yes |
-| <a name="input_vpc_subnets"></a> [vpc\_subnets](#input\_vpc\_subnets) | A list of subnet objects to do subnet math things on - see <https://github.com/hashicorp/terraform-cidr-subnets> | `list(map(any))` | <pre>[<br>  {}<br>]</pre> | no |
+| <a name="input_vpc_subnets"></a> [vpc\_subnets](#input\_vpc\_subnets) | A list of subnet objects to do subnet math things on - see https://github.com/hashicorp/terraform-cidr-subnets | `list(map(any))` | <pre>[<br>  {}<br>]</pre> | no |
 
 ## Outputs
 
