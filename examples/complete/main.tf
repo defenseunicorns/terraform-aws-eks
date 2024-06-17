@@ -26,7 +26,6 @@ resource "random_id" "default" {
 locals {
   vpc_name                   = "${var.name_prefix}-${lower(random_id.default.hex)}"
   cluster_name               = "${var.name_prefix}-${lower(random_id.default.hex)}"
-  bastion_name               = "${var.name_prefix}-bastion-${lower(random_id.default.hex)}"
   access_logging_name_prefix = "${var.name_prefix}-accesslog-${lower(random_id.default.hex)}"
   kms_key_alias_name_prefix  = "alias/${var.name_prefix}-${lower(random_id.default.hex)}"
   access_log_sqs_queue_name  = "${var.name_prefix}-accesslog-access-${lower(random_id.default.hex)}"
@@ -86,69 +85,6 @@ module "vpc" {
 }
 
 ################################################################################
-# Bastion instance
-################################################################################
-locals {
-  ingress_bastion_to_cluster = {
-    description              = "Bastion SG to Cluster"
-    security_group_id        = module.eks.cluster_security_group_id
-    from_port                = 443
-    to_port                  = 443
-    protocol                 = "tcp"
-    type                     = "ingress"
-    source_security_group_id = try(module.bastion[0].security_group_ids[0], null)
-  }
-
-}
-
-data "aws_ami" "amazonlinux2" {
-  count = var.enable_bastion ? 1 : 0
-
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["amzn2-ami-hvm*x86_64-gp2"]
-  }
-
-  owners = ["amazon"]
-}
-
-module "bastion" {
-  source = "git::https://github.com/defenseunicorns/terraform-aws-bastion.git?ref=v0.0.16"
-
-  count = var.enable_bastion ? 1 : 0
-
-  enable_bastion_terraform_permissions = true
-
-  ami_id        = data.aws_ami.amazonlinux2[0].id
-  instance_type = var.bastion_instance_type
-  root_volume_config = {
-    volume_type = "gp3"
-    volume_size = "20"
-    encrypted   = true
-  }
-  name                           = local.bastion_name
-  vpc_id                         = module.vpc.vpc_id
-  subnet_id                      = module.vpc.private_subnets[0]
-  region                         = var.region
-  access_logs_bucket_name        = aws_s3_bucket.access_log_bucket.id
-  session_log_bucket_name_prefix = "${local.bastion_name}-sessionlogs"
-  kms_key_arn                    = aws_kms_key.default.arn
-  ssh_user                       = var.bastion_ssh_user
-  ssh_password                   = var.bastion_ssh_password
-  assign_public_ip               = false
-  enable_log_to_s3               = true
-  enable_log_to_cloudwatch       = true
-  tenancy                        = var.bastion_tenancy
-  zarf_version                   = var.zarf_version
-  permissions_boundary           = var.iam_role_permissions_boundary
-  tags = merge(
-    local.tags,
-  { Function = "bastion-ssm" })
-}
-
-################################################################################
 # EKS Cluster
 ################################################################################
 
@@ -163,10 +99,6 @@ data "aws_ami" "eks_default_bottlerocket" {
 }
 
 locals {
-  cluster_security_group_additional_rules = merge(
-    var.enable_bastion ? { ingress_bastion_to_cluster = local.ingress_bastion_to_cluster } : {},
-    #other rules here
-  )
   eks_managed_node_group_defaults = {
     # https://github.com/terraform-aws-modules/terraform-aws-eks/blob/master/node_groups.tf
     iam_role_permissions_boundary = var.iam_role_permissions_boundary
@@ -299,24 +231,6 @@ locals {
 
   self_managed_node_groups = var.enable_self_managed_nodegroups ? local.uds_core_self_mg_node_group : null
 
-  access_entries = merge(
-    var.access_entries,
-    var.enable_bastion ? {
-      bastion = {
-        principal_arn = module.bastion[0].bastion_role_arn
-        type          = "STANDARD"
-        policy_associations = {
-          admin = {
-            policy_arn = "arn:${data.aws_partition.current.partition}:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
-            access_scope = {
-              type = "cluster"
-            }
-          }
-        }
-      }
-    } : {}
-  )
-
   vpc_cni_addon_irsa_extra_config = {
     "vpc-cni" = merge(
       var.cluster_addons["vpc-cni"],
@@ -381,20 +295,19 @@ locals {
 module "eks" {
   source = "../.."
 
-  name                                    = local.cluster_name
-  aws_region                              = var.region
-  vpc_id                                  = module.vpc.vpc_id
-  private_subnet_ids                      = module.vpc.private_subnets
-  control_plane_subnet_ids                = module.vpc.private_subnets
-  iam_role_permissions_boundary           = var.iam_role_permissions_boundary
-  cluster_security_group_additional_rules = local.cluster_security_group_additional_rules
-  cluster_endpoint_public_access          = var.cluster_endpoint_public_access
-  cluster_endpoint_private_access         = true
-  vpc_cni_custom_subnet                   = module.vpc.intra_subnets
-  azs                                     = module.vpc.azs
-  aws_admin_usernames                     = var.aws_admin_usernames
-  cluster_version                         = var.cluster_version
-  dataplane_wait_duration                 = var.dataplane_wait_duration
+  name                            = local.cluster_name
+  aws_region                      = var.region
+  vpc_id                          = module.vpc.vpc_id
+  private_subnet_ids              = module.vpc.private_subnets
+  control_plane_subnet_ids        = module.vpc.private_subnets
+  iam_role_permissions_boundary   = var.iam_role_permissions_boundary
+  cluster_endpoint_public_access  = var.cluster_endpoint_public_access
+  cluster_endpoint_private_access = true
+  vpc_cni_custom_subnet           = module.vpc.intra_subnets
+  azs                             = module.vpc.azs
+  aws_admin_usernames             = var.aws_admin_usernames
+  cluster_version                 = var.cluster_version
+  dataplane_wait_duration         = var.dataplane_wait_duration
 
   ######################## EKS Managed Node Group ###################################
   eks_managed_node_group_defaults = local.eks_managed_node_group_defaults
@@ -406,7 +319,7 @@ module "eks" {
 
   tags = local.tags
 
-  access_entries      = local.access_entries
+  access_entries      = var.access_entries
   authentication_mode = var.authentication_mode
 
   #---------------------------------------------------------------

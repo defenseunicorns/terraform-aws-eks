@@ -43,10 +43,4 @@ func TestExamplesCompleteInsecure(t *testing.T) {
 	teststructure.RunTestStage(t, "SETUP", func() {
 		terraform.InitAndApply(t, terraformOptions)
 	})
-
-	// Run assertions
-	// Fails as bastion is disabled and this functionality uses it
-	// teststructure.RunTestStage(t, "TEST", func() {
-	// 	utils.ValidateEFSFunctionality(t, tempFolder)
-	// })
 }

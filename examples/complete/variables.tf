@@ -405,44 +405,6 @@ variable "external_dns" {
   default     = {}
 }
 
-###########################################################
-################## Bastion Config #########################
-variable "bastion_tenancy" {
-  description = "The tenancy of the bastion"
-  type        = string
-  default     = "default"
-}
-
-variable "bastion_instance_type" {
-  description = "value for the instance type of the EKS worker nodes"
-  type        = string
-  default     = "m5.xlarge"
-}
-
-variable "bastion_ssh_user" {
-  description = "The SSH user to use for the bastion"
-  type        = string
-  default     = "ec2-user"
-}
-
-variable "bastion_ssh_password" {
-  description = "The SSH password to use for the bastion if SSM authentication is used"
-  type        = string
-  default     = "my-password"
-}
-
-variable "zarf_version" {
-  description = "The version of Zarf to use"
-  type        = string
-  default     = ""
-}
-
-variable "enable_bastion" {
-  description = "If true, a bastion will be created"
-  type        = bool
-  default     = true
-}
-
 #----------------Access Entry-------------------------
 variable "access_entries" {
   description = "Map of access entries to add to the cluster"
