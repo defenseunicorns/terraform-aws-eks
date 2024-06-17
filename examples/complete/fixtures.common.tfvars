@@ -63,13 +63,6 @@ vpc_subnets = [
 ]
 
 ###########################################################
-################## Bastion Config #########################
-
-bastion_ssh_user     = "ec2-user" # local user in bastion used to ssh
-bastion_ssh_password = "my-password"
-zarf_version         = "v0.34.0"
-
-###########################################################
 #################### EKS Config ###########################
 
 cluster_version = "1.30"

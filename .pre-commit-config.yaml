@@ -35,18 +35,6 @@ repos:
       - id: terraform_fmt
         args:
           - --hook-config=--tf-path=tofu
-      # - id: terraform_docs
-      #   args:
-      #     - --args=--lockfile=false
-      #     - --hook-config=--path-to-file=README.md # Valid UNIX path. I.e. ../TFDOC.md or docs/README.md etc.
-      #     - --hook-config=--add-to-existing-file=true # Boolean. true or false
-      #     - --hook-config=--create-file-if-not-exist=true # Boolean. true or false
-      #     - --hook-config=--tf-path=tofu # currently terraform-docs doesn't support tofu https://github.com/terraform-docs/terraform-docs/issues/703
-      # - id: terraform_checkov
-      #   verbose: true
-      #   args:
-      #     - --args=--config-file __GIT_WORKING_DIR__/.checkov.yml
-      #     - --hook-config=--tf-path=tofu
       - id: terraform_tflint
         args:
           - --args=--config=__GIT_WORKING_DIR__/.tflint.hcl
