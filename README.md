@@ -22,7 +22,7 @@ Use of `sshuttle` with private key:
 1. Connect to bastion: `sshuttle --dns -vr ec2-user@$BASTION_INSTANCE_ID 10.200.0.0/16 --ssh-cmd 'ssh -i priv.key'`
 1. Delete key afterwards: `rm priv.key`
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGINNING OF PRE-COMMIT-OPENTOFU DOCS HOOK -->
 ## Requirements
 
 | Name | Version |
@@ -185,7 +185,7 @@ Use of `sshuttle` with private key:
 | <a name="output_oidc_provider"></a> [oidc\_provider](#output\_oidc\_provider) | The OpenID Connect identity provider (issuer URL without leading `https://`) |
 | <a name="output_oidc_provider_arn"></a> [oidc\_provider\_arn](#output\_oidc\_provider\_arn) | EKS OIDC provider ARN |
 | <a name="output_region"></a> [region](#output\_region) | AWS region |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END OF PRE-COMMIT-OPENTOFU DOCS HOOK -->
 <!-- BEGINNING OF PRE-COMMIT-OPENTOFU DOCS HOOK -->
 ## Requirements
 

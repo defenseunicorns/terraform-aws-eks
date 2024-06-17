@@ -40,7 +40,7 @@ make <TheTargetYouWantToRun>
 ```
 > Since we're tearing down this time, we don't want `SKIP_TEARDOWN` to be set. Instead, we are setting `SKIP_SETUP` and `SKIP_TEST` to skip the setup and test stages.
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGINNING OF PRE-COMMIT-OPENTOFU DOCS HOOK -->
 ## Requirements
 
 No requirements.
@@ -64,4 +64,4 @@ No inputs.
 ## Outputs
 
 No outputs.
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK --> ./
+<!-- END OF PRE-COMMIT-OPENTOFU DOCS HOOK --> ./

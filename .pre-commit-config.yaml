@@ -40,7 +40,7 @@ repos:
           - --args=--config=__GIT_WORKING_DIR__/.tflint.hcl
           - --hook-config=--tf-path=tofu
   - repo: https://github.com/tofuutils/pre-commit-opentofu
-    rev: v1.0.2 # Get the latest from: https://github.com/tofuutils/pre-commit-opentofu/releases
+    rev: v1.0.3 # Get the latest from: https://github.com/tofuutils/pre-commit-opentofu/releases
     hooks:
       - id: tofu_docs
         args:
@@ -52,6 +52,6 @@ repos:
         args:
           - --args=--config-file __GIT_WORKING_DIR__/.checkov.yml
   - repo: https://github.com/renovatebot/pre-commit-hooks
-    rev: 37.399.9
+    rev: 37.410.2
     hooks:
       - id: renovate-config-validator
