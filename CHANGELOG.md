@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.0.22](https://github.com/defenseunicorns/terraform-aws-eks/compare/v0.0.21...v0.0.22) (2024-06-18)
+
+
+### Miscellaneous Chores
+
+* **deps:** update all dependencies ([#157](https://github.com/defenseunicorns/terraform-aws-eks/issues/157)) ([6a0fa65](https://github.com/defenseunicorns/terraform-aws-eks/commit/6a0fa65a5ec21bc298d9e3b0971ddf8b4acb1eca))
+* remove bastion references ([#159](https://github.com/defenseunicorns/terraform-aws-eks/issues/159)) ([5c270a1](https://github.com/defenseunicorns/terraform-aws-eks/commit/5c270a10ba8b06ef5baafe9899d892994dc02972))
+* tofu migration ([#161](https://github.com/defenseunicorns/terraform-aws-eks/issues/161)) ([006a9e9](https://github.com/defenseunicorns/terraform-aws-eks/commit/006a9e9bb0dcf7f2360e43acc3a15b9e6ead148b))
+
 ## [0.0.21](https://github.com/defenseunicorns/terraform-aws-eks/compare/v0.0.20...v0.0.21) (2024-06-12)
 
 
