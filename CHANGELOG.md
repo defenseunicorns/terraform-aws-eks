@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.0.23](https://github.com/defenseunicorns/terraform-aws-eks/compare/v0.0.22...v0.0.23) (2024-07-01)
+
+
+### Miscellaneous Chores
+
+* **deps:** update all dependencies ([#162](https://github.com/defenseunicorns/terraform-aws-eks/issues/162)) ([7c09bc3](https://github.com/defenseunicorns/terraform-aws-eks/commit/7c09bc33bc8c864da748b1a32e1b008dda84aeab))
+* **deps:** update all dependencies ([#165](https://github.com/defenseunicorns/terraform-aws-eks/issues/165)) ([6a5a138](https://github.com/defenseunicorns/terraform-aws-eks/commit/6a5a138f89a8f4fd107c244b9914cbd5a6e15cb4))
+* **deps:** update pre-commit hook renovatebot/pre-commit-hooks to v37.415.0 ([#164](https://github.com/defenseunicorns/terraform-aws-eks/issues/164)) ([04b33a8](https://github.com/defenseunicorns/terraform-aws-eks/commit/04b33a81e65337b206c41ac82ef7187db2422fc3))
+* **deps:** update pre-commit hook renovatebot/pre-commit-hooks to v37.421.5 ([#166](https://github.com/defenseunicorns/terraform-aws-eks/issues/166)) ([69f9e67](https://github.com/defenseunicorns/terraform-aws-eks/commit/69f9e67eecd9c419d91a604d63fa4aa25480602b))
+
 ## [0.0.22](https://github.com/defenseunicorns/terraform-aws-eks/compare/v0.0.21...v0.0.22) (2024-06-18)
 
 
