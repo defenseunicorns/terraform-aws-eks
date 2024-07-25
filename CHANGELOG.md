@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.0.23](https://github.com/defenseunicorns/terraform-aws-eks/compare/v0.0.22...v0.0.23) (2024-07-25)
+
+
+### Features
+
+* enable custom security group attachment for loadbalancer ([#172](https://github.com/defenseunicorns/terraform-aws-eks/issues/172)) ([a9215a5](https://github.com/defenseunicorns/terraform-aws-eks/commit/a9215a532992c0f3519c564fae059fb71c03d0fa))
+
+
+### Miscellaneous Chores
+
+* **deps:** update all dependencies ([#162](https://github.com/defenseunicorns/terraform-aws-eks/issues/162)) ([7c09bc3](https://github.com/defenseunicorns/terraform-aws-eks/commit/7c09bc33bc8c864da748b1a32e1b008dda84aeab))
+* **deps:** update all dependencies ([#165](https://github.com/defenseunicorns/terraform-aws-eks/issues/165)) ([6a5a138](https://github.com/defenseunicorns/terraform-aws-eks/commit/6a5a138f89a8f4fd107c244b9914cbd5a6e15cb4))
+* **deps:** update all dependencies ([#167](https://github.com/defenseunicorns/terraform-aws-eks/issues/167)) ([6149830](https://github.com/defenseunicorns/terraform-aws-eks/commit/61498301bd1fa6ca94fb89bc9c02b6d7a378f7d8))
+* **deps:** update all dependencies ([#169](https://github.com/defenseunicorns/terraform-aws-eks/issues/169)) ([2785396](https://github.com/defenseunicorns/terraform-aws-eks/commit/278539682f80772d4be69cfb4c2ca4eb341ce08e))
+* **deps:** update all dependencies ([#171](https://github.com/defenseunicorns/terraform-aws-eks/issues/171)) ([73b6806](https://github.com/defenseunicorns/terraform-aws-eks/commit/73b6806b07b22357a8bad237c195a30355cbf7d6))
+* **deps:** update pre-commit hook renovatebot/pre-commit-hooks to v37.415.0 ([#164](https://github.com/defenseunicorns/terraform-aws-eks/issues/164)) ([04b33a8](https://github.com/defenseunicorns/terraform-aws-eks/commit/04b33a81e65337b206c41ac82ef7187db2422fc3))
+* **deps:** update pre-commit hook renovatebot/pre-commit-hooks to v37.421.5 ([#166](https://github.com/defenseunicorns/terraform-aws-eks/issues/166)) ([69f9e67](https://github.com/defenseunicorns/terraform-aws-eks/commit/69f9e67eecd9c419d91a604d63fa4aa25480602b))
+* **deps:** update pre-commit hook renovatebot/pre-commit-hooks to v37.425.3 ([#168](https://github.com/defenseunicorns/terraform-aws-eks/issues/168)) ([f5d777d](https://github.com/defenseunicorns/terraform-aws-eks/commit/f5d777d254c0aedaa38e3cbcb920be944eed2d9a))
+* **deps:** update pre-commit hook renovatebot/pre-commit-hooks to v37.431.5 ([#170](https://github.com/defenseunicorns/terraform-aws-eks/issues/170)) ([5da19e3](https://github.com/defenseunicorns/terraform-aws-eks/commit/5da19e3709f1f9d0368de7d5368d39cbab80aded))
+
 ## [0.0.22](https://github.com/defenseunicorns/terraform-aws-eks/compare/v0.0.21...v0.0.22) (2024-06-18)
 
 
