@@ -137,6 +137,7 @@ module "aws_eks" {
   #   Upstream module implemented Security groups based on the best practices doc https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html.
   #   By default the security groups are restrictive. Users needs to enable rules for specific ports required for App requirement or Add-ons
   #----------------------------------------------------------------------------------------------------------#
+  node_security_group_additional_rules    = var.node_security_group_additional_rules
   cluster_security_group_additional_rules = var.cluster_security_group_additional_rules
   cluster_additional_security_group_ids   = var.cluster_additional_security_group_ids
   create_cluster_security_group           = var.create_cluster_security_group
