@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.24](https://github.com/defenseunicorns/terraform-aws-eks/compare/v0.0.23...v0.0.24) (2024-08-14)
+
+
+### Miscellaneous Chores
+
+* **deps:** update all dependencies ([#173](https://github.com/defenseunicorns/terraform-aws-eks/issues/173)) ([61fddc6](https://github.com/defenseunicorns/terraform-aws-eks/commit/61fddc6092d93df99a5a3278ad04d6029f18d22e))
+
 ## [0.0.23](https://github.com/defenseunicorns/terraform-aws-eks/compare/v0.0.22...v0.0.23) (2024-07-25)
 
 
