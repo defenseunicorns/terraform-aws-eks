@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.0.25](https://github.com/defenseunicorns/terraform-aws-eks/compare/v0.0.24...v0.0.25) (2024-09-02)
+
+
+### Miscellaneous Chores
+
+* **deps:** update all dependencies ([#175](https://github.com/defenseunicorns/terraform-aws-eks/issues/175)) ([8880054](https://github.com/defenseunicorns/terraform-aws-eks/commit/8880054add39527d42d2711a764e6df44461fa34))
+* **deps:** update all dependencies ([#178](https://github.com/defenseunicorns/terraform-aws-eks/issues/178)) ([e046961](https://github.com/defenseunicorns/terraform-aws-eks/commit/e0469610aa3d863094f0831a77f81d03417245ee))
+* **deps:** update all dependencies ([#180](https://github.com/defenseunicorns/terraform-aws-eks/issues/180)) ([2ea3f6d](https://github.com/defenseunicorns/terraform-aws-eks/commit/2ea3f6d6d0b7c48d247e135604c36d895582b599))
+* **deps:** update pre-commit hook renovatebot/pre-commit-hooks to v38.40.0 ([#177](https://github.com/defenseunicorns/terraform-aws-eks/issues/177)) ([8e07727](https://github.com/defenseunicorns/terraform-aws-eks/commit/8e07727580f6396ea767f0820dff42d7d1ed5dd5))
+* **deps:** update pre-commit hook renovatebot/pre-commit-hooks to v38.54.1 ([#179](https://github.com/defenseunicorns/terraform-aws-eks/issues/179)) ([5804687](https://github.com/defenseunicorns/terraform-aws-eks/commit/5804687c3e5d4d0f83e72fcca34b3b38a613dc13))
+
 ## [0.0.24](https://github.com/defenseunicorns/terraform-aws-eks/compare/v0.0.23...v0.0.24) (2024-08-14)
 
 
