@@ -70,7 +70,7 @@ module "vpc" {
   intra_subnets                = [for k, v in module.vpc.azs : cidrsubnet(element(module.vpc.vpc_secondary_cidr_blocks, 0), 5, k)]
   single_nat_gateway           = true #remove if in a private VPC behind TGW
   enable_nat_gateway           = true #remove if in a private VPC behind TGW
-  create_default_vpc_endpoints = var.create_default_vpc_endpoints
+  create_default_vpc_endpoints = true
 
   private_subnet_tags = {
     "kubernetes.io/cluster/${local.cluster_name}" = "shared"
@@ -99,31 +99,6 @@ data "aws_ami" "eks_default_bottlerocket" {
 }
 
 locals {
-  eks_managed_node_group_defaults = {
-    # https://github.com/terraform-aws-modules/terraform-aws-eks/blob/master/node_groups.tf
-    iam_role_permissions_boundary = var.iam_role_permissions_boundary
-    ami_type                      = "AL2_x86_64"
-    instance_types                = ["m5a.large", "m5.large", "m6i.large"]
-    tags = {
-      subnet_type = "private",
-      cluster     = local.cluster_name
-    }
-  }
-
-  mission_app_mg_node_group = {
-    managed_ng1 = {
-      min_size     = 2
-      max_size     = 2
-      desired_size = 2
-      disk_size    = 50
-    }
-  }
-
-  eks_managed_node_groups = merge(
-    var.enable_eks_managed_nodegroups ? local.mission_app_mg_node_group : {},
-    # var.enable_eks_managed_nodegroups && var.keycloak_enabled ? local.keycloak_mg_node_group : {}
-  )
-
   self_managed_node_group_defaults = {
     iam_role_permissions_boundary          = var.iam_role_permissions_boundary
     instance_type                          = null
@@ -174,7 +149,7 @@ locals {
     }
   }
 
-  uds_core_self_mg_node_group = {
+  self_managed_node_groups = {
     uds_core_ng = {
       ami_type      = "BOTTLEROCKET_x86_64"
       ami_id        = data.aws_ami.eks_default_bottlerocket.id
@@ -229,7 +204,55 @@ locals {
     }
   }
 
-  self_managed_node_groups = var.enable_self_managed_nodegroups ? local.uds_core_self_mg_node_group : null
+  default_cluster_addons = {
+    vpc-cni = {
+      most_recent          = true
+      before_compute       = true
+      configuration_values = <<-JSON
+        {
+          "env": {
+            "AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG": "true",
+            "ENABLE_PREFIX_DELEGATION": "true",
+            "ENI_CONFIG_LABEL_DEF": "topology.kubernetes.io/zone",
+            "WARM_PREFIX_TARGET": "1",
+            "ANNOTATE_POD_IP": "true",
+            "POD_SECURITY_GROUP_ENFORCING_MODE": "standard"
+          },
+          "enableNetworkPolicy": "true"
+        }
+      JSON
+    }
+    coredns = {
+      most_recent = true
+      timeouts = {
+        create = "10m"
+        delete = "10m"
+      }
+    }
+    kube-proxy = {
+      most_recent = true
+    }
+    aws-ebs-csi-driver = {
+      most_recent          = true
+      configuration_values = <<-JSON
+        "defaultStorageClass": {
+          "enabled": true
+        }
+      JSON
+      timeouts = {
+        create = "10m"
+        delete = "10m"
+      }
+    }
+    # consider using '"useFIPS": "true"' under configuration_values for aws_efs_csi_driver
+    aws-efs-csi-driver = {
+      most_recent = true
+      timeouts = {
+        create = "10m"
+        delete = "10m"
+      }
+    }
+  }
 
   vpc_cni_addon_irsa_extra_config = {
     "vpc-cni" = merge(
@@ -242,6 +265,7 @@ locals {
 
   cluster_addons = merge(
     var.cluster_addons,
+    local.default_cluster_addons,
     local.vpc_cni_addon_irsa_extra_config
   )
 }
@@ -288,10 +312,6 @@ module "ssm_kms_key" {
   tags = local.tags
 }
 
-locals {
-  ssm_parameter_kms_key_arn = var.create_ssm_parameters ? module.ssm_kms_key.key_arn : ""
-}
-
 module "eks" {
   source = "../.."
 
@@ -309,10 +329,6 @@ module "eks" {
   cluster_version                 = var.cluster_version
   dataplane_wait_duration         = var.dataplane_wait_duration
 
-  ######################## EKS Managed Node Group ###################################
-  eks_managed_node_group_defaults = local.eks_managed_node_group_defaults
-  eks_managed_node_groups         = local.eks_managed_node_groups
-
   ######################## Self Managed Node Group ###################################
   self_managed_node_group_defaults = local.self_managed_node_group_defaults
   self_managed_node_groups         = local.self_managed_node_groups
@@ -329,80 +345,47 @@ module "eks" {
   cluster_addons = local.cluster_addons
 
   # AWS EKS EBS CSI Driver
-  enable_amazon_eks_aws_ebs_csi_driver = var.enable_amazon_eks_aws_ebs_csi_driver
-  enable_gp3_default_storage_class     = var.enable_gp3_default_storage_class
-  ebs_storageclass_reclaim_policy      = var.ebs_storageclass_reclaim_policy
+  enable_amazon_eks_aws_ebs_csi_driver = true
 
   # AWS EKS EFS CSI Driver
-  enable_amazon_eks_aws_efs_csi_driver = var.enable_amazon_eks_aws_efs_csi_driver
+  enable_amazon_eks_aws_efs_csi_driver = true
   efs_vpc_cidr_blocks                  = module.vpc.private_subnets_cidr_blocks
-  efs_storageclass_reclaim_policy      = var.efs_storageclass_reclaim_policy
+  efs_storageclass_reclaim_policy      = "Retain"
 
   #---------------------------------------------------------------
   # EKS Blueprints - blueprints curated helm charts
   #---------------------------------------------------------------
 
-  create_kubernetes_resources = var.create_kubernetes_resources
-  create_ssm_parameters       = var.create_ssm_parameters
-  ssm_parameter_kms_key_arn   = local.ssm_parameter_kms_key_arn
+  create_kubernetes_resources = false
+  create_ssm_parameters       = true
+  ssm_parameter_kms_key_arn   = module.ssm_kms_key.key_arn
 
   # AWS EKS node termination handler
-  enable_aws_node_termination_handler = var.enable_aws_node_termination_handler
-  aws_node_termination_handler        = var.aws_node_termination_handler
-
+  enable_aws_node_termination_handler = true
   # k8s Metrics Server
-  enable_metrics_server = var.enable_metrics_server
-  metrics_server        = var.metrics_server
-
+  enable_metrics_server = false
   # k8s Cluster Autoscaler
-  enable_cluster_autoscaler = var.enable_cluster_autoscaler
-  cluster_autoscaler        = var.cluster_autoscaler
-
+  enable_cluster_autoscaler = true
   # AWS Load Balancer Controller
-  enable_aws_load_balancer_controller = var.enable_aws_load_balancer_controller
-  aws_load_balancer_controller        = var.aws_load_balancer_controller
-
+  enable_aws_load_balancer_controller = true
   # k8s Secrets Store CSI Driver
-  enable_secrets_store_csi_driver = var.enable_secrets_store_csi_driver
-  secrets_store_csi_driver        = var.secrets_store_csi_driver
-
+  enable_secrets_store_csi_driver = false
   # External Secrets
-  enable_external_secrets               = var.enable_external_secrets
-  external_secrets                      = var.external_secrets
-  external_secrets_ssm_parameter_arns   = var.external_secrets_ssm_parameter_arns
-  external_secrets_secrets_manager_arns = var.external_secrets_secrets_manager_arns
-  external_secrets_kms_key_arns         = var.external_secrets_kms_key_arns
-
-
+  enable_external_secrets               = false
   # Karpenter
-  enable_karpenter = var.enable_karpenter
-  karpenter        = var.karpenter
-
+  enable_karpenter = false
   # Bottlerocket update operator
-  enable_bottlerocket_update_operator = var.enable_bottlerocket_update_operator
-  bottlerocket_update_operator        = var.bottlerocket_update_operator
-  bottlerocket_shadow                 = var.bottlerocket_shadow
-
+  enable_bottlerocket_update_operator = true
   # AWS Cloudwatch Metrics
-  enable_aws_cloudwatch_metrics = var.enable_aws_cloudwatch_metrics
-  aws_cloudwatch_metrics        = var.aws_cloudwatch_metrics
-
+  enable_aws_cloudwatch_metrics = true
   # AWS FSX CSI Driver
-  enable_aws_fsx_csi_driver = var.enable_aws_fsx_csi_driver
-  aws_fsx_csi_driver        = var.aws_fsx_csi_driver
-
+  enable_aws_fsx_csi_driver = false
   # AWS Private CA Issuer
-  enable_aws_privateca_issuer = var.enable_aws_privateca_issuer
-  aws_privateca_issuer        = var.aws_privateca_issuer
-
+  enable_aws_privateca_issuer = false
   # Cert Manager
-  enable_cert_manager                   = var.enable_cert_manager
-  cert_manager                          = var.cert_manager
-  cert_manager_route53_hosted_zone_arns = var.cert_manager_route53_hosted_zone_arns
-
+  enable_cert_manager                   = false
   # External DNS
-  enable_external_dns = var.enable_external_dns
-  external_dns        = var.external_dns
+  enable_external_dns = false
 }
 
 module "ebs_kms_key" {

@@ -1,109 +1,14 @@
-data "aws_partition" "current" {}
-data "aws_caller_identity" "current" {}
 
-data "aws_iam_session_context" "current" {
-  # This data source provides information on the IAM source role of an STS assumed role
-  # For non-role ARNs, this data source simply passes the ARN through issuer ARN
-  # Ref https://github.com/terraform-aws-modules/terraform-aws-eks/issues/2327#issuecomment-1355581682
-  # Ref https://github.com/hashicorp/terraform-provider-aws/issues/28381
-  arn = data.aws_caller_identity.current.arn
-}
 
 ###############################################################
 # EKS Cluster
 ###############################################################
-locals {
-  cluster_name = coalesce(var.cluster_name, var.name)
-  admin_arns = distinct(concat(
-    [for admin_user in var.aws_admin_usernames : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/${admin_user}"],
-    [data.aws_iam_session_context.current.issuer_arn]
-  ))
-
-  ############
-  # cluster_addons additional logic
-  ############
-
-  # ebs_csi_driver_addon_extra_config is used to merge in the service_account_role_arn to the existing aws-ebs-csi-driver config in cluster_addons
-  should_config_ebs_csi_driver = (
-    var.enable_amazon_eks_aws_ebs_csi_driver &&
-    var.cluster_addons["aws-ebs-csi-driver"] != null
-  )
-
-  # Merge in the service_account_role_arn to the existing aws-ebs-csi-driver config
-  ebs_csi_driver_addon_extra_config = local.should_config_ebs_csi_driver ? {
-    "aws-ebs-csi-driver" = merge(
-      var.cluster_addons["aws-ebs-csi-driver"],
-      {
-        service_account_role_arn = module.ebs_csi_driver_irsa[0].iam_role_arn
-      }
-    )
-  } : {}
-
-  should_config_efs_csi_driver = (
-    var.enable_amazon_eks_aws_efs_csi_driver &&
-    var.cluster_addons["aws-efs-csi-driver"] != null
-  )
-
-  # Merge in the service_account_role_arn to the existing aws-ebs-csi-driver config
-  efs_csi_driver_addon_extra_config = local.should_config_efs_csi_driver ? {
-    "aws-efs-csi-driver" = merge(
-      var.cluster_addons["aws-efs-csi-driver"],
-      {
-        service_account_role_arn = module.efs_csi_driver_irsa[0].iam_role_arn
-      }
-    )
-  } : {}
-
-  # Check conditions for whether ENI configs should be created for VPC CNI.
-  # Conditions include: VPC CNI configured in var.cluster_addons, custom subnet should be provided, and the number of custom subnets should match the number of availability zones.
-  should_create_eni_configs = (
-    var.create_eni_configs &&
-    var.cluster_addons["vpc-cni"] != null &&
-    length(var.vpc_cni_custom_subnet) != 0 &&
-    length(var.vpc_cni_custom_subnet) == length(var.azs)
-  )
-
-  # Define ENI Configurations if should_create_eni_configs evaluates to true.
-  eniConfig = local.should_create_eni_configs ? {
-    create = true,
-    region = var.aws_region,
-    subnets = { for az, subnet in zipmap(var.azs, var.vpc_cni_custom_subnet) : az => {
-      id = subnet,
-      securityGroups = compact([
-        module.aws_eks.cluster_primary_security_group_id,
-        module.aws_eks.node_security_group_id,
-        module.aws_eks.cluster_security_group_id
-      ])
-    } }
-  } : null
-
-  # Merge extra configuration for VPC CNI if should_create_eni_configs evaluates to true.
-  # This merges at a deeper level to preserve existing keys like 'most_recent' and 'before_compute'.
-  vpc_cni_addon_extra_config = local.should_create_eni_configs ? {
-    "vpc-cni" = merge(
-      var.cluster_addons["vpc-cni"],
-      {
-        configuration_values = jsonencode(merge(
-          jsondecode(var.cluster_addons["vpc-cni"].configuration_values),
-          { eniConfig = local.eniConfig }
-        ))
-      }
-    )
-  } : {}
-
-  cluster_addons = merge(
-    var.cluster_addons,
-    local.ebs_csi_driver_addon_extra_config,
-    local.efs_csi_driver_addon_extra_config,
-    local.vpc_cni_addon_extra_config
-  )
-}
 
 module "aws_eks" {
-  source = "git::https://github.com/terraform-aws-modules/terraform-aws-eks.git?ref=v20.24.0"
+  source = "git::https://github.com/terraform-aws-modules/terraform-aws-eks.git?ref=v20.30.0"
 
   cluster_name    = local.cluster_name
-  cluster_version = var.cluster_version
+  cluster_version = local.cluster_version
 
   vpc_id                           = var.vpc_id
   subnet_ids                       = var.private_subnet_ids
@@ -118,12 +23,10 @@ module "aws_eks" {
   cluster_endpoint_private_access      = var.cluster_endpoint_private_access
 
 
-  self_managed_node_group_defaults = var.self_managed_node_group_defaults
-  self_managed_node_groups         = var.self_managed_node_groups
-  eks_managed_node_groups          = var.eks_managed_node_groups
-  eks_managed_node_group_defaults  = var.eks_managed_node_group_defaults
+  self_managed_node_group_defaults = local.self_managed_node_group_defaults
+  self_managed_node_groups         = local.self_managed_node_groups
 
-  dataplane_wait_duration = var.dataplane_wait_duration
+  dataplane_wait_duration = "30s"
   cluster_timeouts        = var.cluster_timeouts
 
   cluster_addons = local.cluster_addons
@@ -215,6 +118,87 @@ module "efs_csi_driver_irsa" {
       namespace_service_accounts = ["kube-system:efs-csi-controller-sa"]
     }
   }
+
+  tags = var.tags
+}
+
+######################################################
+# EKS Self Managed Node Group Dependencies
+######################################################
+module "self_managed_node_group_keypair" {
+  source = "git::https://github.com/terraform-aws-modules/terraform-aws-key-pair?ref=v2.0.3"
+
+  key_name_prefix    = "${local.cluster_name}-self-managed-ng-"
+  create_private_key = true
+
+  tags = var.tags
+}
+
+module "self_managed_node_group_secret_key_secrets_manager_secret" {
+  source = "git::https://github.com/terraform-aws-modules/terraform-aws-secrets-manager.git?ref=v1.1.2"
+
+  name                    = module.self_managed_node_group_keypair.key_pair_name
+  description             = "Secret key for self managed node group keypair"
+  recovery_window_in_days = 0 # 0 - no recovery window, delete immediately when deleted
+
+  block_public_policy = true
+
+  ignore_secret_changes = true
+  secret_string         = module.self_managed_node_group_keypair.private_key_openssh
+
+  tags = var.tags
+}
+
+######################################################
+# vpc-cni irsa role
+######################################################
+module "vpc_cni_ipv4_irsa_role" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.39"
+
+  role_name_prefix      = "${local.cluster_name}-vpc-cni-"
+  attach_vpc_cni_policy = true
+  vpc_cni_enable_ipv4   = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.aws_eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:aws-node"]
+    }
+  }
+
+  # extra policy to attach to the role
+  role_policy_arns = {
+    vpc_cni_logging = aws_iam_policy.vpc_cni_logging.arn
+  }
+
+  tags = var.tags
+}
+
+resource "aws_iam_policy" "vpc_cni_logging" {
+  # checkov:skip=CKV_AWS_355: "Ensure no IAM policies documents allow "*" as a statement's resource for restrictable actions"
+  # checkov:skip=CKV_AWS_290: "Ensure IAM policies does not allow write access without constraints"
+  name        = "${var.name}-vpc-cni-logging-${lower(random_id.default.hex)}"
+  description = "Additional test policy"
+
+  policy = jsonencode(
+    {
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Sid    = "CloudWatchLogging"
+          Effect = "Allow"
+          Action = [
+            "logs:DescribeLogGroups",
+            "logs:CreateLogGroup",
+            "logs:CreateLogStream",
+            "logs:PutLogEvents"
+          ]
+          Resource = "*"
+        }
+      ]
+    }
+  )
 
   tags = var.tags
 }

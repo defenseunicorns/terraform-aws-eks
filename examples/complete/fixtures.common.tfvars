@@ -11,7 +11,7 @@ name_prefix = "ci"
 
 vpc_cidr                     = "10.200.0.0/16"
 secondary_cidr_blocks        = ["100.64.0.0/16"] #https://aws.amazon.com/blogs/containers/optimize-ip-addresses-usage-by-pods-in-your-amazon-eks-cluster/
-create_default_vpc_endpoints = false             #setting to false to make ci faster
+create_default_vpc_endpoints = true             #setting to false to make ci faster
 
 # new_bits is added to the cidr of vpc_cidr to chunk the subnets up
 # public-a - 10.200.0.0/22 - 1,022 hosts

@@ -124,12 +124,6 @@ variable "cluster_additional_security_group_ids" {
   default     = []
 }
 
-variable "dataplane_wait_duration" {
-  description = "Duration to wait after the EKS cluster has become active before creating the dataplane components (EKS managed nodegroup(s), self-managed nodegroup(s), Fargate profile(s))"
-  type        = string
-  default     = "4m"
-}
-
 ################################################################################
 # Cluster Security Group
 ################################################################################
