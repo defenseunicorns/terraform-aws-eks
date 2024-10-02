@@ -241,3 +241,7 @@ output "eks_addons_gitops_metadata" {
   description = ""
   value       = try(module.eks_blueprints_kubernetes_addons.gitops_metadata, null)
 }
+
+output "nlb_sg_id" {
+  value     = aws_security_group.nlb_sg.id
+}

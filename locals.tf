@@ -246,3 +246,59 @@ locals {
     }
   }
 }
+
+# Common Environments Access Entries
+locals {
+
+  iam_role_policy_prefix = "arn:${data.aws_partition.current.partition}:iam::aws:policy"
+
+  admin_user_access_entries = {
+    for user in var.aws_admin_usernames :
+    user => {
+      principal_arn = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/${user}"
+      type          = "STANDARD"
+      policy_associations = {
+        admin = {
+          policy_arn = "arn:${data.aws_partition.current.partition}:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+          access_scope = {
+            type = "cluster"
+          }
+        }
+      }
+    }
+  }
+
+    "bastion" = {
+      principal_arn = var.bastion_role_arn
+      type          = "STANDARD"
+      policy_associations = {
+        admin = {
+          policy_arn = "arn:${data.aws_partition.current.partition}:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+          access_scope = {
+            type = "cluster"
+          }
+        }
+      }
+    }
+
+  additional_access_entries = {
+    for index in var.additional_access_entries :
+    index => {
+      principal_arn = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/${index}"
+      type          = "STANDARD"
+      policy_associations = {
+        admin = {
+          policy_arn = "arn:${data.aws_partition.current.partition}:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+          access_scope = {
+            type = "cluster"
+          }
+        }
+      }
+    }
+  }
+
+  access_entries = merge(
+    local.admin_user_access_entries,
+    local.additional_access_entries
+  )
+} # END: Common Environments Access Entries

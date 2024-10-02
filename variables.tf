@@ -665,3 +665,14 @@ variable "authentication_mode" {
   type        = string
   default     = "API_AND_CONFIG_MAP"
 }
+
+variable "bastion_role_arn" {
+  description = "The ARN of the IAM role to assume when connecting to the bastion host"
+  type        = string
+  default     = ""
+}
+
+variable "additional_access_entries" {
+  description = "A list of one or more roles with authorized access to KMS and EKS resources"
+  type        = list(string)
+}

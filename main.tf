@@ -18,22 +18,19 @@ module "aws_eks" {
   iam_role_permissions_boundary    = var.iam_role_permissions_boundary
   attach_cluster_encryption_policy = var.attach_cluster_encryption_policy
 
-  cluster_endpoint_public_access       = var.cluster_endpoint_public_access
-  cluster_endpoint_public_access_cidrs = var.cluster_endpoint_public_access_cidrs
-  cluster_endpoint_private_access      = var.cluster_endpoint_private_access
-
+  cluster_endpoint_public_access       = false
+  cluster_endpoint_private_access      = true
 
   self_managed_node_group_defaults = local.self_managed_node_group_defaults
   self_managed_node_groups         = local.self_managed_node_groups
 
   dataplane_wait_duration = "30s"
-  cluster_timeouts        = var.cluster_timeouts
 
   cluster_addons = local.cluster_addons
 
-  access_entries                           = var.access_entries
-  authentication_mode                      = var.authentication_mode
-  enable_cluster_creator_admin_permissions = var.enable_cluster_creator_admin_permissions
+  access_entries                           = local.access_entries
+  authentication_mode                      = "API"
+  enable_cluster_creator_admin_permissions = true
 
   #----------------------------------------------------------------------------------------------------------#
   #   Security groups used in this module created by the upstream modules terraform-aws-eks (https://github.com/terraform-aws-modules/terraform-aws-eks).
@@ -149,6 +146,28 @@ module "self_managed_node_group_secret_key_secrets_manager_secret" {
   tags = var.tags
 }
 
+#---------------------------------------------------------------
+# Self Managed Node Group NLB Security Group Dependencies
+#---------------------------------------------------------------
+
+# Define the security group with only egress rules conditionally
+
+resource "aws_security_group" "nlb_sg" {
+  # checkov:skip=CKV2_AWS_5: This security group gets used when creating NLBs with uds-core.
+  count = var.nlb_security_groups_required ? 1 : 0
+
+  name   = "${var.tags.Project}-backend-nlb-sg"
+  description = "Security group for NLB to Nodes"
+  vpc_id = local.vpc_id
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 ######################################################
 # vpc-cni irsa role
 ######################################################
@@ -201,4 +220,19 @@ resource "aws_iam_policy" "vpc_cni_logging" {
   )
 
   tags = var.tags
+}
+
+resource "aws_security_group" "nlb_sg" {
+  # checkov:skip=CKV2_AWS_5: This security group gets used when creating NLBs with uds-core.
+
+  name   = "${local.cluster_name}-backend-nlb-sg"
+  description = "Security group for NLB to Nodes"
+  vpc_id = var.vpc_id
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
