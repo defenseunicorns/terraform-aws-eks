@@ -438,8 +438,9 @@ variable "additional_access_entries" {
 }
 
 variable "sg_rules" {
-  description = "Map of ELB IDs to ports and their CIDR blocks"
-  type = map(object({
-    ports = map(list(string))  # port (as string) => list of CIDR blocks
+  description = "Optional map of security group rules"
+  type        = map(object({
+    ports = map(list(string))
   }))
+  default     = {}
 }

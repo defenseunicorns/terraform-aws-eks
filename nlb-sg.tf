@@ -1,21 +1,20 @@
 locals {
-  # Flatten sg_rules into a list of rules with sg_type derived from elb_id
+  # Define sg_types and ports
+  sg_types = ["tenant", "admin"]
+  ports    = [80, 443]
+
+  # Flatten sg_rules into a list of rules
   all_sg_rules = flatten(flatten([
-    for elb_id, elb_data in var.sg_rules : [
-      for port_str, cidr_blocks in elb_data.ports : [
+    for sg_type, sg_data in var.sg_rules : [
+      for port_str, cidr_blocks in sg_data.ports : [
         for cidr_block in cidr_blocks : {
-          elb_id     = elb_id
+          sg_type    = sg_type
           port       = tonumber(port_str)
           cidr_block = cidr_block
-          sg_type    = contains(lower(elb_id), "admin") ? "admin" : "tenant"
         }
       ]
     ]
   ]))
-
-  # Define sg_types and ports
-  sg_types = ["tenant", "admin"]
-  ports    = [80, 443]
 
   # Generate all possible combinations of sg_type and port
   sg_type_port_combinations = flatten([
@@ -41,7 +40,6 @@ locals {
       sg_type    = split(combo_str, "-")[0]
       port       = tonumber(split(combo_str, "-")[1])
       cidr_block = "0.0.0.0/0"
-      elb_id     = null
     }
   ]
 
@@ -85,6 +83,7 @@ locals {
   ]
 }
 
+# Tenant Security Groups
 resource "aws_security_group" "tenant_sg" {
   for_each = {
     for sg in local.tenant_sg_rules_chunks : sg.sg_index => sg
@@ -101,7 +100,7 @@ resource "aws_security_group" "tenant_sg" {
       to_port     = ingress.value.port
       protocol    = "tcp"
       cidr_blocks = [ingress.value.cidr_block]
-      description = ingress.value.elb_id != null ? "Ingress rule for ELB ${ingress.value.elb_id}" : "Default ingress rule"
+      description = "Ingress rule"
     }
   }
 
@@ -118,6 +117,7 @@ resource "aws_security_group" "tenant_sg" {
   })
 }
 
+# Admin Security Groups
 resource "aws_security_group" "admin_sg" {
   for_each = {
     for sg in local.admin_sg_rules_chunks : sg.sg_index => sg
@@ -134,7 +134,7 @@ resource "aws_security_group" "admin_sg" {
       to_port     = ingress.value.port
       protocol    = "tcp"
       cidr_blocks = [ingress.value.cidr_block]
-      description = ingress.value.elb_id != null ? "Ingress rule for ELB ${ingress.value.elb_id}" : "Default ingress rule"
+      description = "Ingress rule"
     }
   }
 
@@ -151,6 +151,7 @@ resource "aws_security_group" "admin_sg" {
   })
 }
 
+# Outputs
 output "tenant_security_group_ids" {
   value = [for sg in aws_security_group.tenant_sg : sg.id]
 }
@@ -159,6 +160,7 @@ output "admin_security_group_ids" {
   value = [for sg in aws_security_group.admin_sg : sg.id]
 }
 
+# Additional Local Rules (if needed)
 locals {
   node_security_group_additional_rules = {
     description              = "Allow ingress from NLB to Nodes"
@@ -171,14 +173,13 @@ locals {
   }
 }
 
-# backend-nlb-sg security group enables worker nodes to communicate/register with NLB
-
+# NLB Security Group
 resource "aws_security_group" "nlb_sg" {
   # checkov:skip=CKV2_AWS_5: This security group gets used when creating NLBs with uds-core.
 
-  name   = "${var.tags.Project}-backend-nlb-sg"
+  name        = "${var.tags.Project}-backend-nlb-sg"
   description = "Security group for NLB to Nodes"
-  vpc_id = var.vpc_id
+  vpc_id      = var.vpc_id
 
   egress {
     from_port   = 0

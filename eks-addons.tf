@@ -55,7 +55,6 @@ module "eks_blueprints_kubernetes_addons" {
 
   # Karpenter
   enable_karpenter = var.enable_karpenter
-  karpenter        = var.karpenter
 
   # Bottlerocket update operator
   enable_bottlerocket_update_operator = var.enable_bottlerocket_update_operator
