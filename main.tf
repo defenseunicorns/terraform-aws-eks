@@ -49,7 +49,6 @@ module "aws_eks" {
   kms_key_enable_default_policy     = true
   kms_key_owners                    = var.kms_key_owners
   kms_key_administrators            = distinct(concat(local.admin_arns, var.kms_key_administrators))
-  kms_key_aliases                   = "${module.aws_eks.cluster_name}-kms-key"
 
   cluster_enabled_log_types              = ["audit", "api", "authenticator"]
   create_cloudwatch_log_group            = true
@@ -164,7 +163,7 @@ module "vpc_cni_ipv4_irsa_role" {
 resource "aws_iam_policy" "vpc_cni_logging" {
   # checkov:skip=CKV_AWS_355: "Ensure no IAM policies documents allow "*" as a statement's resource for restrictable actions"
   # checkov:skip=CKV_AWS_290: "Ensure IAM policies does not allow write access without constraints"
-  name        = "${var.name}-vpc-cni-logging-${lower(random_id.default.hex)}"
+  name        = "${var.cluster_name}-vpc-cni-logging-${lower(random_id.default.hex)}"
   description = "Additional test policy"
 
   policy = jsonencode(

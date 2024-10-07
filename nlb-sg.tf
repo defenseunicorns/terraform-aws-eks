@@ -1,3 +1,21 @@
+# example inputs
+
+# sg_rules = {
+#   "tenant-elb-1" = {
+#     ports = {
+#       "80"  = ["192.168.1.0/24", "10.0.0.0/16"]
+#       "443" = ["192.168.1.0/24", "10.0.0.0/16"]
+#     }
+#   },
+#   "admin-elb-1" = {
+#     ports = {
+#       "80"  = ["172.16.0.0/12"]
+#       "443" = ["172.16.0.0/12"]
+#     }
+#   }
+#   }
+
+
 locals {
   # Define sg_types and ports
   sg_types = ["tenant", "admin"]
@@ -160,7 +178,6 @@ output "admin_security_group_ids" {
   value = [for sg in aws_security_group.admin_sg : sg.id]
 }
 
-# Additional Local Rules (if needed)
 locals {
   node_security_group_additional_rules = {
     description              = "Allow ingress from NLB to Nodes"

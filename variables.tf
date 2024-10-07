@@ -1,9 +1,4 @@
 # tflint-ignore: terraform_unused_declarations
-variable "name" {
-  type    = string
-  default = ""
-}
-
 variable "cluster_name" {
   description = "Name of cluster"
   type        = string
@@ -158,12 +153,6 @@ variable "kms_key_owners" {
 
 variable "kms_key_administrators" {
   description = "A list of IAM ARNs for [key administrators](https://docs.aws.amazon.com/kms/latest/developerguide/key-policy-default.html#key-policy-default-allow-administrators). If no value is provided, the current caller identity is used to ensure at least one key admin is available"
-  type        = list(string)
-  default     = []
-}
-
-variable "kms_key_aliases" {
-  description = "A list of aliases to create. Note - due to the use of `toset()`, values must be static strings and not computed values"
   type        = list(string)
   default     = []
 }
