@@ -34,27 +34,21 @@ module "eks_blueprints_kubernetes_addons" {
 
   # EKS Metrics Server
   enable_metrics_server = var.enable_metrics_server
-  metrics_server        = var.metrics_server
 
   # EKS AWS node termination handler
   enable_aws_node_termination_handler = var.enable_aws_node_termination_handler
-  aws_node_termination_handler        = var.aws_node_termination_handler
 
   # EKS Cluster Autoscaler
   enable_cluster_autoscaler = var.enable_cluster_autoscaler
-  cluster_autoscaler        = var.cluster_autoscaler
 
   # EKS AWS Load Balancer Controller
   enable_aws_load_balancer_controller = var.enable_aws_load_balancer_controller
-  aws_load_balancer_controller        = var.aws_load_balancer_controller
 
   # K8s Secrets Store CSI Driver
   enable_secrets_store_csi_driver = var.enable_secrets_store_csi_driver
-  secrets_store_csi_driver        = var.secrets_store_csi_driver
 
   # External Secrets
   enable_external_secrets               = var.enable_external_secrets
-  external_secrets                      = var.external_secrets
   external_secrets_ssm_parameter_arns   = local.external_secrets_ssm_parameter_arns
   external_secrets_secrets_manager_arns = local.external_secrets_secrets_manager_arns
   external_secrets_kms_key_arns         = local.external_secrets_kms_key_arns
@@ -65,29 +59,22 @@ module "eks_blueprints_kubernetes_addons" {
 
   # Bottlerocket update operator
   enable_bottlerocket_update_operator = var.enable_bottlerocket_update_operator
-  bottlerocket_update_operator        = var.bottlerocket_update_operator
-  bottlerocket_shadow                 = var.bottlerocket_shadow
 
   # AWS Cloudwatch Metrics
   enable_aws_cloudwatch_metrics = var.enable_aws_cloudwatch_metrics
-  aws_cloudwatch_metrics        = var.aws_cloudwatch_metrics
 
   # AWS FSX CSI Driver
   enable_aws_fsx_csi_driver = var.enable_aws_fsx_csi_driver
-  aws_fsx_csi_driver        = var.aws_fsx_csi_driver
 
   # AWS Private CA Issuer
   enable_aws_privateca_issuer = var.enable_aws_privateca_issuer
-  aws_privateca_issuer        = var.aws_privateca_issuer
 
   # Cert Manager
   enable_cert_manager                   = var.enable_cert_manager
-  cert_manager                          = var.cert_manager
   cert_manager_route53_hosted_zone_arns = local.cert_manager_route53_hosted_zone_arns
 
   # External DNS
   enable_external_dns = var.enable_external_dns
-  external_dns        = var.external_dns
 
   tags = var.tags
 
