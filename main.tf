@@ -150,15 +150,14 @@ module "self_managed_node_group_secret_key_secrets_manager_secret" {
 # Self Managed Node Group NLB Security Group Dependencies
 #---------------------------------------------------------------
 
-# Define the security group with only egress rules conditionally
+# backend-nlb-sg security group enables worker nodes to communicate/register with NLB
 
 resource "aws_security_group" "nlb_sg" {
   # checkov:skip=CKV2_AWS_5: This security group gets used when creating NLBs with uds-core.
-  count = var.nlb_security_groups_required ? 1 : 0
 
   name   = "${var.tags.Project}-backend-nlb-sg"
   description = "Security group for NLB to Nodes"
-  vpc_id = local.vpc_id
+  vpc_id = var.vpc_id
 
   egress {
     from_port   = 0
@@ -220,19 +219,4 @@ resource "aws_iam_policy" "vpc_cni_logging" {
   )
 
   tags = var.tags
-}
-
-resource "aws_security_group" "nlb_sg" {
-  # checkov:skip=CKV2_AWS_5: This security group gets used when creating NLBs with uds-core.
-
-  name   = "${local.cluster_name}-backend-nlb-sg"
-  description = "Security group for NLB to Nodes"
-  vpc_id = var.vpc_id
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 }

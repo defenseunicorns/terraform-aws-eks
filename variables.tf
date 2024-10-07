@@ -676,3 +676,10 @@ variable "additional_access_entries" {
   description = "A list of one or more roles with authorized access to KMS and EKS resources"
   type        = list(string)
 }
+
+variable "sg_rules" {
+  description = "Map of ELB IDs to ports and their CIDR blocks"
+  type = map(object({
+    ports = map(list(string))  # port (as string) => list of CIDR blocks
+  }))
+}

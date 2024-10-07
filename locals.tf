@@ -268,7 +268,7 @@ locals {
     }
   }
 
-    "bastion" = {
+    bastion = {
       principal_arn = var.bastion_role_arn
       type          = "STANDARD"
       policy_associations = {

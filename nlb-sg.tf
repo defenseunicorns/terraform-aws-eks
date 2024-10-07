@@ -1,250 +1,160 @@
-# local block intended for static values
 locals {
+  # Flatten sg_rules into a list of rules with sg_type derived from elb_id
+  all_sg_rules = flatten(flatten([
+    for elb_id, elb_data in var.sg_rules : [
+      for port_str, cidr_blocks in elb_data.ports : [
+        for cidr_block in cidr_blocks : {
+          elb_id     = elb_id
+          port       = tonumber(port_str)
+          cidr_block = cidr_block
+          sg_type    = contains(lower(elb_id), "admin") ? "admin" : "tenant"
+        }
+      ]
+    ]
+  ]))
 
-  mde_egress_cidrs = [
-    # MDE public IPs
+  # Define sg_types and ports
+  sg_types = ["tenant", "admin"]
+  ports    = [80, 443]
+
+  # Generate all possible combinations of sg_type and port
+  sg_type_port_combinations = flatten([
+    for sg_type in local.sg_types : [
+      for port in local.ports : "${sg_type}-${port}"
+    ]
+  ])
+
+  # Existing combinations from provided rules
+  existing_sg_type_ports = distinct([
+    for rule in local.all_sg_rules : "${rule.sg_type}-${rule.port}"
+  ])
+
+  # Identify missing combinations
+  missing_combinations = [
+    for combo in local.sg_type_port_combinations :
+    combo if !contains(local.existing_sg_type_ports, combo)
   ]
 
-  idp_public_ips = [
-    # Keycloak IdP public IPs
-  ]
-
-}
-
-resource "aws_security_group" "keycloak_sg" {
-  # checkov:skip=CKV2_AWS_5: "false positive" -- this resource is only created for staging and prod based on the vpc_configs
-
-  # Naming convention for the security group.
-  name        = "${local.cluster_name}-${var.kc_sg_name}-${each.value.sg_index + 1}"
-  description = "Security group for Keycloak with ingress rules"
-  # Retrieve the VPC ID from the vpc module using the vpc_name.
-  vpc_id = var.vpc_id
-
-  # Dynamically create ingress rules based on the allow_list for each security group.
-  dynamic "ingress" {
-    for_each = each.value.allow_list
-    content {
-      from_port   = 443
-      to_port     = 443
-      protocol    = "tcp"
-      cidr_blocks = [ingress.value]
-      description = "HTTPS ingress for Keycloak"
+  # Create default rules for missing combinations
+  default_sg_rules = [
+    for combo_str in local.missing_combinations : {
+      sg_type    = split(combo_str, "-")[0]
+      port       = tonumber(split(combo_str, "-")[1])
+      cidr_block = "0.0.0.0/0"
+      elb_id     = null
     }
-  }
+  ]
 
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "HTTP ingress from VPC"
-  }
+  # Combine all rules
+  sg_rules_combined = concat(local.all_sg_rules, local.default_sg_rules)
 
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "HTTPS ingress from VPC"
-  }
+  # Separate rules by sg_type
+  tenant_sg_rules = [
+    for rule in local.sg_rules_combined : rule if rule.sg_type == "tenant"
+  ]
 
-  ingress {
-    from_port   = 15021
-    to_port     = 15021
-    protocol    = "tcp"
-    cidr_blocks = [var.vpc_cidr_block]
-    description = "Custom port ingress from VPC"
-  }
+  admin_sg_rules = [
+    for rule in local.sg_rules_combined : rule if rule.sg_type == "admin"
+  ]
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = -1
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "Egress All from VPC"
-  }
+  # Calculate the number of security groups needed for each type
+  tenant_sg_counts = ceil(length(local.tenant_sg_rules) / 56)
+  admin_sg_counts  = ceil(length(local.admin_sg_rules) / 56)
+
+  # Chunk the rules into groups of up to 56
+  tenant_sg_rules_chunks = [
+    for i in range(local.tenant_sg_counts) : {
+      sg_index = i
+      rules    = slice(
+        local.tenant_sg_rules,
+        i * 56,
+        min((i + 1) * 56, length(local.tenant_sg_rules))
+      )
+    }
+  ]
+
+  admin_sg_rules_chunks = [
+    for i in range(local.admin_sg_counts) : {
+      sg_index = i
+      rules    = slice(
+        local.admin_sg_rules,
+        i * 56,
+        min((i + 1) * 56, length(local.admin_sg_rules))
+      )
+    }
+  ]
 }
 
 resource "aws_security_group" "tenant_sg" {
-  # checkov:skip=CKV2_AWS_5: "false positive" -- this resource is only created for staging and prod based on the vpc_configs
-
-  # Use a combination of vpc_name and sg_index to uniquely identify each security group in the for_each loop.
   for_each = {
-    for sg in local.tenant_sg_allow_lists : "${sg.vpc_name}-${sg.sg_index}" => sg
+    for sg in local.tenant_sg_rules_chunks : sg.sg_index => sg
   }
 
-  # Naming convention for the security group.
-  name        = "${local.cluster_name}-${var.tenant_sg_name}-${each.value.sg_index + 1}"
+  name        = "${var.tags.Environment}-tenant-elb-1-${each.value.sg_index + 1}"
   description = "Security group for tenant ingress-gateway"
-  # Retrieve the VPC ID from the vpc module using the vpc_name.
-  vpc_id = var.vpc_id
+  vpc_id      = var.vpc_id
 
-  # Dynamically create ingress rules based on the allow_list for each security group.
   dynamic "ingress" {
-    for_each = each.value.allow_list
+    for_each = each.value.rules
     content {
-      from_port   = 443
-      to_port     = 443
+      from_port   = ingress.value.port
+      to_port     = ingress.value.port
       protocol    = "tcp"
-      cidr_blocks = [ingress.value]
-      description = "HTTPS ingress for Tenant ingress-gateway"
+      cidr_blocks = [ingress.value.cidr_block]
+      description = ingress.value.elb_id != null ? "Ingress rule for ELB ${ingress.value.elb_id}" : "Default ingress rule"
     }
-  }
-
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = [module.vpc[local.vpc_name_to_index[each.value.vpc_name]].vpc_cidr_block]
-    description = "HTTP ingress from VPC"
-  }
-
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = [module.vpc[local.vpc_name_to_index[each.value.vpc_name]].vpc_cidr_block]
-    description = "HTTPS ingress from VPC"
-  }
-
-  ingress {
-    from_port   = 15021
-    to_port     = 15021
-    protocol    = "tcp"
-    cidr_blocks = [module.vpc[local.vpc_name_to_index[each.value.vpc_name]].vpc_cidr_block]
-    description = "Istio ingress from VPC"
   }
 
   egress {
     from_port   = 0
     to_port     = 0
-    protocol    = -1
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
     description = "Egress All from VPC"
   }
 
   tags = merge(var.tags, {
-    "Name" = "${local.cluster_name}-${var.tenant_sg_name}-${each.value.sg_index + 1}"
+    "Name" = "${var.tags.Environment}-tenant-elb-1-${each.value.sg_index + 1}"
   })
 }
 
 resource "aws_security_group" "admin_sg" {
-  # checkov:skip=CKV2_AWS_5: "false positive" -- this resource is only created for staging and prod based on the vpc_configs
-
-  # Use a combination of vpc_name and sg_index to uniquely identify each security group in the for_each loop.
   for_each = {
-    for sg in local.admin_sg_allow_lists : "${sg.vpc_name}-${sg.sg_index}" => sg
+    for sg in local.admin_sg_rules_chunks : sg.sg_index => sg
   }
 
-  # Naming convention for the security group.
-  name        = "${local.cluster_name}-${each.value.vpc_name}-${var.admin_sg_name}-${each.value.sg_index + 1}"
-  description = "Security group for Keycloak with ingress rules"
-  # Retrieve the VPC ID from the vpc module using the vpc_name.
-  vpc_id = var.vpc_id
+  name        = "${var.tags.Environment}-admin-elb-1-${each.value.sg_index + 1}"
+  description = "Security group for admin"
+  vpc_id      = var.vpc_id
 
-  # Dynamically create ingress rules based on the allow_list for each security group.
   dynamic "ingress" {
-    for_each = each.value.allow_list
+    for_each = each.value.rules
     content {
-      from_port   = 443
-      to_port     = 443
+      from_port   = ingress.value.port
+      to_port     = ingress.value.port
       protocol    = "tcp"
-      cidr_blocks = [ingress.value]
-      description = "HTTPS ingress for Keycloak"
+      cidr_blocks = [ingress.value.cidr_block]
+      description = ingress.value.elb_id != null ? "Ingress rule for ELB ${ingress.value.elb_id}" : "Default ingress rule"
     }
-  }
-
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = [module.vpc[local.vpc_name_to_index[each.value.vpc_name]].vpc_cidr_block]
-    description = "HTTP ingress from VPC"
-  }
-
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = [module.vpc[local.vpc_name_to_index[each.value.vpc_name]].vpc_cidr_block]
-    description = "HTTPS ingress from VPC"
-  }
-
-  ingress {
-    from_port   = 15021
-    to_port     = 15021
-    protocol    = "tcp"
-    cidr_blocks = [module.vpc[local.vpc_name_to_index[each.value.vpc_name]].vpc_cidr_block]
-    description = "Custom port ingress from VPC"
   }
 
   egress {
     from_port   = 0
     to_port     = 0
-    protocol    = -1
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
     description = "Egress All from VPC"
   }
 
   tags = merge(var.tags, {
-    "Name" = "${local.cluster_name}${var.admin_sg_name}-${each.value.sg_index + 1}"
+    "Name" = "${var.tags.Environment}-admin-elb-1-${each.value.sg_index + 1}"
   })
 }
 
-resource "aws_security_group" "appstream_users_sgs" {
-  # checkov:skip=CKV2_AWS_5: This resource is used in operations repo
-  for_each = {
-    for vpc in var.vpc_configs : vpc.vpc_name => vpc
-    if vpc.default_vdi_vpc == true # Only create the security group for the default VDI VPC (which could be either 'VDI-RDTE-VPC' or 'VDI-Production-VPC' in the current configuration)
-  }
-
-  name        = "${var.tags.Environment}-${var.tags.Project}-${each.value.vpc_name}-appstream-users-sg"
-  description = "Security group for regular appstream users"
-
-  # Retrieve the VPC ID from the vpc module using the vpc_name.
-  vpc_id = var.vpc_id
-
-  ingress {
-    description = "TLS from VPC"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = [each.value.vpc_cidr]
-  }
-
-  egress {
-    description = "EKS private subnets egress to AppStream fleet"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = var.target_eks_private_subnets_cidrs
-  }
-
-  egress {
-    description = "Outbound to MDE endpoints per onboarding docs"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = local.mde_egress_cidrs
-  }
-
-  egress {
-    description = "Keycloak endpoint"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = local.idp_public_ips
-  }
-}
-
-output "keycloak_security_group_ids" {
-  value = values(aws_security_group.keycloak_sg)[*].id
-}
-
 output "tenant_security_group_ids" {
-  value = values(aws_security_group.tenant_sg)[*].id
+  value = [for sg in aws_security_group.tenant_sg : sg.id]
 }
 
 output "admin_security_group_ids" {
-  value = values(aws_security_group.admin_sg)[*].id
+  value = [for sg in aws_security_group.admin_sg : sg.id]
 }
