@@ -194,8 +194,8 @@ variable "cluster_addons" {
   to see available eks marketplace addons available for your cluster's version run:
   aws eks describe-addon-versions --kubernetes-version $k8s_cluster_version --query 'addons[].{MarketplaceProductUrl: marketplaceInformation.productUrl, Name: addonName, Owner: owner Publisher: publisher, Type: type}' --output table
 EOD
-  type        = any
-  default     = {}
+  type = any
+  default = {}
 }
 
 variable "create_cluster_primary_security_group_tags" {
