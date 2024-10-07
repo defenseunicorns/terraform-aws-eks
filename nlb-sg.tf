@@ -169,7 +169,7 @@ locals {
     to_port                  = 32767
     protocol                 = "tcp"
     type                     = "ingress"
-    source_security_group_id = aws_security_group.nlb_sg[0].id
+    source_security_group_id = aws_security_group.nlb_sg.id
   }
 }
 

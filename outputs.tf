@@ -5,11 +5,6 @@ output "region" {
   value       = var.aws_region
 }
 
-output "efs_storageclass_name" {
-  description = "The name of the EFS storageclass that was created (if var.enable_amazon_eks_aws_efs_csi_driver was set to true)"
-  value       = try(kubernetes_storage_class_v1.efs[0].id, null)
-}
-
 ################################################################################
 # Cluster
 ################################################################################

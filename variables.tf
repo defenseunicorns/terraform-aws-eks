@@ -435,6 +435,7 @@ variable "bastion_role_arn" {
 variable "additional_access_entries" {
   description = "A list of one or more roles with authorized access to KMS and EKS resources"
   type        = list(string)
+  default =   null
 }
 
 variable "sg_rules" {

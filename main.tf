@@ -49,7 +49,7 @@ module "aws_eks" {
   kms_key_enable_default_policy     = true
   kms_key_owners                    = var.kms_key_owners
   kms_key_administrators            = distinct(concat(local.admin_arns, var.kms_key_administrators))
-  kms_key_aliases                   = local.cluster_name
+  kms_key_aliases                   = "${module.aws_eks.cluster_name}-kms-key"
 
   cluster_enabled_log_types              = ["audit", "api", "authenticator"]
   create_cloudwatch_log_group            = true
