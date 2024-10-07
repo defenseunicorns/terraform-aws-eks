@@ -158,3 +158,32 @@ output "tenant_security_group_ids" {
 output "admin_security_group_ids" {
   value = [for sg in aws_security_group.admin_sg : sg.id]
 }
+
+locals {
+  node_security_group_additional_rules = {
+    description              = "Allow ingress from NLB to Nodes"
+    security_group_id        = module.aws_eks.node_security_group_id
+    from_port                = 30000
+    to_port                  = 32767
+    protocol                 = "tcp"
+    type                     = "ingress"
+    source_security_group_id = aws_security_group.nlb_sg[0].id
+  }
+}
+
+# backend-nlb-sg security group enables worker nodes to communicate/register with NLB
+
+resource "aws_security_group" "nlb_sg" {
+  # checkov:skip=CKV2_AWS_5: This security group gets used when creating NLBs with uds-core.
+
+  name   = "${var.tags.Project}-backend-nlb-sg"
+  description = "Security group for NLB to Nodes"
+  vpc_id = var.vpc_id
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}

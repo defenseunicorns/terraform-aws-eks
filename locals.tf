@@ -86,6 +86,7 @@ locals {
   )
 }
 
+# Self Managed Node Group Locals
 locals {
   self_managed_node_group_defaults = {
     iam_role_permissions_boundary          = var.iam_role_permissions_boundary

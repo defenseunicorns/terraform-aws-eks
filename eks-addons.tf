@@ -30,7 +30,7 @@ module "eks_blueprints_kubernetes_addons" {
   aws_node_termination_handler_asg_arns = local.node_group_arns
 
   #this controls whether or not the cluster resources are created for the blueprints eks addons module
-  create_kubernetes_resources = var.create_kubernetes_resources
+  create_kubernetes_resources = false
 
   # EKS Metrics Server
   enable_metrics_server = var.enable_metrics_server
@@ -99,59 +99,6 @@ module "eks_blueprints_kubernetes_addons" {
 
 
 ################################################################################
-# EBS Storage Class config
-################################################################################
-
-resource "kubernetes_annotations" "gp2" {
-  count = var.create_kubernetes_resources && var.enable_gp3_default_storage_class && var.enable_amazon_eks_aws_ebs_csi_driver ? 1 : 0
-
-  api_version = "storage.k8s.io/v1"
-  kind        = "StorageClass"
-  force       = "true"
-
-  metadata {
-    name = "gp2"
-  }
-
-  annotations = {
-    # Modify annotations to remove gp2 as default storage class still reatain the class
-    "storageclass.kubernetes.io/is-default-class" = "false"
-  }
-
-  depends_on = [
-    module.eks_blueprints_kubernetes_addons
-  ]
-}
-
-resource "kubernetes_storage_class_v1" "gp3" {
-  count = var.create_kubernetes_resources && var.enable_gp3_default_storage_class && var.enable_amazon_eks_aws_ebs_csi_driver ? 1 : 0
-
-  metadata {
-    name = "gp3"
-
-    annotations = {
-      # Annotation to set gp3 as default storage class
-      "storageclass.kubernetes.io/is-default-class" = "true"
-    }
-  }
-
-  storage_provisioner    = "ebs.csi.aws.com"
-  allow_volume_expansion = true
-  reclaim_policy         = var.ebs_storageclass_reclaim_policy
-  volume_binding_mode    = "WaitForFirstConsumer"
-
-  parameters = {
-    encrypted = true
-    fsType    = "ext4"
-    type      = "gp3"
-  }
-
-  depends_on = [
-    module.eks_blueprints_kubernetes_addons
-  ]
-}
-
-################################################################################
 # EFS CSI Driver Configurations
 ################################################################################
 
@@ -160,28 +107,6 @@ resource "random_id" "efs_name" {
 
   byte_length = 2
   prefix      = "EFS-"
-}
-
-resource "kubernetes_storage_class_v1" "efs" {
-  count = var.create_kubernetes_resources && var.enable_amazon_eks_aws_efs_csi_driver ? 1 : 0
-  metadata {
-    name = lower(random_id.efs_name[0].hex)
-  }
-
-  storage_provisioner = "efs.csi.aws.com"
-  reclaim_policy      = var.efs_storageclass_reclaim_policy
-  parameters = {
-    provisioningMode = "efs-ap" # Dynamic provisioning
-    fileSystemId     = module.efs[0].id
-    directoryPerms   = "700"
-  }
-  mount_options = [
-    "iam"
-  ]
-
-  depends_on = [
-    module.eks_blueprints_kubernetes_addons
-  ]
 }
 
 module "efs" {
