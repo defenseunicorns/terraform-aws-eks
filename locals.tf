@@ -26,7 +26,7 @@ locals {
     "aws-ebs-csi-driver" = merge(
       local.merged_cluster_addons["aws-ebs-csi-driver"],
       {
-        service_account_role_arn = module.ebs_csi_driver_irsa[0].iam_role_arn
+        service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
       }
     )
   } : {}
@@ -41,7 +41,7 @@ locals {
     "aws-efs-csi-driver" = merge(
       local.merged_cluster_addons["aws-efs-csi-driver"],
       {
-        service_account_role_arn = module.efs_csi_driver_irsa[0].iam_role_arn
+        service_account_role_arn = module.efs_csi_driver_irsa.iam_role_arn
       }
     )
   } : {}
