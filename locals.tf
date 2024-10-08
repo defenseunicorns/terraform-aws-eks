@@ -10,19 +10,10 @@ locals {
   # cluster_addons additional logic
   ############
 
-  # Define default addons that should always be enabled
-  default_cluster_addons = {
-    "coredns"                     = {}
-    "eks-pod-identity-webhook"    = {}
-    "kube-proxy"                  = {}
-    "vpc-cni"                     = {}
-  }
-
   # Merge user-provided cluster_addons with default_cluster_addons
   # User-provided values in var.cluster_addons will override defaults
   merged_cluster_addons = merge(
-    local.default_cluster_addons,
-    var.cluster_addons
+    local.default_cluster_addons
   )
 
   # Determine if aws-ebs-csi-driver addon should be configured
@@ -256,6 +247,13 @@ locals {
     }
     # consider using '"useFIPS": "true"' under configuration_values for aws_efs_csi_driver
     aws-efs-csi-driver = {
+      most_recent = true
+      timeouts = {
+        create = "10m"
+        delete = "10m"
+      }
+    }
+    eks-pod-identity-webhook = {
       most_recent = true
       timeouts = {
         create = "10m"

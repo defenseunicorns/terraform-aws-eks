@@ -53,24 +53,6 @@ variable "aws_admin_usernames" {
   default     = []
 }
 
-variable "cluster_endpoint_private_access" {
-  description = "Indicates whether or not the Amazon EKS private API server endpoint is enabled"
-  type        = bool
-  default     = true
-}
-
-variable "cluster_endpoint_public_access" {
-  description = "Enable public access to the cluster endpoint"
-  type        = bool
-  default     = false
-}
-
-variable "cluster_endpoint_public_access_cidrs" {
-  description = "List of CIDR blocks which can access the Amazon EKS public API server endpoint"
-  type        = list(string)
-  default     = ["0.0.0.0/0"]
-}
-
 variable "control_plane_subnet_ids" {
   description = "Subnet IDs for control plane"
   type        = list(string)
@@ -129,6 +111,14 @@ variable "node_security_group_additional_rules" {
   default     = {}
 }
 
+variable "sg_rules" {
+  description = "Map of ELB IDs to ports and their CIDR blocks. Enables custom NLB security groups to be created."
+  type = map(object({
+    ports = map(list(string))  # port (as string) => list of CIDR blocks
+  }))
+  default = {}
+}
+
 ################################################################################
 # KMS Key
 ################################################################################
@@ -155,59 +145,6 @@ variable "kms_key_administrators" {
   description = "A list of IAM ARNs for [key administrators](https://docs.aws.amazon.com/kms/latest/developerguide/key-policy-default.html#key-policy-default-allow-administrators). If no value is provided, the current caller identity is used to ensure at least one key admin is available"
   type        = list(string)
   default     = []
-}
-
-#-------------------------------
-# Node Groups
-#-------------------------------
-
-variable "eks_managed_node_groups" {
-  description = "Managed node groups configuration"
-  type        = any
-  default     = {}
-}
-
-variable "self_managed_node_groups" {
-  description = "Self-managed node groups configuration"
-  type        = any
-  default     = {}
-}
-
-variable "self_managed_node_group_defaults" {
-  description = "Map of self-managed node group default configurations"
-  type        = any
-  default     = {}
-}
-
-variable "eks_managed_node_group_defaults" {
-  description = "Map of EKS-managed node group default configurations"
-  type        = any
-  default     = {}
-}
-
-variable "cluster_addons" {
-  description = <<-EOD
-  Nested of eks native add-ons and their associated parameters.
-  See https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_addon for supported values.
-  See https://github.com/terraform-aws-modules/terraform-aws-eks/blob/master/examples/complete/main.tf#L44-L60 for upstream example.
-
-  to see available eks marketplace addons available for your cluster's version run:
-  aws eks describe-addon-versions --kubernetes-version $k8s_cluster_version --query 'addons[].{MarketplaceProductUrl: marketplaceInformation.productUrl, Name: addonName, Owner: owner Publisher: publisher, Type: type}' --output table
-EOD
-  type = any
-  default = {}
-}
-
-variable "create_cluster_primary_security_group_tags" {
-  description = "Indicates whether or not to tag the cluster's primary security group. This security group is created by the EKS service, not the module, and therefore tagging is handled after cluster creation"
-  type        = bool
-  default     = true
-}
-
-variable "cluster_timeouts" {
-  description = "Create, update, and delete timeout configurations for the cluster"
-  type        = map(string)
-  default     = {}
 }
 
 ################################################################################
@@ -425,12 +362,4 @@ variable "additional_access_entries" {
   description = "A list of one or more roles with authorized access to KMS and EKS resources"
   type        = list(string)
   default =   []
-}
-
-variable "sg_rules" {
-  description = "Optional map of security group rules"
-  type        = map(object({
-    ports = map(list(string))
-  }))
-  default     = {}
 }
