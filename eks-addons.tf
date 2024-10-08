@@ -97,7 +97,7 @@ module "efs" {
   source  = "terraform-aws-modules/efs/aws"
   version = "~> 1.0"
 
-  name = lower(random_id.efs_name[0].hex)
+  name = lower(random_id.efs_name.hex)
   # Mount targets / security group
   mount_targets = {
     for k, v in zipmap(var.azs, var.private_subnet_ids) : k => { subnet_id = v }
@@ -153,7 +153,7 @@ resource "aws_ssm_parameter" "helm_input_values" {
 resource "aws_ssm_parameter" "file_system_id_for_efs_storage_class" {
   count  = var.create_ssm_parameters ? 1 : 0
   name   = "/${local.cluster_name}/StorageClass/efs/fileSystemId"
-  value  = module.efs[0].id
+  value  = module.efs.id
   type   = "SecureString"
   key_id = local.ssm_parameter_kms_key_arn
   tier   = "Standard"
