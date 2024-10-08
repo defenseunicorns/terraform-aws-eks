@@ -42,7 +42,7 @@ module "eks_blueprints_kubernetes_addons" {
   enable_cluster_autoscaler = var.enable_cluster_autoscaler
 
   # EKS AWS Load Balancer Controller
-  enable_aws_load_balancer_controller = var.enable_aws_load_balancer_controller
+  enable_aws_load_balancer_controller = true
 
   # K8s Secrets Store CSI Driver
   enable_secrets_store_csi_driver = var.enable_secrets_store_csi_driver
@@ -54,10 +54,10 @@ module "eks_blueprints_kubernetes_addons" {
   external_secrets_kms_key_arns         = local.external_secrets_kms_key_arns
 
   # Karpenter
-  enable_karpenter = var.enable_karpenter
+  enable_karpenter = true
 
   # Bottlerocket update operator
-  enable_bottlerocket_update_operator = var.enable_bottlerocket_update_operator
+  enable_bottlerocket_update_operator = true
 
   # AWS Cloudwatch Metrics
   enable_aws_cloudwatch_metrics = var.enable_aws_cloudwatch_metrics
@@ -89,8 +89,6 @@ module "eks_blueprints_kubernetes_addons" {
 ################################################################################
 
 resource "random_id" "efs_name" {
-  count = var.enable_amazon_eks_aws_efs_csi_driver ? 1 : 0
-
   byte_length = 2
   prefix      = "EFS-"
 }
@@ -98,8 +96,6 @@ resource "random_id" "efs_name" {
 module "efs" {
   source  = "terraform-aws-modules/efs/aws"
   version = "~> 1.0"
-
-  count = var.enable_amazon_eks_aws_efs_csi_driver ? 1 : 0
 
   name = lower(random_id.efs_name[0].hex)
   # Mount targets / security group
@@ -155,7 +151,7 @@ resource "aws_ssm_parameter" "helm_input_values" {
 # Create ssm parameter for EFS storage class for external EFS CSI driver storage class configuration because marketplace EFS CSI driver does not support storageclass provisioning
 # https://github.com/aws/containers-roadmap/issues/2198
 resource "aws_ssm_parameter" "file_system_id_for_efs_storage_class" {
-  count  = var.create_ssm_parameters && var.enable_amazon_eks_aws_efs_csi_driver ? 1 : 0
+  count  = var.create_ssm_parameters ? 1 : 0
   name   = "/${local.cluster_name}/StorageClass/efs/fileSystemId"
   value  = module.efs[0].id
   type   = "SecureString"

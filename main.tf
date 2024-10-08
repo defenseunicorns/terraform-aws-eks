@@ -69,8 +69,6 @@ module "ebs_csi_driver_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.20"
 
-  count = var.enable_amazon_eks_aws_ebs_csi_driver ? 1 : 0
-
   role_name_prefix              = "${module.aws_eks.cluster_name}-ebs-csi-driver-"
   role_permissions_boundary_arn = var.iam_role_permissions_boundary
 
@@ -89,8 +87,6 @@ module "ebs_csi_driver_irsa" {
 module "efs_csi_driver_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.20"
-
-  count = var.enable_amazon_eks_aws_efs_csi_driver ? 1 : 0
 
   role_name_prefix              = "${module.aws_eks.cluster_name}-efs-csi-driver-"
   role_permissions_boundary_arn = var.iam_role_permissions_boundary

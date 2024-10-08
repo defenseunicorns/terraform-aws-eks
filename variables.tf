@@ -195,20 +195,6 @@ variable "ssm_parameter_kms_key_arn" {
   default     = ""
 }
 
-#----------------AWS EBS CSI Driver-------------------------
-variable "enable_amazon_eks_aws_ebs_csi_driver" {
-  description = "Enable EKS Managed AWS EBS CSI Driver add-on"
-  type        = bool
-  default     = false
-}
-
-#----------------AWS EFS CSI Driver-------------------------
-variable "enable_amazon_eks_aws_efs_csi_driver" {
-  description = "Enable EFS CSI Driver add-on"
-  type        = bool
-  default     = false
-}
-
 variable "efs_vpc_cidr_blocks" {
   description = "CIDR blocks to allow access to EFS"
   type        = list(string)
@@ -232,13 +218,6 @@ variable "enable_aws_node_termination_handler" {
 #----------------Cluster Autoscaler-------------------------
 variable "enable_cluster_autoscaler" {
   description = "Enable Cluster autoscaler add-on"
-  type        = bool
-  default     = false
-}
-
-#----------------AWS Loadbalancer Controller-------------------------
-variable "enable_aws_load_balancer_controller" {
-  description = "Enable AWS Loadbalancer Controller add-on"
   type        = bool
   default     = false
 }
@@ -274,20 +253,6 @@ variable "external_secrets_kms_key_arns" {
   description = "List of KMS Key ARNs that are used by Secrets Manager that contain secrets to mount using External Secrets"
   type        = list(string)
   default     = [] # if not defined, ["arn:$partition:kms:*:*:key/*"]
-}
-
-#----------------Karpenter-------------------------
-variable "enable_karpenter" {
-  description = "Enable Karpenter add-on"
-  type        = bool
-  default     = false
-}
-
-#----------------Bottlerocket Update Operator-------------------------
-variable "enable_bottlerocket_update_operator" {
-  description = "Enable Bottlerocket and Bottlerocket Update Operator add-on"
-  type        = bool
-  default     = false
 }
 
 #----------------AWS Cloudwatch Metrics-------------------------

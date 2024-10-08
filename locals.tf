@@ -18,7 +18,6 @@ locals {
 
   # Determine if aws-ebs-csi-driver addon should be configured
   should_config_ebs_csi_driver = (
-    var.enable_amazon_eks_aws_ebs_csi_driver &&
     contains(keys(local.merged_cluster_addons), "aws-ebs-csi-driver")
   )
 
@@ -34,7 +33,6 @@ locals {
 
   # Determine if aws-efs-csi-driver addon should be configured
   should_config_efs_csi_driver = (
-    var.enable_amazon_eks_aws_efs_csi_driver &&
     contains(keys(local.merged_cluster_addons), "aws-efs-csi-driver")
   )
 
