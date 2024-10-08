@@ -233,13 +233,6 @@ locals {
         delete = "10m"
       }
     }
-    eks-pod-identity-webhook = {
-      most_recent = true
-      timeouts = {
-        create = "10m"
-        delete = "10m"
-      }
-    }
   }
 }
 
