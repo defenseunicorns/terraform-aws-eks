@@ -16,46 +16,28 @@ locals {
     local.default_cluster_addons
   )
 
-  # Determine if aws-ebs-csi-driver addon should be configured
-  should_config_ebs_csi_driver = (
-    contains(keys(local.merged_cluster_addons), "aws-ebs-csi-driver")
-  )
-
-  # Merge in the service_account_role_arn for aws-ebs-csi-driver if needed
-  ebs_csi_driver_addon_extra_config = local.should_config_ebs_csi_driver ? {
+  # Since aws-ebs-csi-driver addon is always configured
+  ebs_csi_driver_addon_extra_config = {
     "aws-ebs-csi-driver" = merge(
       local.merged_cluster_addons["aws-ebs-csi-driver"],
       {
         service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
       }
     )
-  } : {}
+  }
 
-  # Determine if aws-efs-csi-driver addon should be configured
-  should_config_efs_csi_driver = (
-    contains(keys(local.merged_cluster_addons), "aws-efs-csi-driver")
-  )
-
-  # Merge in the service_account_role_arn for aws-efs-csi-driver if needed
-  efs_csi_driver_addon_extra_config = local.should_config_efs_csi_driver ? {
+  # Since aws-efs-csi-driver addon is always configured
+  efs_csi_driver_addon_extra_config = {
     "aws-efs-csi-driver" = merge(
       local.merged_cluster_addons["aws-efs-csi-driver"],
       {
         service_account_role_arn = module.efs_csi_driver_irsa.iam_role_arn
       }
     )
-  } : {}
+  }
 
-  # Determine if ENI configs should be created for VPC CNI
-  should_create_eni_configs = (
-    var.create_eni_configs &&
-    contains(keys(local.merged_cluster_addons), "vpc-cni") &&
-    length(var.vpc_cni_custom_subnet) != 0 &&
-    length(var.vpc_cni_custom_subnet) == length(var.azs)
-  )
-
-  # Define ENI Configurations if needed
-  eniConfig = local.should_create_eni_configs ? {
+  # ENI Configurations are always needed
+  eniConfig = {
     create = true
     region = var.aws_region
     subnets = {
@@ -68,10 +50,10 @@ locals {
         ])
       }
     }
-  } : null
+  }
 
-  # Merge extra configuration for VPC CNI if ENI configs are needed
-  vpc_cni_addon_extra_config = local.should_create_eni_configs ? {
+  # Merge extra configuration for VPC CNI
+  vpc_cni_addon_extra_config = {
     "vpc-cni" = merge(
       local.merged_cluster_addons["vpc-cni"],
       {
@@ -81,7 +63,7 @@ locals {
         ))
       }
     )
-  } : {}
+  }
 
   # Final cluster_addons map
   cluster_addons = merge(
