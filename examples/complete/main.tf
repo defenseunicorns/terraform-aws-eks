@@ -465,7 +465,7 @@ module "self_managed_node_group_keypair" {
 }
 
 module "self_managed_node_group_secret_key_secrets_manager_secret" {
-  source = "git::https://github.com/terraform-aws-modules/terraform-aws-secrets-manager.git?ref=v1.1.2"
+  source = "git::https://github.com/terraform-aws-modules/terraform-aws-secrets-manager.git?ref=v1.3.0"
 
   name                    = module.self_managed_node_group_keypair.key_pair_name
   description             = "Secret key for self managed node group keypair"
