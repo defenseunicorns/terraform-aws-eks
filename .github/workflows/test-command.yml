@@ -34,4 +34,4 @@ jobs:
       AWS_GOVCLOUD_ROLE_TO_ASSUME: ${{ secrets.NARWHAL_AWS_GOVCLOUD_ROLE_TO_ASSUME }}
     with:
       # check if the required slash command args are present, if so populate the json matrix, else pass in null and relevant e2e tests that would require a make target and region will be skipped
-      e2e-test-matrix: ${{ (contains(github.event.client_payload.slash_command.args.named, 'make') && contains(github.event.client_payload.slash_command.args.named, 'region')) && format('[{{"make-target":"{0}", "region":"{1}"}}]', github.event.client_payload.slash_command.args.named.make, github.event.client_payload.slash_command.args.named.region) || null }}
+      e2e-test-matrix: ${{ (contains(toJson(github.event.client_payload.slash_command.args.named), 'make') && contains(toJson(github.event.client_payload.slash_command.args.named), 'region')) && format('[{{"make-target":"{0}", "region":"{1}"}}]', github.event.client_payload.slash_command.args.named.make, github.event.client_payload.slash_command.args.named.region) || null }}}
