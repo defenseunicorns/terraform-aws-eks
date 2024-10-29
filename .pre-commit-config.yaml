@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
       - id: check-added-large-files
         args: ["--maxkb=1024"]
@@ -30,7 +30,7 @@ repos:
           - "--verbose"
           - "--allow-parallel-runners"
   - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.94.1
+    rev: v1.96.1
     hooks:
       - id: terraform_fmt
         args:
@@ -40,7 +40,7 @@ repos:
           - --args=--config=__GIT_WORKING_DIR__/.tflint.hcl
           - --hook-config=--tf-path=tofu
   - repo: https://github.com/tofuutils/pre-commit-opentofu
-    rev: v1.0.3 # Get the latest from: https://github.com/tofuutils/pre-commit-opentofu/releases
+    rev: v2.1.0 # Get the latest from: https://github.com/tofuutils/pre-commit-opentofu/releases
     hooks:
       - id: tofu_docs
         args:
@@ -52,6 +52,6 @@ repos:
         args:
           - --args=--config-file __GIT_WORKING_DIR__/.checkov.yml
   - repo: https://github.com/renovatebot/pre-commit-hooks
-    rev: 38.61.0
+    rev: 38.134.0
     hooks:
       - id: renovate-config-validator
