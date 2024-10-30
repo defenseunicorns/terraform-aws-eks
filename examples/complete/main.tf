@@ -131,7 +131,7 @@ locals {
     use_mixed_instances_policy             = true
 
     instance_requirements = {
-      allowed_instance_types = ["m6i.4xlarge", "m5a.4xlarge"] #this should be adjusted to the appropriate instance family if reserved instances are being utilized
+      allowed_instance_types = ["m6i.4xlarge", "m5a.4xlarge", "m7i-flex.4xlarge"] #this should be adjusted to the appropriate instance family if reserved instances are being utilized
       memory_mib = {
         min = 64000
       }
