@@ -516,6 +516,19 @@ variable "secrets_store_csi_driver" {
   default     = {}
 }
 
+#----------------k8s Secret Store CSI Driver - AWS Provider -------------------------
+variable "enable_secrets_store_csi_driver_provider_aws" {
+  description = "Enable k8s Secret Store CSI Driver for the AWS Provider"
+  type        = bool
+  default     = false
+}
+
+variable "secrets_store_csi_driver_provider_aws" {
+  description = "k8s Secret Store CSI Driver config for the AWS Provider"
+  type        = any
+  default     = {}
+}
+
 #----------------External Secrets-------------------------
 
 variable "enable_external_secrets" {
