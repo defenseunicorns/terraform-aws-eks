@@ -52,6 +52,10 @@ module "eks_blueprints_kubernetes_addons" {
   enable_secrets_store_csi_driver = var.enable_secrets_store_csi_driver
   secrets_store_csi_driver        = var.secrets_store_csi_driver
 
+  # K8s Secrets Store CSI Driver - AWS Provider
+  enable_secrets_store_csi_driver_provider_aws = var.enable_secrets_store_csi_driver_provider_aws
+  secrets_store_csi_driver_provider_aws        = var.secrets_store_csi_driver_provider_aws
+
   # External Secrets
   enable_external_secrets               = var.enable_external_secrets
   external_secrets                      = var.external_secrets
