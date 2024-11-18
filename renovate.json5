@@ -13,6 +13,7 @@
     // Apply crowd-sourced workarounds for known problems with packages. See https://docs.renovatebot.com/presets-workarounds/#workaroundsall
     "workarounds:all"
   ],
+  "automerge": true,
   // If we don't specify a timezone then Renovate will use UTC
   "timezone": "America/New_York",
   // fires between 4 am and 5 am EST on mondays
