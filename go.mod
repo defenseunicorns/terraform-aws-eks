@@ -6,7 +6,7 @@ require (
 	github.com/defenseunicorns/delivery-aws-iac v0.0.12
 	github.com/defenseunicorns/delivery_aws_iac_utils v0.0.6
 	github.com/gruntwork-io/terratest v0.47.2
-	github.com/stretchr/testify v1.9.0
+	github.com/stretchr/testify v1.10.0
 )
 
 require (
