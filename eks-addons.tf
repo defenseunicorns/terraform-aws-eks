@@ -184,6 +184,11 @@ resource "kubernetes_storage_class_v1" "efs" {
   ]
 }
 
+data "aws_subnet" "private" {
+  for_each = toset(var.private_subnet_ids)
+  id       = each.value
+}
+
 module "efs" {
   source  = "terraform-aws-modules/efs/aws"
   version = "~> 1.0"
@@ -191,16 +196,19 @@ module "efs" {
   count = var.enable_amazon_eks_aws_efs_csi_driver ? 1 : 0
 
   name = lower(random_id.efs_name[0].hex)
+
   # Mount targets / security group
   mount_targets = {
-    for k, v in zipmap(var.azs, var.private_subnet_ids) : k => { subnet_id = v }
+    for subnet_id in var.private_subnet_ids : data.aws_subnet.private[subnet_id].availability_zone => {
+      subnet_id = subnet_id
+    }
   }
 
   security_group_description = "${local.cluster_name} EFS security group"
   security_group_vpc_id      = var.vpc_id
   security_group_rules = {
     vpc = {
-      # relying on the defaults provdied for EFS/NFS (2049/TCP + ingress)
+      # relying on the defaults provided for EFS/NFS (2049/TCP + ingress)
       description = "NFS ingress from VPC private subnets"
       cidr_blocks = var.efs_vpc_cidr_blocks
     }

@@ -9,6 +9,11 @@ data "aws_iam_session_context" "current" {
   arn = data.aws_caller_identity.current.arn
 }
 
+data "aws_subnet" "vpc_cni_custom" {
+  for_each = toset(var.vpc_cni_custom_subnet)
+  id       = each.value
+}
+
 ###############################################################
 # EKS Cluster
 ###############################################################
@@ -59,22 +64,23 @@ locals {
   should_create_eni_configs = (
     var.create_eni_configs &&
     var.cluster_addons["vpc-cni"] != null &&
-    length(var.vpc_cni_custom_subnet) != 0 &&
-    length(var.vpc_cni_custom_subnet) == length(var.azs)
+    length(var.vpc_cni_custom_subnet) != 0
   )
 
   # Define ENI Configurations if should_create_eni_configs evaluates to true.
   eniConfig = local.should_create_eni_configs ? {
     create = true,
     region = var.aws_region,
-    subnets = { for az, subnet in zipmap(var.azs, var.vpc_cni_custom_subnet) : az => {
-      id = subnet,
-      securityGroups = compact([
-        module.aws_eks.cluster_primary_security_group_id,
-        module.aws_eks.node_security_group_id,
-        module.aws_eks.cluster_security_group_id
-      ])
-    } }
+    subnets = {
+      for subnet_id in var.vpc_cni_custom_subnet : data.aws_subnet.vpc_cni_custom[subnet_id].availability_zone => {
+        id = subnet_id,
+        securityGroups = compact([
+          module.aws_eks.cluster_primary_security_group_id,
+          module.aws_eks.node_security_group_id,
+          module.aws_eks.cluster_security_group_id
+        ])
+      }
+    }
   } : null
 
   # Merge extra configuration for VPC CNI if should_create_eni_configs evaluates to true.
