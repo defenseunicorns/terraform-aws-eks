@@ -48,6 +48,8 @@ To view examples for how you can leverage this EKS Module, please see the [examp
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_iam_session_context.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_session_context) | data source |
 | [aws_partition.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/partition) | data source |
+| [aws_subnet.private](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnet) | data source |
+| [aws_subnet.vpc_cni_custom](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnet) | data source |
 
 ## Inputs
 
@@ -63,7 +65,6 @@ To view examples for how you can leverage this EKS Module, please see the [examp
 | <a name="input_aws_node_termination_handler"></a> [aws\_node\_termination\_handler](#input\_aws\_node\_termination\_handler) | AWS Node Termination Handler config for aws-ia/eks-blueprints-addon/aws | `any` | `{}` | no |
 | <a name="input_aws_privateca_issuer"></a> [aws\_privateca\_issuer](#input\_aws\_privateca\_issuer) | AWS Private CA Issuer config for aws-ia/eks-blueprints-addon/aws | `any` | `{}` | no |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | used to create vpc-cni eni config objects when configuring the vpc-cni marketplace addon | `string` | `""` | no |
-| <a name="input_azs"></a> [azs](#input\_azs) | List of names of availability zones to use for subnet configs | `list(string)` | `[]` | no |
 | <a name="input_blueprints_addons_prefixes"></a> [blueprints\_addons\_prefixes](#input\_blueprints\_addons\_prefixes) | Prefixes for the eks blueprints addons, used to parse addon gitops\_metadata output and create objects with | `list(string)` | <pre>[<br/>  "cert_manager",<br/>  "cluster_autoscaler",<br/>  "aws_cloudwatch_metrics",<br/>  "aws_efs_csi_driver",<br/>  "aws_fsx_csi_driver",<br/>  "aws_privateca_issuer",<br/>  "external_dns_route53",<br/>  "external_secrets",<br/>  "aws_load_balancer_controller",<br/>  "aws_for_fluentbit",<br/>  "aws_node_termination_handler",<br/>  "karpenter",<br/>  "velero",<br/>  "aws_gateway_api_controller",<br/>  "fargate_fluentbit_log"<br/>]</pre> | no |
 | <a name="input_bottlerocket_shadow"></a> [bottlerocket\_shadow](#input\_bottlerocket\_shadow) | Bottlerocket Shadow config for aws-ia/eks-blueprints-addon/aws | `any` | `{}` | no |
 | <a name="input_bottlerocket_update_operator"></a> [bottlerocket\_update\_operator](#input\_bottlerocket\_update\_operator) | Bottlerocket Update Operator config for aws-ia/eks-blueprints-addon/aws | `any` | `{}` | no |

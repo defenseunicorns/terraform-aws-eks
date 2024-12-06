@@ -304,7 +304,6 @@ module "eks" {
   cluster_endpoint_public_access  = var.cluster_endpoint_public_access
   cluster_endpoint_private_access = true
   vpc_cni_custom_subnet           = module.vpc.intra_subnets
-  azs                             = module.vpc.azs
   aws_admin_usernames             = var.aws_admin_usernames
   cluster_version                 = var.cluster_version
   dataplane_wait_duration         = var.dataplane_wait_duration
