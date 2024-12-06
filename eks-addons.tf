@@ -185,8 +185,8 @@ resource "kubernetes_storage_class_v1" "efs" {
 }
 
 data "aws_subnet" "private" {
-  for_each = toset(var.private_subnet_ids)
-  id       = each.value
+  count = length(var.private_subnet_ids)
+  id    = var.private_subnet_ids[count.index]
 }
 
 module "efs" {

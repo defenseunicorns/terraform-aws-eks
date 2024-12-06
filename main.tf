@@ -10,8 +10,8 @@ data "aws_iam_session_context" "current" {
 }
 
 data "aws_subnet" "vpc_cni_custom" {
-  for_each = toset(var.vpc_cni_custom_subnet)
-  id       = each.value
+  count = length(var.vpc_cni_custom_subnet)
+  id    = var.vpc_cni_custom_subnet[count.index]
 }
 
 ###############################################################
