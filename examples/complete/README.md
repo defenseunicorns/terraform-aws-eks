@@ -106,7 +106,7 @@ kubectl get nodes
 | <a name="module_self_managed_node_group_secret_key_secrets_manager_secret"></a> [self\_managed\_node\_group\_secret\_key\_secrets\_manager\_secret](#module\_self\_managed\_node\_group\_secret\_key\_secrets\_manager\_secret) | git::https://github.com/terraform-aws-modules/terraform-aws-secrets-manager.git | v1.3.1 |
 | <a name="module_ssm_kms_key"></a> [ssm\_kms\_key](#module\_ssm\_kms\_key) | terraform-aws-modules/kms/aws | ~> 3.0 |
 | <a name="module_subnet_addrs"></a> [subnet\_addrs](#module\_subnet\_addrs) | git::https://github.com/hashicorp/terraform-cidr-subnets | v1.0.0 |
-| <a name="module_vpc"></a> [vpc](#module\_vpc) | git::https://github.com/defenseunicorns/terraform-aws-vpc.git | v0.1.12 |
+| <a name="module_vpc"></a> [vpc](#module\_vpc) | git::https://github.com/defenseunicorns/terraform-aws-vpc.git | v0.1.13 |
 | <a name="module_vpc_cni_ipv4_irsa_role"></a> [vpc\_cni\_ipv4\_irsa\_role](#module\_vpc\_cni\_ipv4\_irsa\_role) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | ~> 5.39 |
 
 ## Resources
