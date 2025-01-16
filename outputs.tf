@@ -10,6 +10,11 @@ output "efs_storageclass_name" {
   value       = try(kubernetes_storage_class_v1.efs[0].id, null)
 }
 
+output "efs_file_system_id" {
+  description = "The ID of the EFS file system created by the EFS module"
+  value       = try(module.efs[0].id, null)
+}
+
 ################################################################################
 # Cluster
 ################################################################################
