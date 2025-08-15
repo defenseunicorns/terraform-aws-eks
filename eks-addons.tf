@@ -3,7 +3,8 @@
 ################################################################################
 
 locals {
-  node_group_arns = [for key, value in module.aws_eks.self_managed_node_groups : lookup(value, "autoscaling_group_arn", "")]
+  node_group_arns  = [for key, value in module.aws_eks.self_managed_node_groups : lookup(value, "autoscaling_group_arn", "")]
+  node_group_names = compact([for group in module.aws_eks.self_managed_node_groups : group.autoscaling_group_name])
 
   # set default resource arns for external secrets  IAM policy if not defined relative to the current AWS partition, only used if external secrets is enabled
   external_secrets_ssm_parameter_arns   = length(var.external_secrets_ssm_parameter_arns) > 0 ? var.external_secrets_ssm_parameter_arns : ["arn:${data.aws_partition.current.partition}:ssm:*:*:parameter/*"]
@@ -15,7 +16,7 @@ locals {
 }
 
 module "eks_blueprints_kubernetes_addons" {
-  source = "git::https://github.com/aws-ia/terraform-aws-eks-blueprints-addons.git?ref=v1.19.0"
+  source = "git::https://github.com/aws-ia/terraform-aws-eks-blueprints-addons.git?ref=v1.22.0"
 
   cluster_name      = module.aws_eks.cluster_name
   cluster_endpoint  = module.aws_eks.cluster_endpoint
@@ -28,6 +29,9 @@ module "eks_blueprints_kubernetes_addons" {
   # only used for aws_node_termination_handler, if this list is empty, then enable_aws_node_termination_handler should also be false.
   # you don't need to tag eks managed node group ASGs for NTH - https://github.com/aws/aws-node-termination-handler/blob/main/README.md?plain=1#L41
   aws_node_termination_handler_asg_arns = local.node_group_arns
+
+  # This ensures that aws_node_termination_handler only receive events from ASGs in this environment.
+  aws_node_termination_handler_asg_names = local.node_group_names
 
   #this controls whether or not the cluster resources are created for the blueprints eks addons module
   create_kubernetes_resources = var.create_kubernetes_resources
